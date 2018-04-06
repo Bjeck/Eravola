@@ -1,0 +1,23 @@
+Text is Text
+[see if I can mod 
+Sprite - dunno if/how yet.
+Audio - could be useful for somethign
+extraData: Text roll info:
+ - s = Speed. s,1 is speed 1
+ - c = Color c,grey is grey color (maybe could use sprite for this??)
+ - 
+
+
+
+
+Naming Convention for Dialogues
+
+MainCharacter_Arch_OtherPerson_nr 
+
+Tari_Pond_Ceara_1
+
+
+
+
+
+There's an OnActionNode(id). that's good to remember.
