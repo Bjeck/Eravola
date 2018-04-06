@@ -2,3 +2,4 @@ have to find another solution for CRT shader - it doesn't work with Screen space
 
 
 I should mess with Y extra in CRT shader as well for glitch effects.
+And Curvature set!

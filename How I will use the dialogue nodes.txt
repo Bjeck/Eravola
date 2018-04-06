@@ -5,7 +5,12 @@ Audio - could be useful for somethign
 extraData: Text roll info:
  - s = Speed. s,1 is speed 1
  - c = Color c,grey is grey color (maybe could use sprite for this??)
- - 
+
+Extra Variables
+ - delay = delay, time until choices will show up. (other things that need delay?)
+
+
+Action: Load next dialogue (string parameter - maybe enum??)
 
 
 
