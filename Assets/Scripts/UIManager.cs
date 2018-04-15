@@ -8,12 +8,17 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
-    public TextMeshProUGUI main;
+    public Canvas mainCanvas;
+    public Canvas bootCanvas;
+    public Canvas databaseCanvas;
+
+    public TextMeshProUGUI mainText;
     public GameObject buttonParent;
     public Button[] buttons;
     public TextMeshProUGUI[] buttonTexts;
 
     public string dialogueToLoad = "";
+    
 
 
 	// Use this for initialization
@@ -29,18 +34,13 @@ public class UIManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
-            if (!VD.isActive)
-            {
-                LoadDialogue(dialogueToLoad);
-            }
-            else
+            if (VD.isActive)
             {
                 VD.Next();  //Gonna need some checks on this to see if its possible when we do text roll and things. 
             }
         }
-
 	}
 
 
@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviour {
         VD.OnNodeChange += UpdateUI;
         VD.OnEnd += End;
 
-        main.gameObject.SetActive(true);
+        mainText.gameObject.SetActive(true);
         buttonParent.SetActive(true);
         for (int i = 0; i < buttons.Length; i++)
         {
@@ -81,7 +81,7 @@ public class UIManager : MonoBehaviour {
         }
         else                   // ------------------- NPC
         {
-            main.text = data.comments[data.commentIndex];
+            mainText.text = data.comments[data.commentIndex];       //maybe I want them to be able to layer? so one thing goes, then another, then another? for line breaks. yeeah. gotta specify in extradata if should break or continue.
 
             if((data.commentIndex+1) >= data.comments.Length && VD.GetNext(false,false).isPlayer)
             {
@@ -128,11 +128,11 @@ public class UIManager : MonoBehaviour {
         VD.Next();
     }
 
-    void End(VD.NodeData data)
+    public void End(VD.NodeData data)
     {
         VD.OnNodeChange -= UpdateUI;
         VD.OnEnd -= End;
-        main.gameObject.SetActive(false);
+        mainText.gameObject.SetActive(false);
         buttonParent.SetActive(false);
         VD.EndDialogue();
     }
@@ -140,7 +140,7 @@ public class UIManager : MonoBehaviour {
 
     void OnDisable()
     {
-        if(main != null)
+        if(mainText != null)
         {
             End(null);
         }

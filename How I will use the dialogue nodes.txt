@@ -1,13 +1,14 @@
 Text is Text
-[see if I can mod 
+[see if I can mod 2 text fields in]
 Sprite - dunno if/how yet.
 Audio - could be useful for somethign
 extraData: Text roll info:
  - s = Speed. s,1 is speed 1
- - c = Color c,grey is grey color (maybe could use sprite for this??)
 
 Extra Variables
+ - isConversation = is it a conversation? informs text placement.
  - delay = delay, time until choices will show up. (other things that need delay?)
+ - c = Color c,grey is grey color (maybe could use sprite for this??) (problem is in-string color)
 
 
 Action: Load next dialogue (string parameter - maybe enum??)
@@ -15,11 +16,9 @@ Action: Load next dialogue (string parameter - maybe enum??)
 
 
 
-Naming Convention for Dialogues
-
-MainCharacter_Arch_OtherPerson_nr 
-
-Tari_Pond_Ceara_1
+Naming Convention for Dialogues:
+ - MainCharacter_Arch_OtherPersonOrEvent_nr 
+ - Tari_Pond_Ceara_1
 
 
 

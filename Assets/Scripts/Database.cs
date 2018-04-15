@@ -45,8 +45,20 @@ public class Database : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ShowDatabase();
+        }
+
+        if (!isShowingDatabase)
+        {
+            return;
+        }
+
         CheckInput();
 
+
+        
         if (Input.GetKeyDown(KeyCode.Return))
         {
          //   ShowChar();
@@ -99,7 +111,7 @@ public class Database : MonoBehaviour {
         isRollingDatabaseIntro = true;
         print(length + " - " + displayedString.Length);
 
-        displayedString = "<mspace=10>";
+       // displayedString = "<mspace=10>";
 
         panel.sizeDelta = new Vector2 (canvas.sizeDelta.x,0);
 
@@ -295,10 +307,9 @@ public class Database : MonoBehaviour {
         int iterator = 0;
         for (int i = 0; i <= (testCharDesc.Length/ charsPerTickInText); i++)
         {
-            print("----- I: " + i);
+            //print("----- I: " + i);
             for (int j = 0; j < charsPerTickInText; j++)
             {
-                print(j + "   " + (iterator + j));
                 if(charCounter >= testCharDesc.Length)  //this check seems redundant but needs to be there for the last >10 characters.
                 {
 
