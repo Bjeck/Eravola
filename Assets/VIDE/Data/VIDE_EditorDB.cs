@@ -179,6 +179,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
     public class Comment
     {
         public string text;
+        public string text_secondary;
         public string extraData = "ExtraData";
         public DialogueNode inputSet;
         public DialogueNode outNode;
@@ -196,6 +197,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
             inputSet = null;
             outAction = null;
             text = "Comment...";
+            text_secondary = "Comment 2";
             extraData = "ExtraData";
 
         }
@@ -205,6 +207,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
             outAction = null;
             inputSet = id;
             text = "Comment...";
+            text_secondary = "Comment 2";
             extraData = "ExtraData";
         }
     }

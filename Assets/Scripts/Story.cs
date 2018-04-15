@@ -12,7 +12,7 @@ public class Story : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        sequences.RunSequence(SequenceName.BootUp);
+       // sequences.RunSequence(SequenceName.BootUp);
     }
 
 

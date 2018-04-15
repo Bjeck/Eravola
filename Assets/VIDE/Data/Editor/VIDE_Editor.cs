@@ -794,6 +794,7 @@ public class VIDE_Editor : EditorWindow
             {
                 cur.playerDiags[i].comment.Add(new VIDE_EditorDB.Comment());
                 cur.playerDiags[i].comment[ii].text = db.playerDiags[i].comment[ii].text;
+                cur.playerDiags[i].comment[ii].text_secondary = db.playerDiags[i].comment[ii].text_secondary;
                 cur.playerDiags[i].comment[ii].audios = db.playerDiags[i].comment[ii].audios;
                 cur.playerDiags[i].comment[ii].sprites = db.playerDiags[i].comment[ii].sprites;
             }
@@ -820,6 +821,7 @@ public class VIDE_Editor : EditorWindow
                             return;
                         }
                         db.playerDiags[i].comment[ii].text = cur.playerDiags[i].comment[ii].text;
+                        db.playerDiags[i].comment[ii].text_secondary = cur.playerDiags[i].comment[ii].text_secondary;
                         db.playerDiags[i].comment[ii].audios = cur.playerDiags[i].comment[ii].audios;
                         db.playerDiags[i].comment[ii].sprites = cur.playerDiags[i].comment[ii].sprites;
                     }
@@ -844,6 +846,7 @@ public class VIDE_Editor : EditorWindow
                             return;
                         }
                         db.playerDiags[i].comment[ii].text = cur.playerDiags[i].comment[ii].text;
+                        db.playerDiags[i].comment[ii].text_secondary = cur.playerDiags[i].comment[ii].text_secondary;
                         db.playerDiags[i].comment[ii].audios = cur.playerDiags[i].comment[ii].audios;
                         db.playerDiags[i].comment[ii].sprites = cur.playerDiags[i].comment[ii].sprites;
                     }
@@ -947,6 +950,7 @@ public class VIDE_Editor : EditorWindow
                 dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "oAns", db.playerDiags.FindIndex(idx => idx == db.playerDiags[i].comment[ii].outNode));
                 dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "oAct", db.actionNodes.FindIndex(idx => idx == db.playerDiags[i].comment[ii].outAction));
                 dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "text", db.playerDiags[i].comment[ii].text);
+                dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary", db.playerDiags[i].comment[ii].text_secondary);
                 dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "extraD", db.playerDiags[i].comment[ii].extraData);
                 dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "showmore", db.playerDiags[i].comment[ii].showmore);
                 dict.Add("pd_" + i.ToString() + "_com_" + ii.ToString() + "visible", db.playerDiags[i].comment[ii].visible);
@@ -1306,6 +1310,39 @@ public class VIDE_Editor : EditorWindow
                 npc.comment[npc.comment.Count - 1].text = s;
             }
 
+
+
+
+            List<string> texts2 = new List<string>();
+
+            string text2 = (string)dict["nd_text_secondary_" + i.ToString()];
+            
+            if (text2.Contains("<br>"))
+            {
+                string[] splitText = Regex.Split(text2, "<br>");
+                texts2 = new List<string>();
+                foreach (string s in splitText)
+                {
+                    texts2.Add(s.Trim());
+                }
+            }
+            else
+            {
+                texts2.Add(text2);
+            }
+
+            foreach (string s in texts2)
+            {
+                npc.comment.Add(new VIDE_EditorDB.Comment());
+                npc.comment[npc.comment.Count - 1].text_secondary = s;
+            }
+
+
+
+
+
+
+
             if (dict.ContainsKey("nd_sprite_" + i.ToString()))
             {
                 string name = Path.GetFileNameWithoutExtension((string)dict["nd_sprite_" + i.ToString()]);
@@ -1401,6 +1438,9 @@ public class VIDE_Editor : EditorWindow
             {
                 if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "text"))
                     db.playerDiags[i].comment[ii].text = (string)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "text"];
+
+                if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary"))
+                    db.playerDiags[i].comment[ii].text_secondary = (string)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary"];
 
                 if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "visible"))
                     db.playerDiags[i].comment[ii].visible = (bool)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "visible"];
@@ -3229,6 +3269,21 @@ public class VIDE_Editor : EditorWindow
                         db.pNode.comment[i].text = testText;
                         needSave = true;
                     }
+                    
+                    GUIStyle exD2 = new GUIStyle(GUI.skin.textField);
+                    exD2.wordWrap = false;
+                    EditorGUI.BeginChangeCheck();
+                    txtComst.fontSize = 12;
+                    string testText2 = EditorGUI.TextArea(new Rect(260, (i * 36), (er.width / 2) - 162, 50), db.pNode.comment[i].text_secondary, txtComst);
+                    txtComst.fontSize = 14;
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        Undo.RecordObject(db, "Edited Player comment");
+                        db.pNode.comment[i].text_secondary = testText2;
+                        needSave = true;
+                    }
+
+
                 }
                 else
                 {
@@ -4233,6 +4288,27 @@ public class VIDE_Editor : EditorWindow
                     db.playerDiags[id].comment[i].text = testText;
                     needSave = true;
                 }
+
+
+
+                EditorGUI.BeginChangeCheck();
+                last = GUI.backgroundColor;
+                lastc = GUI.contentColor;
+                GUI.contentColor = Color.white;
+                GUI.backgroundColor = Color.white;
+                string testText2 = EditorGUILayout.TextArea(db.playerDiags[id].comment[i].text_secondary, stf, GUILayout.Width(100));
+                GUI.contentColor = lastc;
+                GUI.backgroundColor = last;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(db, "Edited Player comment 2");
+                    db.playerDiags[id].comment[i].text_secondary = testText2;
+                    needSave = true;
+                }
+
+
+
+
 
                 GUI.color = new Color(0, 0, 0, 0.2f);
                 GUILayout.BeginVertical();

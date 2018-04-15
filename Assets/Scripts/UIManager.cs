@@ -13,13 +13,11 @@ public class UIManager : MonoBehaviour {
     public Canvas databaseCanvas;
 
     public TextMeshProUGUI mainText;
+    public TextMeshProUGUI thoughtsText;
     public GameObject buttonParent;
     public Button[] buttons;
     public TextMeshProUGUI[] buttonTexts;
-
-    public string dialogueToLoad = "";
     
-
 
 	// Use this for initialization
 	void Start () {
@@ -72,6 +70,7 @@ public class UIManager : MonoBehaviour {
                 {
                     buttons[i].gameObject.SetActive(true);
                     buttonTexts[i].text = data.comments[i];
+                    print(data.comments_secondaries[i]);
                 }
                 else
                 {
@@ -82,6 +81,7 @@ public class UIManager : MonoBehaviour {
         else                   // ------------------- NPC
         {
             mainText.text = data.comments[data.commentIndex];       //maybe I want them to be able to layer? so one thing goes, then another, then another? for line breaks. yeeah. gotta specify in extradata if should break or continue.
+            thoughtsText.text = data.comments_secondaries[data.commentIndex];
 
             if((data.commentIndex+1) >= data.comments.Length && VD.GetNext(false,false).isPlayer)
             {

@@ -9,6 +9,9 @@ public class Dialogues : MonoBehaviour {
 
     //This is the link between the Story and the UI - it handles which dialogues we load and where we are in the story.
 
+    public string debugStartDialogueString = "";
+    public bool debugStartDialogue;
+
 
     public string CurrentDialogue { get; private set; }
 
@@ -18,6 +21,15 @@ public class Dialogues : MonoBehaviour {
     //    StartDialogues("Tari_Intro");
 
 	}
+
+    private void Update()
+    {
+        if (debugStartDialogue)
+        {
+            debugStartDialogue = false;
+            StartDialogues(debugStartDialogueString);
+        }
+    }
 
 
     public void StartDialogues(string startDial)

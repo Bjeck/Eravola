@@ -31,7 +31,7 @@ public class Sequences : MonoBehaviour {
 
 
 
-        RunSequence(SequenceName.BootUp);
+        //RunSequence(SequenceName.BootUp);
 	}
 	
 	// Update is called once per frame

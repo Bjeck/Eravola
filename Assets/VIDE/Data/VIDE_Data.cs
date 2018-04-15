@@ -138,6 +138,7 @@ namespace VIDE_Data
     public class Comment
     {
         public string text;
+        public string text_secondary;
         public string extraData;
         public DialogueNode inputSet;
         public DialogueNode outNode;
@@ -150,6 +151,7 @@ namespace VIDE_Data
         public Comment()
         {
             text = "";
+            text_secondary = "";
             extraData = "";
             outNode = null;
         }
@@ -158,12 +160,14 @@ namespace VIDE_Data
             outNode = null;
             inputSet = id;
             text = "Comment...";
+            text_secondary = "Comment 2";
             extraData = "ExtraData...";
         }
         public Comment(Comment c)
         {
             if (c == null) return;
             text = c.text;
+            text_secondary = c.text_secondary;
             extraData = c.extraData;
             sprites = c.sprites;
             audios = c.audios;
@@ -345,6 +349,7 @@ namespace VIDE_Data
             public Sprite sprite;
 
             public string[] comments;
+            public string[] comments_secondaries;
             public Comment[] creferences;
             public string[] extraData;
             public AudioClip[] audios;
@@ -373,6 +378,7 @@ namespace VIDE_Data
                 nodeID = nd.nodeID;
                 sprite = nd.sprite;
                 comments = nd.comments;
+                comments_secondaries = nd.comments_secondaries;
                 extraData = nd.extraData;
                 audios = nd.audios;
                 sprites = nd.sprites;
@@ -528,6 +534,7 @@ namespace VIDE_Data
                         for (int ii = 0; ii < cur.playerDiags[i].comment.Count; ii++)
                         {
                             diags[currentDiag].playerNodes[i].comment[ii].text = cur.playerDiags[i].comment[ii].text;
+                            diags[currentDiag].playerNodes[i].comment[ii].text_secondary = cur.playerDiags[i].comment[ii].text_secondary;
                             diags[currentDiag].playerNodes[i].comment[ii].audios = cur.playerDiags[i].comment[ii].audios;
                             diags[currentDiag].playerNodes[i].comment[ii].sprites = cur.playerDiags[i].comment[ii].sprites;
                         }
@@ -648,6 +655,24 @@ namespace VIDE_Data
             return op.ToArray();
         }
 
+        private static string[] GetSecondaryCommentDataForPlayer(DialogueNode diagNode)
+        {
+            List<string> op = new List<string>();
+
+            if (diagNode == null)
+            {
+                return op.ToArray();
+            }
+
+            for (int i = 0; i < diagNode.comment.Count; i++)
+            {
+                op.Add(diagNode.comment[i].text_secondary);
+            }
+
+            return op.ToArray();
+        }
+
+
         private static string[] GetExtraData(DialogueNode diagNode)
         {
             List<string> op = new List<string>();
@@ -719,6 +744,7 @@ namespace VIDE_Data
                             for (int ii = 0; ii < cur.playerDiags[i].comment.Count; ii++)
                             {
                                 diags[theIndex].playerNodes[i].comment[ii].text = cur.playerDiags[i].comment[ii].text;
+                                diags[theIndex].playerNodes[i].comment[ii].text_secondary = cur.playerDiags[i].comment[ii].text;
                                 diags[theIndex].playerNodes[i].comment[ii].audios = cur.playerDiags[i].comment[ii].audios;
                                 diags[theIndex].playerNodes[i].comment[ii].sprites = cur.playerDiags[i].comment[ii].sprites;
                             }
@@ -858,6 +884,33 @@ namespace VIDE_Data
                     npc.comment[npc.comment.Count - 1].text = s;
                 }
 
+                
+                //text 2!
+                List<string> texts2 = new List<string>();
+
+                string text2 = (string)dict["nd_text_secondary_" + i.ToString()];
+                if (text2.Contains("<br>"))
+                {
+                    string[] splitText = Regex.Split(text2, "<br>");
+                    texts2 = new List<string>();
+                    foreach (string s in splitText)
+                    {
+                        texts2.Add(s.Trim());
+                    }
+                }
+                else
+                {
+                    texts2.Add(text);
+                }
+
+                foreach (string s in texts2)
+                {
+                    npc.comment.Add(new Comment());
+                    npc.comment[npc.comment.Count - 1].text_secondary = s;
+                }
+
+                
+
                 if (dict.ContainsKey("nd_sprite_" + i.ToString()))
                 {
                     string name = Path.GetFileNameWithoutExtension((string)dict["nd_sprite_" + i.ToString()]);
@@ -917,6 +970,9 @@ namespace VIDE_Data
                 {
                     if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "text"))
                         diags[currentDiag].playerNodes[i].comment[ii].text = (string)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "text"];
+
+                    if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary"))
+                        diags[currentDiag].playerNodes[i].comment[ii].text_secondary = (string)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary"];
 
                     if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "visible"))
                         diags[currentDiag].playerNodes[i].comment[ii].visible = (bool)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "visible"];
@@ -1151,6 +1207,35 @@ namespace VIDE_Data
                     npc.comment[npc.comment.Count - 1].text = s;
                 }
 
+
+
+                List<string> texts2 = new List<string>();
+
+                string text2 = (string)dict["nd_text_" + i.ToString()];
+                if (text2.Contains("<br>"))
+                {
+                    string[] splitText = Regex.Split(text2, "<br>");
+                    texts2 = new List<string>();
+                    foreach (string s in splitText)
+                    {
+                        texts2.Add(s.Trim());
+                    }
+                }
+                else
+                {
+                    texts2.Add(text2);
+                }
+
+                foreach (string s in texts2)
+                {
+                    npc.comment.Add(new Comment());
+                    npc.comment[npc.comment.Count - 1].text_secondary = s;
+                }
+
+
+
+
+
                 if (dict.ContainsKey("nd_sprite_" + i.ToString()))
                 {
                     string name = Path.GetFileNameWithoutExtension((string)dict["nd_sprite_" + i.ToString()]);
@@ -1210,6 +1295,9 @@ namespace VIDE_Data
                 {
                     if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "text"))
                         theDiag.playerNodes[i].comment[ii].text = (string)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "text"];
+
+                    if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary"))
+                        theDiag.playerNodes[i].comment[ii].text_secondary = (string)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "text_secondary"];
 
                     if (dict.ContainsKey("pd_" + i.ToString() + "_com_" + ii.ToString() + "visible"))
                         theDiag.playerNodes[i].comment[ii].visible = (bool)dict["pd_" + i.ToString() + "_com_" + ii.ToString() + "visible"];
@@ -1412,6 +1500,7 @@ namespace VIDE_Data
             nd.nodeID = diagNode.ID;
 
             nd.comments = GetOptions(diagNode);
+            nd.comments_secondaries = GetSecondaryCommentDataForPlayer(diagNode);
 
             List<Comment> cRefs = new List<Comment>();
             foreach (Comment c in diagNode.comment)
@@ -1438,6 +1527,7 @@ namespace VIDE_Data
         static void SetVisibility(NodeData nd, DialogueNode diagNode)
         {
             List<string> coms = new List<string>();
+            List<string> com2s = new List<string>();
             List<Comment> cRefs = new List<Comment>();
             List<string> exd = new List<string>();
             List<AudioClip> aud = new List<AudioClip>();
@@ -1448,6 +1538,7 @@ namespace VIDE_Data
                 if (diagNode.comment[i].visible)
                 {
                     coms.Add(nd.comments[i]);
+                    com2s.Add(nd.comments_secondaries[i]);
                     cRefs.Add(nd.creferences[i]);
                     exd.Add(nd.extraData[i]);
                     aud.Add(nd.audios[i]);
@@ -1456,6 +1547,7 @@ namespace VIDE_Data
             }
 
             nd.comments = coms.ToArray();
+            nd.comments_secondaries = com2s.ToArray();
             nd.creferences = cRefs.ToArray();
             nd.extraData = exd.ToArray();
             nd.audios = aud.ToArray();
@@ -1763,7 +1855,7 @@ namespace VIDE_Data
         /// <param name="nodeID">The ID of the Dialogue node</param>
         /// <param name="commentIndex">The comment index of a Player node</param>
         /// <param name="newComment">The new comment</param>
-        public static void SetComment(string dialogueName, int nodeID, int commentIndex, string newComment)
+        public static void SetComment(string dialogueName, int nodeID, int commentIndex, string newComment, string newComment2 = "")
         {
             int diag = -1;
 
@@ -1802,6 +1894,7 @@ namespace VIDE_Data
                 if (commentIndex > -1 && commentIndex < playerNode.comment.Count)
                 {
                     playerNode.comment[commentIndex].text = newComment;
+                    playerNode.comment[commentIndex].text_secondary = newComment2;
                 }
                 else
                 {
@@ -1953,6 +2046,7 @@ namespace VIDE_Data
                     }
                 }
                 nodeData.comments = GetOptions(currentPlayerStep);
+                nodeData.comments_secondaries = GetSecondaryCommentDataForPlayer(currentPlayerStep);
                 nodeData.tag = currentPlayerStep.playerTag;
                 nodeData.sprite = currentPlayerStep.sprite;
                 nodeData.audios = GetPlayerAudios(currentPlayerStep);
@@ -3101,6 +3195,7 @@ namespace VIDE_Data
             public Sprite sprite;
 
             public string[] comments;
+            public string[] comments_secondaries;
             public Comment[] creferences;
             public string[] extraData;
             public AudioClip[] audios;
@@ -3128,6 +3223,7 @@ namespace VIDE_Data
                 nodeID = nd.nodeID;
                 sprite = nd.sprite;
                 comments = nd.comments;
+                comments_secondaries = nd.comments_secondaries;
                 extraData = nd.extraData;
                 audios = nd.audios;
                 sprites = nd.sprites;
@@ -3280,6 +3376,25 @@ namespace VIDE_Data
             return op.ToArray();
         }
 
+
+        private string[] GetSecondaryComments(DialogueNode diagNode)
+        {
+            List<string> op = new List<string>();
+
+            if (diagNode == null)
+            {
+                return op.ToArray();
+            }
+
+            for (int i = 0; i < diagNode.comment.Count; i++)
+            {
+                op.Add(diagNode.comment[i].text_secondary);
+            }
+
+            return op.ToArray();
+        }
+
+
         private string[] GetExtraData(DialogueNode diagNode)
         {
             List<string> op = new List<string>();
@@ -3404,6 +3519,7 @@ namespace VIDE_Data
             nd.nodeID = diagNode.ID;
 
             nd.comments = GetOptions(diagNode);
+            nd.comments_secondaries = GetSecondaryComments(diagNode);
 
             List<Comment> cRefs = new List<Comment>();
             foreach (Comment c in diagNode.comment)
@@ -3469,6 +3585,7 @@ namespace VIDE_Data
         void SetVisibility(NodeData nd, DialogueNode diagNode)
         {
             List<string> coms = new List<string>();
+            List<string> com2s = new List<string>();
             List<Comment> cRefs = new List<Comment>();
             List<string> exd = new List<string>();
             List<AudioClip> aud = new List<AudioClip>();
@@ -3479,6 +3596,7 @@ namespace VIDE_Data
                 if (diagNode.comment[i].visible)
                 {
                     coms.Add(nd.comments[i]);
+                    com2s.Add(nd.comments_secondaries[i]);
                     cRefs.Add(nd.creferences[i]);
                     exd.Add(nd.extraData[i]);
                     aud.Add(nd.audios[i]);
@@ -3487,6 +3605,7 @@ namespace VIDE_Data
             }
 
             nd.comments = coms.ToArray();
+            nd.comments_secondaries = com2s.ToArray();
             nd.creferences = cRefs.ToArray();
             nd.extraData = exd.ToArray();
             nd.audios = aud.ToArray();
@@ -3688,7 +3807,7 @@ namespace VIDE_Data
         /// <param name="nodeID">The ID of the Dialogue node</param>
         /// <param name="commentIndex">The comment index of a Player node</param>
         /// <param name="newComment">The new comment</param>
-        public void SetComment(string dialogueName, int nodeID, int commentIndex, string newComment)
+        public void SetComment(string dialogueName, int nodeID, int commentIndex, string newComment, string newComment2 = "")
         {
             int diag = -1;
 
@@ -3727,6 +3846,7 @@ namespace VIDE_Data
                 if (commentIndex > -1 && commentIndex < playerNode.comment.Count)
                 {
                     playerNode.comment[commentIndex].text = newComment;
+                    playerNode.comment[commentIndex].text_secondary = newComment2;
                 }
                 else
                 {
@@ -4690,6 +4810,7 @@ namespace VIDE_Data
                         for (int ii = 0; ii < cur.playerDiags[i].comment.Count; ii++)
                         {
                             diags[currentDiag].playerNodes[i].comment[ii].text = cur.playerDiags[i].comment[ii].text;
+                            diags[currentDiag].playerNodes[i].comment[ii].text_secondary = cur.playerDiags[i].comment[ii].text_secondary;
                             diags[currentDiag].playerNodes[i].comment[ii].audios = cur.playerDiags[i].comment[ii].audios;
                             diags[currentDiag].playerNodes[i].comment[ii].sprites = cur.playerDiags[i].comment[ii].sprites;
                         }
