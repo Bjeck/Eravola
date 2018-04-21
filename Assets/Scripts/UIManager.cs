@@ -5,144 +5,88 @@ using UnityEngine;
 using VIDE_Data;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour {
+
+    public TextRoll roll;
+
+    public EventSystem eventSys;
 
     public Canvas mainCanvas;
     public Canvas bootCanvas;
     public Canvas databaseCanvas;
 
-    public TextMeshProUGUI mainText;
-    public TextMeshProUGUI thoughtsText;
-    public GameObject buttonParent;
-    public Button[] buttons;
-    public TextMeshProUGUI[] buttonTexts;
+    public Database database;
     
 
 	// Use this for initialization
 	void Start () {
 
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            int istore = i;
-            buttons[i].onClick.AddListener(() => SetPlayerChoice(istore));
-        }
+
 	}
+
+
+
+    public void OpenDatabase()
+    {
+        EnableCanvas(databaseCanvas);
+        eventSys.SetSelectedGameObject(null);
+        database.ShowDatabase();
+    }
 	
-	// Update is called once per frame
-	void Update () {
-
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
-        {
-            if (VD.isActive)
-            {
-                VD.Next();  //Gonna need some checks on this to see if its possible when we do text roll and things. 
-            }
-        }
-	}
 
 
-    public void LoadDialogue(string dialogueName)
+    public void SetSoleCanvas(Canvas c)
     {
-        VD.OnNodeChange += UpdateUI;
-        VD.OnEnd += End;
+        mainCanvas.enabled = false;
+        bootCanvas.enabled = false;
+        databaseCanvas.enabled = false;
 
-        mainText.gameObject.SetActive(true);
-        buttonParent.SetActive(true);
-        for (int i = 0; i < buttons.Length; i++)
+        if (mainCanvas == c)
         {
-            buttons[i].gameObject.SetActive(false);
+            mainCanvas.enabled = true;
         }
-
-        VD.BeginDialogue(dialogueName);
-    }
-
-    
-    void UpdateUI(VD.NodeData data)
-    {
-        StopCoroutine("GoNextAfterDelay");
-        if (data.isPlayer)      // ------------------ PLAYER
+        if (bootCanvas == c)
         {
-
-            for (int i = 0; i < buttons.Length; i++)
-            {
-                if(i < data.comments.Length)
-                {
-                    buttons[i].gameObject.SetActive(true);
-                    buttonTexts[i].text = data.comments[i];
-                    print(data.comments_secondaries[i]);
-                }
-                else
-                {
-                    buttons[i].gameObject.SetActive(false);
-                }
-            }
+            bootCanvas.enabled = true;
         }
-        else                   // ------------------- NPC
+        if (databaseCanvas == c)
         {
-            mainText.text = data.comments[data.commentIndex];       //maybe I want them to be able to layer? so one thing goes, then another, then another? for line breaks. yeeah. gotta specify in extradata if should break or continue.
-            thoughtsText.text = data.comments_secondaries[data.commentIndex];
-
-            if((data.commentIndex+1) >= data.comments.Length && VD.GetNext(false,false).isPlayer)
-            {
-                float delay = 1; //SET TO A DEFAULT DELAY
-                //we've reached the last comment, go to next after delay.
-                if (data.extraVars.ContainsKey("delay"))
-                {
-                    object obj = data.extraVars["delay"];
-                    if(obj is float)
-                    {
-                        delay = (float)obj;
-                    }
-                    else if(obj is int)
-                    {
-                        delay = (float)((int)obj);
-                    }
-                    else
-                    {
-                        Debug.LogError("Delay was not a number. using default");
-                    }
-                }
-                StartCoroutine("GoNextAfterDelay",delay);
-            }
+            databaseCanvas.enabled = true;
         }
     }
 
-
-    IEnumerator GoNextAfterDelay(float delay)
+    public void EnableCanvas(Canvas c)
     {
-        yield return new WaitForSeconds(delay);
-        VD.Next();
-    }
-
-
-    void SetPlayerChoice(int choice)
-    {
-        VD.nodeData.commentIndex = choice;
-
-        for (int i = 0; i < buttons.Length; i++)
+        if (mainCanvas == c)
         {
-            buttons[i].gameObject.SetActive(false);
+            mainCanvas.enabled = true;
         }
-
-        VD.Next();
-    }
-
-    public void End(VD.NodeData data)
-    {
-        VD.OnNodeChange -= UpdateUI;
-        VD.OnEnd -= End;
-        mainText.gameObject.SetActive(false);
-        buttonParent.SetActive(false);
-        VD.EndDialogue();
-    }
-
-
-    void OnDisable()
-    {
-        if(mainText != null)
+        if (bootCanvas == c)
         {
-            End(null);
+            bootCanvas.enabled = true;
+        }
+        if (databaseCanvas == c)
+        {
+            databaseCanvas.enabled = true;
+        }
+    }
+
+    public void DisableCanvas(Canvas c)
+    {
+        if (mainCanvas == c)
+        {
+            mainCanvas.enabled = false;
+        }
+        if (bootCanvas == c)
+        {
+            bootCanvas.enabled = false;
+        }
+        if (databaseCanvas == c)
+        {
+            databaseCanvas.enabled = false;
         }
     }
 

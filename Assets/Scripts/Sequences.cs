@@ -16,6 +16,7 @@ public class Sequences : MonoBehaviour {
     public TextRoll Roller;
 
 
+    public Image bootUpStatic;
     public TextMeshProUGUI bootUpText;
     public TMP_InputField passwordInput;
     bool passwordsubmitted = false;
@@ -62,8 +63,11 @@ public class Sequences : MonoBehaviour {
         bootUpText.text = "";
         passwordInput.gameObject.SetActive(false);
 
-        print("BOOT UP");
-        yield return new WaitForEndOfFrame();
+        //  print("BOOT UP");
+        bootUpStatic.gameObject.SetActive(true);
+        Glitch.instance.GlitchScreenOnCommand(1,1.2f);
+        yield return new WaitForSeconds(1);
+        bootUpStatic.gameObject.SetActive(false);
 
         TextInfo txt = new TextInfo(GlobalStrings.BootUpString.text.Replace("¤", System.Environment.NewLine), GlobalStrings.BootUpString.rolldelay, GlobalStrings.BootUpString.startdelay);
 
@@ -77,7 +81,7 @@ public class Sequences : MonoBehaviour {
         passwordInput.onSubmit.AddListener((fieldText) => PasswordSubmitted(fieldText));
         passwordInput.Select();
 
-        while (!passwordsubmitted)
+        while (!passwordsubmitted)  //Waiting for password
         {
             yield return new WaitForEndOfFrame();
         }
@@ -94,15 +98,19 @@ public class Sequences : MonoBehaviour {
         int j = foundIndexes.Count - 1;
         while (bootUpText.text.Length > 100)
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.075f);
             
             bootUpText.text = bootUpText.text.Remove(foundIndexes[j], (bootUpText.text.Length - foundIndexes[j]));
             j--;
         }
 
-        yield return new WaitForSeconds(1f);    //THIS NEEDS TO BE THERE?? dunno why. it doesn't actually wait 1 second, but making it 0 doesn't work either.
-        yield return new WaitForSeconds(0.6f);
+        //yield return new WaitForSeconds(1f);    //THIS NEEDS TO BE THERE?? dunno why. it doesn't actually wait 1 second, but making it 0 doesn't work either. apparently not anymore...?????? wth
+        yield return new WaitForSeconds(0.35f);
+        Glitch.instance.GlitchScreenOnCommand(0.15f, 1f);
+        yield return new WaitForSeconds(0.15f);
         bootUpText.text = "";
+
+        yield return new WaitForSeconds(0.2f);
 
 
         print("BOOT DONE");

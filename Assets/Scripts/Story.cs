@@ -8,16 +8,41 @@ using UnityEngine;
 public class Story : MonoBehaviour {
 
     public Sequences sequences;
-    
+    public UIManager ui;
+    public Dialogues dia;
 
-	// Use this for initialization
-	void Start () {
-       // sequences.RunSequence(SequenceName.BootUp);
+    public bool startStoryOnStartup = true;
+
+    public string firstDialName = "";   //THIS SHOULD BE CHANGED into something more dynamic.
+
+
+
+
+
+    // Use this for initialization
+    void Start() {
+        // 
+        if (startStoryOnStartup)
+        {
+            ui.SetSoleCanvas(ui.bootCanvas);
+            sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(firstDialName); ui.SetSoleCanvas(ui.mainCanvas); } );
+        } 
     }
 
 
-    public void ChangeStoryPoint(string currentStoryPoint) //??
+    public void ChangeStoryPoint(string newStoryPoint) //??
     {
+
+        if (dia.DoesDialogueExist(newStoryPoint))
+        {
+            //it's a dialogue. let's assume we should start this dialogue
+
+            //might have to enable/disable canvases but dunno how to check that yet?
+            dia.LoadDialogue(newStoryPoint);
+            return;
+        }
+
+
         //this needs to be able to take any point (presumably, an end point) and proceed from there, and find out how to continue. Either jump out to drone part or skip to other person or something. yes?
         //don't mind if it's a little jumpy. glitches make that work wonderfully.
 

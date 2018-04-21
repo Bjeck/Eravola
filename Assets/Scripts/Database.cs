@@ -45,10 +45,10 @@ public class Database : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            ShowDatabase();
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    ShowDatabase();
+        //}
 
         if (!isShowingDatabase)
         {
@@ -72,7 +72,7 @@ public class Database : MonoBehaviour {
 
 
 
-    public void ShowDatabase()      //Interesting problem. Unity selects the button when i press it, so pressing Enter triggers this function again...
+    public void ShowDatabase()      //Interesting problem. Unity selects the button when i press it, so pressing Enter triggers this function again... EASY - just unselect the button...
     {
         if (isUnrollingDatabase)
         {
@@ -109,7 +109,6 @@ public class Database : MonoBehaviour {
     IEnumerator PopulateDatabaseString()
     {
         isRollingDatabaseIntro = true;
-        print(length + " - " + displayedString.Length);
 
        // displayedString = "<mspace=10>";
 
@@ -244,8 +243,6 @@ public class Database : MonoBehaviour {
                 if (!Input.GetKey(KeyCode.Backspace))   //Seems redundant. Is here because You can HOLD backspace. which is a problem.
                 {
                     readString += Input.inputString;
-
-                    print(readString);
 
 
                     StringBuilder strb = new StringBuilder(displayedString);
