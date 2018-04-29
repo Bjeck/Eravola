@@ -18,6 +18,7 @@ public class Glitch : MonoBehaviour {
     }
 
     public GlitchEffect glEf;
+    public VHSPostProcessEffect vhsEf;
 
     public Dictionary<string, GlitchTiming> timings = new Dictionary<string, GlitchTiming>();
 
@@ -59,37 +60,31 @@ public class Glitch : MonoBehaviour {
         glitchSustain = UnityEngine.Random.Range(curTiming.sustainMin, curTiming.sustainMax);
         glEf.intensity = glitchIntensity * Random.Range(0.5f, 1.5f);
 
-        //PlayGlitchSound ();
-        print("begin glitch");
         while (glitchSustain > 0)
         {
             glitchSustain -= Time.deltaTime;
             yield return null;
-        }
-        print("end glitch");
+        }   
         glEf.intensity = 0;
         glEf.enabled = false;
-        //SoundManager.instance.master.SetFloat("volume", SoundManager.instance.curMasterVolume);
-        //foreach (AudioSource a in noiseSounds)
-        //{
-        //    a.Stop();
-        //}
+        Sound.instance.EndGlitch();
+
         yield return 0;
     }
 
 
 
-    public void GlitchScreenOnCommand(float t)
+    public void GlitchScreenOnCommand(float t, bool withVHS = false)
     {
-        StartCoroutine(GlitchScreenOC(t));
+        StartCoroutine(GlitchScreenOC(t, -1, withVHS));
     }
 
-    public void GlitchScreenOnCommand(float time, float inten = -1f)
+    public void GlitchScreenOnCommand(float time, float inten = -1f, bool withVHS = false)
     {
-        StartCoroutine(GlitchScreenOC(time, inten));
+        StartCoroutine(GlitchScreenOC(time, inten, withVHS));
     }
 
-    IEnumerator GlitchScreenOC(float time, float inten = -1f)
+    IEnumerator GlitchScreenOC(float time, float inten = -1f, bool withVHS = false)
     {
         if (inten == -1f)
         {
@@ -97,9 +92,8 @@ public class Glitch : MonoBehaviour {
         }
 
         glEf.enabled = true;
+        vhsEf.enabled = true;
         glEf.intensity = inten * Random.Range(0.8f, 1.2f);
-
-        //PlayGlitchSound ();
 
         while (time > 0)
         {
@@ -107,12 +101,9 @@ public class Glitch : MonoBehaviour {
             yield return 0;
         }
         glEf.intensity = 0;
+        vhsEf.enabled = false;
         glEf.enabled = false;
-        //SoundManager.instance.master.SetFloat("volume", SoundManager.instance.curMasterVolume);
-        //foreach (AudioSource a in noiseSounds)
-        //{
-        //    a.Stop();
-        //}
+        Sound.instance.EndGlitch();
         yield return 0;
     }
 

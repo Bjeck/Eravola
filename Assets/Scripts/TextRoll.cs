@@ -58,7 +58,7 @@ public class TextRoll : MonoBehaviour {
             }
             if (text.text[i] != ' ')
             {
-                //SoundManager.instance.PlayTextSound();
+                Sound.instance.Play(Sound.SFXIDS.Text,true);
             }
 
             i++;

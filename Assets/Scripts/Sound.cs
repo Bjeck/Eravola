@@ -3,75 +3,370 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-///stuff like click sounds and keyboard sounds -- let's deal with them separately. the clicks themselves should take care of that. don't really mess with them here - or at least, leave them outside the general system.
-
-
-//keyboards
 
 public class Sound : MonoBehaviour {
+
+    public static Sound instance { get; private set; }
+
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     public enum SFXIDS { Click, Boot, Text, Password, Message, StartProcess, Shutdown, Scanning, Warning, Hover, Work, TextGlitch, TextNoise }
 
     public enum SFXLISTS { Keyboards, Glitches }
+    
+    public enum AMBIENCES { Computer, Room, Inn, Pond, Village, DeadVillage, Wind }
 
-    //glitch sounds
-
-    // ambiences
-
-    public enum AMBIENCES { Inn, Pond, Village, DeadVillage, Wind }
-
+    //FOR SERIALIZATION
     public List<SFXInfo> serialSFX = new List<SFXInfo>(0);
     public List<SFXListInfo> serialSFXList = new List<SFXListInfo>(0);
     public List<AmbienceInfo> serialAmbience = new List<AmbienceInfo>(0);
 
+    [SerializeField] AudioMixer masterMixer;
+    [SerializeField] AudioMixerGroup masterMixerGroup;
+    [SerializeField] AudioMixerGroup glitchMixer;
 
-    public Dictionary<SFXIDS, AudioSource> sfx = new Dictionary<SFXIDS, AudioSource>();
-    public Dictionary<SFXLISTS, AudioSource> sfxLists = new Dictionary<SFXLISTS, AudioSource>();
-    public Dictionary<AMBIENCES, AudioSource> ambiences = new Dictionary<AMBIENCES, AudioSource>();
+    public Dictionary<SFXIDS, SFXInfo> sfx = new Dictionary<SFXIDS, SFXInfo>();
+    public Dictionary<SFXLISTS, SFXListInfo> sfxLists = new Dictionary<SFXLISTS, SFXListInfo>();
+    public Dictionary<AMBIENCES, AmbienceInfo> ambiences = new Dictionary<AMBIENCES, AmbienceInfo>();
 
+    public List<AudioSource> glitchSounds = new List<AudioSource>(3);
 
-    public float masterVolume = 1f;
+    float masterVolume = 0f;
 
+    [SerializeField] Transform sources;
 
+    [SerializeField] int audiosourcePoolAmount = 60;
 
+    int poolidx = 0;
+    public List<AudioSource> audiosources = new List<AudioSource>();
+    public List<AudioSource> sacredsources = new List<AudioSource>();
+
+    //Text sounds should probably run on a separate audiosource outside the pool because it flies through them all so quick.
+    //maybe the same also with glitch sounds?
+    
     // Use this for initialization
     void Start () {
-		
-	}
+
+        foreach(SFXInfo s in serialSFX)
+        {
+            if (sfx.ContainsKey(s.ID))
+            {
+                Debug.LogError("SFX DICTIONARY ALREADY CONTAINS KEY "+ s.ID.ToString() + " CHECK SOUNDMANAGER. Sound: " + s.audio.ToString());
+            }
+            sfx.Add(s.ID, s);
+        }
+
+        foreach(SFXListInfo s in serialSFXList)
+        {
+            if (sfxLists.ContainsKey(s.ID))
+            {
+                Debug.LogError("SFXLIST DICTIONARY ALREADY CONTAINS KEY " + s.ID.ToString() + " CHECK SOUNDMANAGER.");
+            }
+
+            sfxLists.Add(s.ID, s);
+        }
+
+        foreach (AmbienceInfo s in serialAmbience)
+        {
+            if (ambiences.ContainsKey(s.ID))
+            {
+                Debug.LogError("AMBIENCE DICTIONARY ALREADY CONTAINS KEY " + s.ID.ToString() + " CHECK SOUNDMANAGER. Sound: " + s.audio.ToString());
+            }
+
+            ambiences.Add(s.ID, s);
+        }
+
+
+        for (int i = 0; i < audiosourcePoolAmount; i++)
+        {
+            AddNewAudiosourceToPool();
+        }
+
+
+
+    }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
 
+    public void Play(string sound)
+    {
+        try
+        {
+            SFXIDS sfx = (SFXIDS)System.Enum.Parse(typeof(SFXIDS), sound);
 
+            Play(sfx);
+        }
+        catch
+        {
+            Debug.Log("sound not found. Did you mispell? " + sound);
+        }
+    }
 
-//SINGLE FIRE SOUNDS
+    public void PlayAmbient(string sound)
+    {
+        try
+        {
+            AMBIENCES sfx = (AMBIENCES)System.Enum.Parse(typeof(AMBIENCES), sound);
 
-    public void Play(string sound) //play directly
+            PlayAmbient(sfx);
+        }
+        catch
+        {
+            Debug.Log("sound not found. Did you mispell? " + sound);
+        }
+    }
+
+    void Play(SFXInfo sound)
+    {
+        if (audiosources[poolidx].isPlaying)
+        {
+            FindNextUnusedSource();
+        }
+
+        SetAudioSourceToInfoSettings(audiosources[poolidx], sound);
+        audiosources[poolidx].Play();
+    }
+
+    public void Play(SFXIDS sound) //play directly
+    {
+        Play(sfx[sound]);
+    }
+
+    public void Play(SFXIDS sound, float pitch) //play with a pitch ???
     {
 
     }
 
-    public void Play(string sound, float pitch) //play with a pitch ???
+    public void Play(SFXIDS sound, bool randomPitch)
     {
+        SFXInfo s = sfx[sound];
+        if (audiosources[poolidx].isPlaying)
+        {
+            FindNextUnusedSource();
+        }
 
-    }
+        SetAudioSourceToInfoSettings(audiosources[poolidx], s);
+        audiosources[poolidx].pitch = Random.Range(0.98f, 1.02f);
 
-    public void Play(string sound, bool randomPitch)
-    {
-
-    }
-
-    public void PlayRandomFromList(string list)
-    {
-
+        audiosources[poolidx].Play();
     }
 
     public void PlayDelayed(string sound, float delay)
     {
 
+    }
+
+    public void PlaySpecificFromList(SFXLISTS list, int idx)
+    {
+    //    sfxLists[list].list[idx].audio
+    }
+
+    public void PlayRandomFromList(SFXLISTS list)
+    {
+        SFXInfo s = sfxLists[list].list[Random.Range(0, sfxLists[list].list.Count)];
+        Play(s);
+    }
+
+    public void PlayAmbient(AMBIENCES sound)
+    {
+        AmbienceInfo s = ambiences[sound];
+
+        if (audiosources[poolidx].isPlaying)
+        {
+            FindNextUnusedSource();
+        }
+
+        SetAudioSourceToInfoSettings(audiosources[poolidx], s);
+        audiosources[poolidx].Play();
+
+    }
+
+    public void PlayGlitched(SFXIDS sound)  //the idea being I can play any sound glitched -- but dunno how it'll work yet.
+    {
+        //int soundChooser = 0;
+        //switch (c)
+        //{
+        //    case 0:
+        //        soundChooser = Random.Range(0, noiseSounds.Length + 1);
+        //        if (soundChooser == 2)
+        //        {
+        //            soundChooser += Random.Range(-2, 1);
+        //        }
+        //        mixer.SetFloat("drymix", Random.Range(0, 1f));
+        //        mixer.SetFloat("wetmix", Random.Range(0, 1f));
+        //        mixer.SetFloat("rate", Random.Range(0, 20));
+        //        mixer.SetFloat("lowpassCut", 22000f);
+        //        if (soundChooser < noiseSounds.Length)
+        //        {
+        //            noiseSounds[soundChooser].Play();
+        //        }
+        //        break;
+        //    case 1:
+        //        soundChooser = Random.Range(0, noiseSounds.Length + 1);
+        //        if (soundChooser == 2)
+        //        {
+        //            soundChooser += Random.Range(-1, 1);
+        //        }
+        //        mixer.SetFloat("lowpassCut", Random.Range(100f, 20000f));
+        //        if (soundChooser < noiseSounds.Length)
+        //        {
+        //            noiseSounds[soundChooser].Play();
+        //        }
+        //        break;
+        //    case 2:
+        //        mixer.SetFloat("drymix", Random.Range(0, 1f));
+        //        mixer.SetFloat("wetmix", Random.Range(0, 1f));
+        //        mixer.SetFloat("rate", Random.Range(0, 20));
+        //        mixer.SetFloat("lowpassCut", 22000f);
+        //        noiseSounds[2].Play();
+        //        break;
+        //}
+        //if (soundChooser == noiseSounds.Length)
+        //{
+        //    foreach (AudioSource a in noiseSounds)
+        //    {
+        //        a.Stop();
+        //    }
+        //}
+        //SoundManager.instance.master.SetFloat("volume", -80);
+        
+    }
+
+    public void PlayGlitch(int kind)
+    {
+        int soundChooser = 0;
+        print("Glitch " + kind);
+        switch (kind)
+        {
+            case 0:
+                soundChooser = Random.Range(0, glitchSounds.Count + 1);
+                if (soundChooser == 2)
+                {
+                    soundChooser += Random.Range(-2, 1);
+                }
+                glitchMixer.audioMixer.SetFloat("drymix", Random.Range(0, 1f));
+                glitchMixer.audioMixer.SetFloat("wetmix", Random.Range(0, 1f));
+                glitchMixer.audioMixer.SetFloat("rate", Random.Range(0, 20));
+                glitchMixer.audioMixer.SetFloat("cutoff", 22000f);
+                if (soundChooser < glitchSounds.Count)
+                {
+                    glitchSounds[soundChooser].Play();
+                }
+                break;
+            case 1:
+                soundChooser = Random.Range(0, glitchSounds.Count + 1);
+                if (soundChooser == 2)
+                {
+                    soundChooser += Random.Range(-1, 1);
+                }
+                glitchMixer.audioMixer.SetFloat("cutoff", Random.Range(100f, 20000f));
+                if (soundChooser < glitchSounds.Count)
+                {
+                    glitchSounds[soundChooser].Play();
+                }
+                break;
+            case 2:
+                glitchMixer.audioMixer.SetFloat("drymix", Random.Range(0, 1f));
+                glitchMixer.audioMixer.SetFloat("wetmix", Random.Range(0, 1f));
+                glitchMixer.audioMixer.SetFloat("rate", Random.Range(0, 20));
+                glitchMixer.audioMixer.SetFloat("cutoff", 22000f);
+                glitchSounds[2].Play();
+                break;
+        }
+        if (soundChooser == glitchSounds.Count)
+        {
+            foreach (AudioSource a in glitchSounds)
+            {
+                a.Stop();
+            }
+        }
+        masterMixer.SetFloat("mastervolume", -80);
+
+    }
+
+    public void EndGlitch()
+    {
+        foreach (AudioSource a in glitchSounds)
+        {
+            a.Stop();
+        }
+        masterMixer.SetFloat("mastervolume", masterVolume);
+    }
+
+
+
+
+
+
+
+
+    void SetAudioSourceToInfoSettings(AudioSource source, SFXInfo info)
+    {
+        source.clip = info.audio;
+        source.volume = info.volume;
+        source.loop = info.loop;
+        source.pitch = 1;
+        if(info.mixer != null)
+        {
+            source.outputAudioMixerGroup = info.mixer;
+        }
+    }
+
+    void SetAudioSourceToInfoSettings(AudioSource source, AmbienceInfo info)
+    {
+        source.clip = info.audio;
+        source.volume = info.volume;
+        source.loop = info.loop;
+        if (info.mixer != null)
+        {
+            source.outputAudioMixerGroup = info.mixer;
+        }
+    }
+
+
+    void FindNextUnusedSource()
+    {
+        int tester = audiosourcePoolAmount;
+        while (audiosources[poolidx].isPlaying)
+        {
+            IncrementPool();
+
+            tester--;
+            if (tester <= 0)
+            {
+                AddNewAudiosourceToPool();
+                audiosourcePoolAmount++;
+                poolidx = audiosourcePoolAmount - 1;
+            }
+        }
+    }
+
+    void IncrementPool()
+    {
+        poolidx++;
+        if(poolidx >= audiosources.Count)
+        {
+            poolidx = 0;
+        }
+    }
+
+    void AddNewAudiosourceToPool()
+    {
+
+        AudioSource a = sources.gameObject.AddComponent<AudioSource>();
+        a.outputAudioMixerGroup = masterMixerGroup;
+        a.spatialBlend = 0f;
+        a.playOnAwake = false;
+        a.loop = false;
+        audiosources.Add(a);
     }
 
 
@@ -88,18 +383,16 @@ public class SFXInfo
     [Range(0,1)]
     public float volume;
     public bool loop = false;
+    public AudioMixerGroup mixer;
 }
 
 [System.Serializable]
 public class SFXListInfo
 {
     public Sound.SFXLISTS ID;
+    public AudioMixer topmixer;
 
-    public List<AudioClip> audio;
-
-    [Range(0, 1)]
-    public float volume;
-    public bool loop = false;
+    public List<SFXInfo> list = new List<SFXInfo>();
 }
 
 [System.Serializable]
@@ -112,4 +405,6 @@ public class AmbienceInfo
     [Range(0, 1)]
     public float volume;
     public bool loop = false;
+    public AudioMixerGroup mixer;
+
 }

@@ -75,6 +75,7 @@ public class Dialogues : MonoBehaviour {
 
     }
 
+    //NTS: you can never put an action node between a player and an npc node. it will break.
     public void LoadDialogue(string dialogueName)
     {
         VD.OnNodeChange += UpdateUI;

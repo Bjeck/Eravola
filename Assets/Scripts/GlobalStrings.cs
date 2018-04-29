@@ -5,7 +5,7 @@ using UnityEngine;
 public static class GlobalStrings {
 
     public static TextInfo BootUpString = new TextInfo("                                      [ERAVOLA INVESTIGATION UNIT]                      ¤¤Boot initiated. Checking Status...Done.                ¤Transmission OK. Sequence found.                 ¤Loading... Done.         ¤Accessing Data... ... ...                          ¤Done.                                       ¤¤¤Password:"
-                                                        ,GlobalVariables.TextRollDelay,0f);
+                                                        ,0.05f,0f);
 
 
 

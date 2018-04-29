@@ -49,7 +49,7 @@ public class GlitchEffect : MonoBehaviour{
 			material.SetFloat("filterRadius", Random.Range(-3f, 3f) * intensity);
 			flicker = 0;
 			flickerTime = Random.value;
-			//GlitchManager.instance.PlayGlitchSound(1);
+			Sound.instance.PlayGlitch(1);
 
 		}
 
@@ -59,8 +59,8 @@ public class GlitchEffect : MonoBehaviour{
 			else
 				material.SetFloat("flip_up", 0);
 
-			//GlitchManager.instance.PlayGlitchSound(2);
-			glitchup = 0;
+            Sound.instance.PlayGlitch(2);
+            glitchup = 0;
 			glitchupTime = Random.value/10f;
 
 		}
@@ -78,8 +78,9 @@ public class GlitchEffect : MonoBehaviour{
 		if(Random.value < 0.05 * intensity){
 			material.SetFloat("displace", Random.value * intensity);
 			material.SetFloat("scale", 1-Random.value * intensity);
-			//GlitchManager.instance.PlayGlitchSound(0);
-		}else
+            Sound.instance.PlayGlitch(0);
+        }
+        else
 			material.SetFloat("displace", 0);
 
 		Graphics.Blit (source, destination, material);

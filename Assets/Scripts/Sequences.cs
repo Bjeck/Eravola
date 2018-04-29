@@ -63,15 +63,21 @@ public class Sequences : MonoBehaviour {
         bootUpText.text = "";
         passwordInput.gameObject.SetActive(false);
 
+        Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
+
         //  print("BOOT UP");
         bootUpStatic.gameObject.SetActive(true);
-        Glitch.instance.GlitchScreenOnCommand(1,1.2f);
-        yield return new WaitForSeconds(1);
+        Glitch.instance.GlitchScreenOnCommand(1f,1.2f);
+        yield return new WaitForSeconds(1f);
         bootUpStatic.gameObject.SetActive(false);
+
+        Sound.instance.Play(Sound.SFXIDS.Boot);
+        Sound.instance.PlayAmbient(Sound.AMBIENCES.Computer);
 
         TextInfo txt = new TextInfo(GlobalStrings.BootUpString.text.Replace("¤", System.Environment.NewLine), GlobalStrings.BootUpString.rolldelay, GlobalStrings.BootUpString.startdelay);
 
         IEnumerator roll = Roller.Roll(txt, bootUpText);
+      //  StartCoroutine()
         while (roll.MoveNext())
         {
             yield return roll.Current;
@@ -79,6 +85,8 @@ public class Sequences : MonoBehaviour {
 
         passwordInput.gameObject.SetActive(true);
         passwordInput.onSubmit.AddListener((fieldText) => PasswordSubmitted(fieldText));
+        passwordInput.onValueChanged.AddListener((text) => KeyPressed());
+
         passwordInput.Select();
 
         while (!passwordsubmitted)  //Waiting for password
@@ -120,6 +128,10 @@ public class Sequences : MonoBehaviour {
         }
     }
     
+    void KeyPressed()
+    {
+        Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
+    }
 
     void PasswordSubmitted(string fieldText)
     {
