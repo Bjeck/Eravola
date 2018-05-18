@@ -8,16 +8,23 @@ using System.Linq;
 
 public class Dialogues : MonoBehaviour {
 
+    public enum DialogueMode { Dialogue, Ambient }
+
     public UIManager ui;
     public TextRoll roll;
 
     public TextMeshProUGUI mainText;
     public TextMeshProUGUI thoughtsText;
+    public TextMeshProUGUI ambientText;
+    public TextMeshProUGUI ambientThoughts;
     public GameObject buttonParent;
     public Button[] buttons;
     public TextMeshProUGUI[] buttonTexts;
+    public Button nextButton;
 
     public VD.NodeData curNode;
+
+    public DialogueMode mode;
 
     //This handles Dialogue directly, in the UI and the connection to VIDE (there's no reason to have a link there). 
     
@@ -36,11 +43,12 @@ public class Dialogues : MonoBehaviour {
             buttons[i].onClick.AddListener(() => SetPlayerChoice(istore));
         }
 
+        nextButton.onClick.AddListener(() => NextNode());
+
     }
 
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
             NextNode();
@@ -53,11 +61,13 @@ public class Dialogues : MonoBehaviour {
         CurrentDialogue = startDial;
         LoadDialogue(startDial);
     }
+
     public void NextNode()
     {
+        print("next is called");
         if (VD.isActive && !curNode.isPlayer)
         {
-            VD.Next();  //Gonna need some checks on this to see if its possible when we do text roll and things. 
+            VD.Next();  //Gonna need some checks on this to see if its possible when we do text roll and things.  Would also be nice to have a click to reveal all and stop roll - for speeding stuff.
         }
     }
 
@@ -89,6 +99,7 @@ public class Dialogues : MonoBehaviour {
         {
             buttons[i].gameObject.SetActive(false);
         }
+        nextButton.gameObject.SetActive(false);
 
         VD.BeginDialogue(dialogueName);
     }
@@ -98,6 +109,12 @@ public class Dialogues : MonoBehaviour {
     {
         curNode = data;
         StopCoroutine("GoNextAfterDelay");
+        ParseAndSetModeFromNode(data);
+
+        ui.eventSys.SetSelectedGameObject(null);
+
+       // if(mode == DialogueMode.Dialogue)
+       // {
         if (data.isPlayer)      // ------------------ PLAYER
         {
 
@@ -118,44 +135,40 @@ public class Dialogues : MonoBehaviour {
         {
             mainText.text = string.Empty;
             thoughtsText.text = string.Empty;
+            ambientThoughts.text = string.Empty;
+            ambientText.text = string.Empty;
 
-            roll.StartRoll(data.comments[data.commentIndex], mainText);
-            //mainText.text = data.comments[data.commentIndex];       //maybe I want them to be able to layer? so one thing goes, then another, then another? for line breaks. yeeah. gotta specify in extradata if should break or continue.
-            roll.StartRoll(data.comments_secondaries[data.commentIndex], thoughtsText);
 
-            //            thoughtsText.text = data.comments_secondaries[data.commentIndex];
-
-            if ((data.commentIndex + 1) >= data.comments.Length && VD.GetNext(false, false).isPlayer)
+            System.Action callback = null;
+            if((data.commentIndex + 1) < data.comments.Length)
             {
-                float delay = 1; //SET TO A DEFAULT DELAY
-                //we've reached the last comment, go to next after delay.
-                if (data.extraVars.ContainsKey("delay"))
-                {
-                    object obj = data.extraVars["delay"];
-                    if (obj is float)
-                    {
-                        delay = (float)obj;
-                    }
-                    else if (obj is int)
-                    {
-                        delay = (float)((int)obj);
-                    }
-                    else
-                    {
-                        Debug.LogError("Delay was not a number. using default");
-                    }
-                }
-                StartCoroutine("GoNextAfterDelay", delay);
+                callback = ShowNextButton;
             }
+            else if ((data.commentIndex + 1) >= data.comments.Length && VD.GetNext(false, false).isPlayer)
+            {
+                callback = ShowNextPlayerOptions;
+            }
+
+
+
+            roll.StartRoll(ConvertCommentToTextInfo(data), mode == DialogueMode.Dialogue ? mainText : ambientText, callback);
+            roll.StartRoll(ConvertCommentToTextInfo(data, true), mode == DialogueMode.Dialogue ? thoughtsText : ambientThoughts);
+
         }
+       // }
     }
 
-
-    IEnumerator GoNextAfterDelay(float delay)
+    void ShowNextButton()
     {
-        yield return new WaitForSeconds(delay);
-        VD.Next();
+        nextButton.gameObject.SetActive(true);
     }
+
+    void ShowNextPlayerOptions()
+    {
+        NextNode();
+    }
+
+    
 
 
     void SetPlayerChoice(int choice)
@@ -172,6 +185,7 @@ public class Dialogues : MonoBehaviour {
 
     public void End(VD.NodeData data)
     {
+        print("end"); 
         VD.OnNodeChange -= UpdateUI;
         VD.OnEnd -= End;
         mainText.gameObject.SetActive(false);
@@ -192,7 +206,13 @@ public class Dialogues : MonoBehaviour {
 
     public void HandleDialogueSwitch(string newDialogue)
     {
-        //some checks here for the dialogue for parameters maybe (how?)
+        //some checks here for the dialogue for parameters maybe (how?) Why isn't this called? Doesn't it progress to next node now??
+        print("handle switch " + newDialogue);
+        if (!VD.GetDialogues().Contains(newDialogue))
+        {
+            Debug.LogError("Dialogues didn't contain " + newDialogue + "Make sure we're in the right spot and everything is spelled right.");
+            return;
+        }
 
         End(null);
 
@@ -210,4 +230,216 @@ public class Dialogues : MonoBehaviour {
     }
 
 
+    void ParseAndSetModeFromNode(VD.NodeData node)
+    {
+        if (node.extraVars.ContainsKey("mode"))
+        {
+            object obj = node.extraVars["mode"];
+            string s = (string)obj;
+
+            try {
+                mode = (DialogueMode)System.Enum.Parse(typeof(DialogueMode), s);
+
+            }
+            catch
+            {
+                Debug.LogError("Dialogue Mode couldn't be parsed. Spelling error? " + s + " in node "+node.nodeID);
+            }
+        }
+        else
+        {
+            return; //no change. keep as is.
+        }
+    }
+
+    
+    //TODO: Would like a more elegant solution than two functions that do essentially the same thing but I can't WAIT I KNOW NOW GAAH maybe store variable in start and set to that ? that should be fine?
+    TextInfo ConvertCommentToTextInfo(VD.NodeData node)
+    {
+        TextInfo text = new TextInfo();
+
+        text.text = node.comments[node.commentIndex];
+
+        if (node.extraData[node.commentIndex].Contains("dd="))
+        {
+            //contains extradata delay. use that.
+            string[] extradata = node.extraData[node.commentIndex].Split(',');
+            foreach(string s in extradata)
+            {
+                if (s.Contains("dd="))
+                {
+                    text.startdelay = float.Parse(s.Split('=')[1]); //should get the number after = !
+                }
+            }
+        }
+        else if (node.extraVars.ContainsKey("delay"))
+        {
+            //use that
+            object obj = node.extraVars["delay"];
+            float d = 0;
+            if (obj is float)
+            {
+                d = (float)obj;
+            }
+            else if (obj is int)
+            {
+                d = (float)((int)obj);
+            }
+            else
+            {
+                Debug.LogError("Delay was not a number. using default");
+                d = GlobalVariables.TextStartDelay;
+            }
+
+            text.startdelay = d;
+        }
+        else
+        {
+            text.startdelay = GlobalVariables.TextStartDelay;
+        }
+
+
+        //SPEED
+        if (node.extraData[node.commentIndex].Contains("ds="))
+        {
+            //contains extradata delay. use that.
+            string[] extradata = node.extraData[node.commentIndex].Split(',');
+            foreach (string s in extradata)
+            {
+                if (s.Contains("ds="))
+                {
+                    text.rolldelay = float.Parse(s.Split('=')[1]); //should get the number after = !
+                }
+            }
+        }
+        else if (node.extraVars.ContainsKey("speed"))
+        {
+            //use that
+
+            object obj = node.extraVars["speed"];
+            float s = 0;
+            if (obj is float)
+            {
+                s = (float)obj;
+            }
+            else if (obj is int)
+            {
+                s = (float)((int)obj);
+            }
+            else
+            {
+                Debug.LogError("Delay was not a number. using default");
+                s = GlobalVariables.TextRollDelay;
+            }
+
+
+            text.rolldelay = s;
+        }
+        else
+        {
+            text.rolldelay = GlobalVariables.TextRollDelay;
+        }
+
+
+
+        return text;
+    }
+
+
+
+    TextInfo ConvertCommentToTextInfo(VD.NodeData node, bool secondary)
+    {
+        TextInfo text = new TextInfo();
+
+        text.text = node.comments_secondaries[node.commentIndex];
+
+        if (node.extraData[node.commentIndex].Contains("td="))
+        {
+            //contains extradata delay. use that.
+            string[] extradata = node.extraData[node.commentIndex].Split(',');
+            foreach (string s in extradata)
+            {
+                if (s.Contains("td="))
+                {
+                    text.startdelay = float.Parse(s.Split('=')[1]); //should get the number after = !
+                }
+            }
+        }
+        else if (node.extraVars.ContainsKey("Tdelay"))
+        {
+            //use that
+            object obj = node.extraVars["Tdelay"];
+            float d = 0;
+            if (obj is float)
+            {
+                d = (float)obj;
+            }
+            else if (obj is int)
+            {
+                d = (float)((int)obj);
+            }
+            else
+            {
+                Debug.LogError("Delay was not a number. using default");
+                d = GlobalVariables.TextStartDelay;
+            }
+
+            text.startdelay = d;
+        }
+        else
+        {
+            text.startdelay = GlobalVariables.TextStartDelay;
+        }
+
+
+        //SPEED
+        if (node.extraData[node.commentIndex].Contains("ts="))
+        {
+            //contains extradata delay. use that.
+            string[] extradata = node.extraData[node.commentIndex].Split(',');
+            foreach (string s in extradata)
+            {
+                if (s.Contains("ts="))
+                {
+                    text.rolldelay = float.Parse(s.Split('=')[1]); //should get the number after = !
+                }
+            }
+        }
+        else if (node.extraVars.ContainsKey("Tspeed"))
+        {
+            object obj = node.extraVars["Tspeed"];
+            float s = 0;
+            if (obj is float)
+            {
+                s = (float)obj;
+            }
+            else if (obj is int)
+            {
+                s = (float)((int)obj);
+            }
+            else
+            {
+                Debug.LogError("Delay was not a number. using default");
+                s = GlobalVariables.TextRollDelay;
+            }
+
+
+            text.rolldelay = s;
+        }
+        else
+        {
+            text.rolldelay = GlobalVariables.TextRollDelay;
+        }
+
+
+
+        return text;
+    }
+
+
+
+
+    
+
+    //How to deal with secondaries?? that's also in the same node. hm.
 }

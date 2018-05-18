@@ -19,6 +19,8 @@ public class TextInfo
     public float rolldelay;
     public float startdelay;
 
+    public TextInfo() { }
+
     public TextInfo(string t, float roll, float start)
     {
         text = t;

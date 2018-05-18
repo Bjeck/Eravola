@@ -13,6 +13,8 @@ public class Story : MonoBehaviour {
 
     public bool startStoryOnStartup = true;
 
+    public bool debugSkipToStory = false;
+
     public string firstDialName = "";   //THIS SHOULD BE CHANGED into something more dynamic.
 
 
@@ -24,9 +26,17 @@ public class Story : MonoBehaviour {
         // 
         if (startStoryOnStartup)
         {
-            ui.SetSoleCanvas(ui.bootCanvas);
-            sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(firstDialName); ui.SetSoleCanvas(ui.mainCanvas); } );
-        } 
+            if (debugSkipToStory)
+            {
+                ChangeStoryPoint(firstDialName);
+                ui.SetSoleCanvas(ui.mainCanvas);
+            }
+            else
+            {
+                ui.SetSoleCanvas(ui.bootCanvas);
+                sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(firstDialName); ui.SetSoleCanvas(ui.mainCanvas); });
+            }
+        }
     }
 
 
@@ -40,6 +50,10 @@ public class Story : MonoBehaviour {
             //might have to enable/disable canvases but dunno how to check that yet?
             dia.LoadDialogue(newStoryPoint);
             return;
+        }
+        else
+        {
+            Debug.LogError(newStoryPoint + "Doesn't exist in dialogue database.");
         }
 
 

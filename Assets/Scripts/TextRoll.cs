@@ -11,13 +11,15 @@ public class TextRoll : MonoBehaviour {
     public void StartRoll(string text, TextMeshProUGUI UI, Action callback = null)
     {
         text = @text.Replace("¤", System.Environment.NewLine);
-        TextInfo textInfo = new TextInfo(text, GlobalVariables.TextRollDelay, 0);
+        TextInfo textInfo = new TextInfo(text, GlobalVariables.TextRollDelay, GlobalVariables.TextStartDelay);
         StartCoroutine(Roll(textInfo, UI, callback));
     }
 
     public void StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null)
     {
         TextInfo txt = new TextInfo(@text.text.Replace("¤", System.Environment.NewLine),text.rolldelay,text.startdelay);
+
+        print("Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
 
         StartCoroutine(Roll(txt, UI, callback));
     }
@@ -28,6 +30,12 @@ public class TextRoll : MonoBehaviour {
         bool isColored = false;
 
         int i = 0;
+
+        if(text.startdelay > 0)
+        {
+            yield return new WaitForSeconds(text.startdelay);
+        }
+
         while (i < text.text.Length)
         {
             //	if(shouldStopRolling){
@@ -58,7 +66,8 @@ public class TextRoll : MonoBehaviour {
             }
             if (text.text[i] != ' ')
             {
-                Sound.instance.Play(Sound.SFXIDS.Text,true);
+                Sound.instance.PlaySacred(Sound.SFXIDS.Text,Sound.UNIQUESOURCES.Text, true);
+                //Sound.instance.Play(Sound.SFXIDS.Text, true);
             }
 
             i++;

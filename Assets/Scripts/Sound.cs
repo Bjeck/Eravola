@@ -24,6 +24,9 @@ public class Sound : MonoBehaviour {
     
     public enum AMBIENCES { Computer, Room, Inn, Pond, Village, DeadVillage, Wind }
 
+
+    public enum UNIQUESOURCES { Text }
+
     //FOR SERIALIZATION
     public List<SFXInfo> serialSFX = new List<SFXInfo>(0);
     public List<SFXListInfo> serialSFXList = new List<SFXListInfo>(0);
@@ -37,6 +40,7 @@ public class Sound : MonoBehaviour {
     public Dictionary<SFXLISTS, SFXListInfo> sfxLists = new Dictionary<SFXLISTS, SFXListInfo>();
     public Dictionary<AMBIENCES, AmbienceInfo> ambiences = new Dictionary<AMBIENCES, AmbienceInfo>();
 
+
     public List<AudioSource> glitchSounds = new List<AudioSource>(3);
 
     float masterVolume = 0f;
@@ -47,11 +51,11 @@ public class Sound : MonoBehaviour {
 
     int poolidx = 0;
     public List<AudioSource> audiosources = new List<AudioSource>();
-    public List<AudioSource> sacredsources = new List<AudioSource>();
+    public Dictionary<UNIQUESOURCES, AudioSource> sacredsources = new Dictionary<UNIQUESOURCES, AudioSource>();
 
     //Text sounds should probably run on a separate audiosource outside the pool because it flies through them all so quick.
     //maybe the same also with glitch sounds?
-    
+
     // Use this for initialization
     void Start () {
 
@@ -89,6 +93,7 @@ public class Sound : MonoBehaviour {
         {
             AddNewAudiosourceToPool();
         }
+
 
 
 
@@ -154,9 +159,35 @@ public class Sound : MonoBehaviour {
         }
 
         SetAudioSourceToInfoSettings(audiosources[poolidx], s);
-        audiosources[poolidx].pitch = Random.Range(0.98f, 1.02f);
+        if (randomPitch)
+        {
+            audiosources[poolidx].pitch = Random.Range(0.98f, 1.02f);
+        }
 
         audiosources[poolidx].Play();
+    }
+
+    public void PlaySacred(SFXIDS sound, UNIQUESOURCES uniqueID, bool randomPitch = false)
+    {
+        AudioSource source;
+        SFXInfo s = sfx[sound];
+
+        if (!sacredsources.ContainsKey(uniqueID))
+        {
+            //add it
+            source = AddNewAudiosourceToPool();
+            sacredsources.Add(uniqueID, source);
+        }
+
+
+        SetAudioSourceToInfoSettings(sacredsources[uniqueID], s);
+
+        if (randomPitch)
+        {
+            sacredsources[uniqueID].pitch = Random.Range(0.98f, 1.02f);
+        }
+
+        sacredsources[uniqueID].Play();
     }
 
     public void PlayDelayed(string sound, float delay)
@@ -358,7 +389,7 @@ public class Sound : MonoBehaviour {
         }
     }
 
-    void AddNewAudiosourceToPool()
+    AudioSource AddNewAudiosourceToPool()
     {
 
         AudioSource a = sources.gameObject.AddComponent<AudioSource>();
@@ -367,6 +398,7 @@ public class Sound : MonoBehaviour {
         a.playOnAwake = false;
         a.loop = false;
         audiosources.Add(a);
+        return a;
     }
 
 

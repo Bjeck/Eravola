@@ -1592,7 +1592,7 @@ public class VIDE_Editor : EditorWindow
             //return;
         }
 
-        if (Event.current.keyCode == KeyCode.Escape && Event.current.type == EventType.keyUp)
+        if (Event.current.keyCode == KeyCode.Escape && Event.current.type == EventType.KeyUp)
         {
             if (searchingForDialogue)
             {
@@ -1602,7 +1602,7 @@ public class VIDE_Editor : EditorWindow
             }
         }
 
-        if (Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.keyUp)
+        if (Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.KeyUp)
         {
             if (searchingForDialogue && searchWord != "")
             {
@@ -1833,7 +1833,7 @@ public class VIDE_Editor : EditorWindow
             else
                 GUILayout.Box(newNodeIcon, EditorStyles.toolbarButton, GUILayout.Width(50), GUILayout.Height(20));
             lr = GUILayoutUtility.GetLastRect();
-            if (editEnabled && lr.Contains(Event.current.mousePosition) && Event.current.type == EventType.mouseDown)
+            if (editEnabled && lr.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown)
             {
                 db.selectedNodes = new List<VIDE_EditorDB.NodeSelection>();
                 dragNewNode = 1;
@@ -1844,7 +1844,7 @@ public class VIDE_Editor : EditorWindow
             else
                 GUILayout.Box(newNodeIcon3, EditorStyles.toolbarButton, GUILayout.Width(50), GUILayout.Height(20));
             lr = GUILayoutUtility.GetLastRect();
-            if (editEnabled && lr.Contains(Event.current.mousePosition) && Event.current.type == EventType.mouseDown)
+            if (editEnabled && lr.Contains(Event.current.mousePosition) && Event.current.type == EventType.MouseDown)
             {
                 db.selectedNodes = new List<VIDE_EditorDB.NodeSelection>();
                 dragNewNode = 2;
@@ -1964,7 +1964,7 @@ public class VIDE_Editor : EditorWindow
 
     void AssignMenu()
     {
-        if (Event.current.type == EventType.keyUp && Event.current.keyCode == KeyCode.Escape)
+        if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Escape)
         {
             assignMenu = false;
             Repaint();
@@ -2133,7 +2133,7 @@ public class VIDE_Editor : EditorWindow
             return;
         }
 
-        if (Event.current.type == EventType.keyUp && Event.current.keyCode == KeyCode.Escape)
+        if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Escape)
         {
             localizationMenu = false;
             Repaint();
@@ -2545,7 +2545,7 @@ public class VIDE_Editor : EditorWindow
 
         //INPUT EVENTS
 
-        if (Event.current.type == EventType.keyUp && Event.current.keyCode == KeyCode.Escape)
+        if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.Escape)
         {
             spyView = false;
             Repaint();
@@ -2819,7 +2819,7 @@ public class VIDE_Editor : EditorWindow
 
         GUI.color = Color.white;
 
-        if (!db.aNode.editorRefreshed && Event.current.type == EventType.repaint)
+        if (!db.aNode.editorRefreshed && Event.current.type == EventType.Repaint)
         {
             db.aNode.editorRefreshed = true;
 
@@ -3532,7 +3532,7 @@ public class VIDE_Editor : EditorWindow
             GUI.FocusControl("filterSearch");
         }
 
-        if (e.keyCode == KeyCode.Space && e.type == EventType.keyUp && GUIUtility.keyboardControl < 1)
+        if (e.keyCode == KeyCode.Space && e.type == EventType.KeyUp && GUIUtility.keyboardControl < 1)
         {
             spyView = !spyView;
             if (spyView) CallSpyMap();
@@ -3540,7 +3540,7 @@ public class VIDE_Editor : EditorWindow
 
         }
 
-        if (e.keyCode == KeyCode.Return && e.type == EventType.keyUp && GUIUtility.keyboardControl == 0)
+        if (e.keyCode == KeyCode.Return && e.type == EventType.KeyUp && GUIUtility.keyboardControl == 0)
         {
             if (!searchingForDialogue && !spyView)
             {
@@ -4998,7 +4998,7 @@ public class VIDE_Editor : EditorWindow
 
             GUI.color = Color.white;
 
-            if (!db.actionNodes[aID].editorRefreshed && Event.current.type == EventType.repaint)
+            if (!db.actionNodes[aID].editorRefreshed && Event.current.type == EventType.Repaint)
             {
                 db.actionNodes[aID].editorRefreshed = true;
 
@@ -5426,7 +5426,7 @@ public class VIDE_Editor : EditorWindow
                 errorMsg = "File already exists!";
             }
         }
-        if (Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.keyUp)
+        if (Event.current.keyCode == KeyCode.Return && Event.current.type == EventType.KeyUp)
         {
             if (tryCreate(newFileName))
             {

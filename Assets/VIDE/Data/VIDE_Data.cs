@@ -1556,10 +1556,16 @@ namespace VIDE_Data
 
         static Dictionary<string, object> GetExtraVars(string[] key, string[] val)
         {
+            
             Dictionary<string, object> objs = new Dictionary<string, object>();
 
             for (int i = 0; i < val.Length; i++)
             {
+                if (string.IsNullOrEmpty(key[i]) || string.IsNullOrEmpty(val[i]))
+                {
+                    continue;
+                }
+
                 string st = val[i].ToLower();
                 //Bools
                 if (st.Contains("false"))

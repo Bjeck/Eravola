@@ -9,7 +9,7 @@ Extra Variables
  - isConversation = is it a conversation? informs text placement.
  - delay = delay, time until choices will show up. (other things that need delay?)
  - c = Color c,grey is grey color (maybe could use sprite for this??) (problem is in-string color)
-
+ - TDelay: thoughts delay - also very important! :D
 
 Action: Load next dialogue (string parameter - maybe enum??)
 
