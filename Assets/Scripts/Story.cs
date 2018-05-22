@@ -13,7 +13,8 @@ public class Story : MonoBehaviour {
 
     public bool startStoryOnStartup = true;
 
-    public bool debugSkipToStory = false;
+    public static bool debugSkipToStory = true;
+    public static bool forcingAllowed = true;
 
     public string firstDialName = "";   //THIS SHOULD BE CHANGED into something more dynamic.
 

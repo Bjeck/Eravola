@@ -26,8 +26,24 @@ public class Dialogues : MonoBehaviour {
 
     public DialogueMode mode;
 
+
+    public TextMeshProUGUI MainText
+    {
+        get
+        {
+            return mode == DialogueMode.Dialogue ? mainText : ambientText;
+        }
+    }
+
+    public TextMeshProUGUI ThoughtsText
+    {
+        get
+        {
+            return mode == DialogueMode.Dialogue ? thoughtsText : ambientThoughts;
+        }
+    }
     //This handles Dialogue directly, in the UI and the connection to VIDE (there's no reason to have a link there). 
-    
+
 
 
     public string CurrentDialogue { get; private set; }
@@ -60,6 +76,23 @@ public class Dialogues : MonoBehaviour {
     {
         CurrentDialogue = startDial;
         LoadDialogue(startDial);
+    }
+
+    public void ForceNextNode()
+    {
+        if (!Story.forcingAllowed)
+        {
+            return;
+        }
+
+        //stop rolling text somehow??
+        //and display all text
+        print("forcing stop");
+        roll.FinishRollForced(MainText);
+        roll.FinishRollForced(ThoughtsText);
+
+       // NextNode();
+
     }
 
     public void NextNode()
@@ -151,8 +184,8 @@ public class Dialogues : MonoBehaviour {
 
 
 
-            roll.StartRoll(ConvertCommentToTextInfo(data), mode == DialogueMode.Dialogue ? mainText : ambientText, callback);
-            roll.StartRoll(ConvertCommentToTextInfo(data, true), mode == DialogueMode.Dialogue ? thoughtsText : ambientThoughts);
+            roll.StartRoll(ConvertCommentToTextInfo(data), MainText, callback);
+            roll.StartRoll(ConvertCommentToTextInfo(data, true), ThoughtsText);
 
         }
        // }
@@ -439,7 +472,6 @@ public class Dialogues : MonoBehaviour {
 
 
 
-    
 
     //How to deal with secondaries?? that's also in the same node. hm.
 }
