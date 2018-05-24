@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class ButtonInvoke : MonoBehaviour
 {
-
     public Button button;
 
     public void InvokeButton()

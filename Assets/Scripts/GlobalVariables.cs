@@ -10,4 +10,6 @@ public static class GlobalVariables {
 
     public static float PlayerResponseNodeDelay = 1f;
 
+    public static string DefaultStartDialogue = "Tari_Intro";
+
 }

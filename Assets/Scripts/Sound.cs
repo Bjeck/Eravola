@@ -333,7 +333,15 @@ public class Sound : MonoBehaviour {
     }
 
 
+    /// <summary>
+    /// Kinda don't use this.
+    /// </summary>
+    /// <param name="vol"></param>
+    public void SetMasterVolume(float vol)
+    {
+        masterMixer.SetFloat("mastervolume", vol);
 
+    }
 
 
 

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// This script manages the story on a large scale - which part of the story we're in. who we're following, and has links to stored data, so we know what has happened before this.
@@ -16,26 +19,42 @@ public class Story : MonoBehaviour {
     public static bool debugSkipToStory = true;
     public static bool forcingAllowed = true;
 
-    public string firstDialName = "";   //THIS SHOULD BE CHANGED into something more dynamic.
+    string startDialogue = "";
+    int startNode = 0;
 
+#if UNITY_EDITOR
 
+    public void LoadEditorValues()
+    {
+        print("loading editorvalues");
+        debugSkipToStory = EditorPrefs.GetBool("EnableDebug");
+        startDialogue = EditorPrefs.GetString("StartDialogue");
+        startNode = EditorPrefs.GetInt("StartNode");
+        forcingAllowed = EditorPrefs.GetBool("ForcingAllowed");
+    }
+    
+#endif
 
 
 
     // Use this for initialization
     void Start() {
+
+#if UNITY_EDITOR
+        LoadEditorValues();
+#endif
         // 
         if (startStoryOnStartup)
         {
             if (debugSkipToStory)
             {
-                ChangeStoryPoint(firstDialName);
+                dia.LoadDialogue(startDialogue,startNode);
                 ui.SetSoleCanvas(ui.mainCanvas);
             }
             else
             {
                 ui.SetSoleCanvas(ui.bootCanvas);
-                sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(firstDialName); ui.SetSoleCanvas(ui.mainCanvas); });
+                sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(GlobalVariables.DefaultStartDialogue); ui.SetSoleCanvas(ui.mainCanvas); });
             }
         }
     }

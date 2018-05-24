@@ -14,9 +14,12 @@ public class UIManager : MonoBehaviour {
 
     public EventSystem eventSys;
 
+    public Canvas currentCanvas;
+
     public Canvas mainCanvas;
     public Canvas bootCanvas;
     public Canvas databaseCanvas;
+    public Canvas worldCanvas;
 
     public Database database;
     
@@ -27,7 +30,25 @@ public class UIManager : MonoBehaviour {
 
 	}
 
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if(currentCanvas == worldCanvas)
+            {
+                SetSoleCanvas(mainCanvas);
+                Glitch.instance.EnableAllEffects();
+                Sound.instance.SetMasterVolume(0);
+            }
+            else
+            {
+                SetSoleCanvas(worldCanvas);
+                Glitch.instance.DisableAllEffects();
+                Sound.instance.SetMasterVolume(-80);
+            }
+            
+        }
+    }
 
     public void OpenDatabase()
     {
@@ -40,9 +61,11 @@ public class UIManager : MonoBehaviour {
 
     public void SetSoleCanvas(Canvas c)
     {
+        currentCanvas = c;
         mainCanvas.enabled = false;
         bootCanvas.enabled = false;
         databaseCanvas.enabled = false;
+        worldCanvas.enabled = false;
 
         if (mainCanvas == c)
         {
@@ -55,6 +78,10 @@ public class UIManager : MonoBehaviour {
         if (databaseCanvas == c)
         {
             databaseCanvas.enabled = true;
+        }
+        if (worldCanvas == c)
+        {
+            worldCanvas.enabled = true;
         }
     }
 
@@ -72,6 +99,10 @@ public class UIManager : MonoBehaviour {
         {
             databaseCanvas.enabled = true;
         }
+        if (worldCanvas == c)
+        {
+            worldCanvas.enabled = true;
+        }
     }
 
     public void DisableCanvas(Canvas c)
@@ -87,6 +118,10 @@ public class UIManager : MonoBehaviour {
         if (databaseCanvas == c)
         {
             databaseCanvas.enabled = false;
+        }
+        if (worldCanvas == c)
+        {
+            worldCanvas.enabled = false;
         }
     }
 

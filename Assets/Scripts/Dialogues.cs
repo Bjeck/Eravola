@@ -118,8 +118,8 @@ public class Dialogues : MonoBehaviour {
 
     }
 
-    //NTS: you can never put an action node between a player and an npc node. it will break.
-    public void LoadDialogue(string dialogueName)
+
+    void Setup()
     {
         VD.OnNodeChange += UpdateUI;
         VD.OnEnd += End;
@@ -134,7 +134,24 @@ public class Dialogues : MonoBehaviour {
         }
         nextButton.gameObject.SetActive(false);
 
+    }
+
+    //NTS: you can never put an action node between a player and an npc node. it will break.
+    public void LoadDialogue(string dialogueName)
+    {
+        Setup();
         VD.BeginDialogue(dialogueName);
+    }
+
+    public void LoadDialogue(string dialogueName, int overrideStartNode)
+    {
+        Setup();
+        VIDE_Assign assign = new VIDE_Assign();
+        assign.overrideStartNode = overrideStartNode;
+        assign.AssignNew(dialogueName);
+
+        VD.BeginDialogue(assign);
+
     }
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.PostProcessing;
 
 public class Glitch : MonoBehaviour {
 
@@ -18,7 +19,9 @@ public class Glitch : MonoBehaviour {
     }
 
     public GlitchEffect glEf;
+    public CRTShaderScript crt;
     public VHSPostProcessEffect vhsEf;
+    public PostProcessingBehaviour postProcessing;
 
     public Dictionary<string, GlitchTiming> timings = new Dictionary<string, GlitchTiming>();
 
@@ -110,9 +113,22 @@ public class Glitch : MonoBehaviour {
 
 
 
+    public void DisableAllEffects()
+    {
+        // glEf.enabled = false;
+        crt.enabled = false;
+        vhsEf.enabled = false;
+        postProcessing.enabled = false;
+    }
 
-
-
+    public void EnableAllEffects()
+    {
+        // glEf.enabled = true;
+//        Sound.instance.vo
+        crt.enabled = true;
+        vhsEf.enabled = true;
+        postProcessing.enabled = true;
+    }
 
 
 
