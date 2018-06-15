@@ -86,6 +86,11 @@ public class Glitch : MonoBehaviour {
     {
         StartCoroutine(GlitchScreenOC(time, inten, withVHS));
     }
+    
+    public void GltichScreenOnCommand(float time)
+    {
+        StartCoroutine(GlitchScreenOC(time, -1, false));
+    }
 
     IEnumerator GlitchScreenOC(float time, float inten = -1f, bool withVHS = false)
     {

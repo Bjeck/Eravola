@@ -274,7 +274,6 @@ public class Sound : MonoBehaviour {
     public void PlayGlitch(int kind)
     {
         int soundChooser = 0;
-        print("Glitch " + kind);
         switch (kind)
         {
             case 0:

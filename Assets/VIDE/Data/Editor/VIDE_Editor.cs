@@ -3262,28 +3262,15 @@ public class VIDE_Editor : EditorWindow
                     EditorGUI.BeginChangeCheck();
                     txtComst.fontSize = 12;
                     string testText = EditorGUI.TextArea(new Rect(144, (i * 32), (er.width / 2) - 162, 30), db.pNode.comment[i].text, txtComst);
-                    txtComst.fontSize = 14;
-                    if (EditorGUI.EndChangeCheck())
-                    {
-                        Undo.RecordObject(db, "Edited Player comment");
-                        db.pNode.comment[i].text = testText;
-                        needSave = true;
-                    }
-                    
-                    GUIStyle exD2 = new GUIStyle(GUI.skin.textField);
-                    exD2.wordWrap = false;
-                    EditorGUI.BeginChangeCheck();
-                    txtComst.fontSize = 12;
                     string testText2 = EditorGUI.TextArea(new Rect(260, (i * 36), (er.width / 2) - 162, 50), db.pNode.comment[i].text_secondary, txtComst);
                     txtComst.fontSize = 14;
                     if (EditorGUI.EndChangeCheck())
                     {
                         Undo.RecordObject(db, "Edited Player comment");
-                        db.pNode.comment[i].text_secondary = testText2;
+                        db.pNode.comment[i].text = testText;
+                        db.pNode.comment[i].text_secondary = testText;
                         needSave = true;
                     }
-
-
                 }
                 else
                 {

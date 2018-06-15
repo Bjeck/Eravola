@@ -19,7 +19,7 @@ public class TextRoll : MonoBehaviour {
 
     public void StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null)
     {
-        TextInfo txt = new TextInfo(@text.text.Replace("¤", System.Environment.NewLine),text.rolldelay,text.startdelay);
+        TextInfo txt = new TextInfo(@text.text.Replace("¤", System.Environment.NewLine),text.rolldelay,text.startdelay); //do I even need the ¤ check anymore? I can do linebreaks in VIDE...
 
         print("Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
 
@@ -55,8 +55,32 @@ public class TextRoll : MonoBehaviour {
             //		Debug.Log("STOP");
             //		return true;
             //	}
+
+            if(text.text[i] == '|')
+            {
+                string time = "";
+                int tIdx = i+1;
+                bool timeRecorded = false;
+                while (!timeRecorded)
+                {
+                    if(text.text[tIdx] == '|')
+                    {
+                        timeRecorded = true;
+                        tIdx++;
+                        break;
+                    }
+                    time += text.text[tIdx];
+                    tIdx++;
+                }
+                print(time + " " + tIdx);
+                float t = float.Parse(time);
+                yield return new WaitForSeconds(t);
+                i = i + (tIdx-i);
+            }
+
             if (text.text[i] == '<')
             {
+                //default Escape Note: Color text.
                 UI.text += "<color=#1f1f1fff>" + "</color>"; //wow that hardcoding :P
                 isColored = true;
             }

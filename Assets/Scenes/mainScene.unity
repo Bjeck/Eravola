@@ -6508,7 +6508,7 @@ GameObject:
   - component: {fileID: 839517991}
   - component: {fileID: 839517990}
   m_Layer: 0
-  m_Name: AmbientDial
+  m_Name: AmbientThoughts (Dial)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7815,7 +7815,7 @@ MonoBehaviour:
     mixer: {fileID: 0}
   - ID: 2
     audio: {fileID: 8300000, guid: 8f1eb93b9e8721144a6933600ae2b845, type: 3}
-    volume: 0.15
+    volume: 0.05
     loop: 0
     mixer: {fileID: 0}
   serialSFXList:
@@ -7881,6 +7881,11 @@ MonoBehaviour:
   - ID: 4
     audio: {fileID: 8300000, guid: 6672a60cf19ade249ae639ea3c4e00f2, type: 3}
     volume: 0.55
+    loop: 1
+    mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
+  - ID: 2
+    audio: {fileID: 8300000, guid: 708a8d078b7d492478e89a8c8079844c, type: 3}
+    volume: 0.11
     loop: 1
     mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
   masterMixer: {fileID: 24100000, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}

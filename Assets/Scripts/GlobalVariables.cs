@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class GlobalVariables {
 
-    public static float TextRollDelay = 0.03f;
+    public static float TextRollDelay = 0.02f;
     public static float TextStartDelay = 0f;
     public static float ThoughtsStartDelay = 0.5f;
 

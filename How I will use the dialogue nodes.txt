@@ -3,15 +3,20 @@ Text is Text
 Sprite - dunno if/how yet.
 Audio - could be useful for somethign
 extraData: Text roll info:
- - s = Speed. s,1 is speed 1
+ - ms = Speed. s=1 is speed 1
+ - md= main text delay
+ - td= thought text delay
+ - ts= thought text speed.
 
 Extra Variables
- - isConversation = is it a conversation? informs text placement.
- - delay = delay, time until choices will show up. (other things that need delay?)
- - c = Color c,grey is grey color (maybe could use sprite for this??) (problem is in-string color)
- - TDelay: thoughts delay - also very important! :D
+ - mode= Dialogue / Ambient. is it a conversation? informs text placement.
+ - delay = main delay, time until choices will show up. (other things that need delay?)
+ - speed = main speed delay.
+ - Tdelay: thoughts delay - also very important! :D
+ - Tspeed = thought speed.
 
-Action: Load next dialogue (string parameter - maybe enum??)
+ - c = Color c,grey is grey color (maybe could use sprite for this??) (problem is in-string color)
+
 
 
 

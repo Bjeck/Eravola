@@ -197,7 +197,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
             inputSet = null;
             outAction = null;
             text = "Comment...";
-            text_secondary = "Comment 2";
+            text_secondary = "";
             extraData = "ExtraData";
 
         }
@@ -207,7 +207,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
             outAction = null;
             inputSet = id;
             text = "Comment...";
-            text_secondary = "Comment 2";
+            text_secondary = "";
             extraData = "ExtraData";
         }
     }
@@ -371,6 +371,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
     public struct Serialized_comment
     {
         public string text;
+        public string text_secondary;
         public string extraData;
         public int inputSetIndex;
         public int outputNodeIndex;
@@ -415,6 +416,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
                 Serialized_comment sc = new Serialized_comment()
                 {
                     text = child.comment[i].text,
+                    text_secondary = child.comment[i].text_secondary,
                     outRect = child.comment[i].outRect,
                     outActionIndex = actionNodes.IndexOf(child.comment[i].outAction),
                     outputNodeIndex = playerDiags.IndexOf(child.comment[i].outNode),
@@ -502,6 +504,7 @@ public class VIDE_EditorDB : MonoBehaviour, ISerializationCallbackReceiver
                 DialogueNode s = temp_playerDiags[temp_playerDiags.Count - 1];
                 s.comment.Add(new Comment());
                 s.comment[i].text = child.s_comment[i].text;
+                s.comment[i].text_secondary = child.s_comment[i].text_secondary;
                 s.comment[i].sprites = child.s_comment[i].sprites;
                 s.comment[i].audios = child.s_comment[i].audios;
                 s.comment[i].extraData = child.s_comment[i].extraData;

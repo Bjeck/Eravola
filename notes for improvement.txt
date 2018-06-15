@@ -1,0 +1,5 @@
+improvements for dialogue:
+
+
+
+non-dial text is too dark. (maybe other text is also slightly too bright but i dunno)

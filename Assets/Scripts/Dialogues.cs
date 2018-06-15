@@ -27,6 +27,12 @@ public class Dialogues : MonoBehaviour {
     public DialogueMode mode;
 
 
+    public System.Action OnEndAction;
+
+    public delegate void OnEndLoadNew(string s);
+
+    OnEndLoadNew onEndLoad;
+
     public TextMeshProUGUI MainText
     {
         get
@@ -97,7 +103,6 @@ public class Dialogues : MonoBehaviour {
 
     public void NextNode()
     {
-        print("next is called");
         if (VD.isActive && !curNode.isPlayer)
         {
             VD.Next();  //Gonna need some checks on this to see if its possible when we do text roll and things.  Would also be nice to have a click to reveal all and stop roll - for speeding stuff.
@@ -188,10 +193,12 @@ public class Dialogues : MonoBehaviour {
             ambientThoughts.text = string.Empty;
             ambientText.text = string.Empty;
 
+            nextButton.gameObject.SetActive(false);
 
             System.Action callback = null;
-            if((data.commentIndex + 1) < data.comments.Length)
+            if(mode == DialogueMode.Ambient)
             {
+                print("callbacking next button");
                 callback = ShowNextButton;
             }
             else if ((data.commentIndex + 1) >= data.comments.Length && VD.GetNext(false, false).isPlayer)
@@ -241,6 +248,11 @@ public class Dialogues : MonoBehaviour {
         mainText.gameObject.SetActive(false);
         buttonParent.SetActive(false);
         VD.EndDialogue();
+
+        if(OnEndAction != null)
+        {
+            OnEndAction();
+        }
     }
 
 
@@ -253,7 +265,7 @@ public class Dialogues : MonoBehaviour {
     }
 
 
-
+    //maybe rewrite so it sets switch to handle ONEnd and not immediately because that cuase it to "end" twiceæ.
     public void HandleDialogueSwitch(string newDialogue)
     {
         //some checks here for the dialogue for parameters maybe (how?) Why isn't this called? Doesn't it progress to next node now??
@@ -264,9 +276,8 @@ public class Dialogues : MonoBehaviour {
             return;
         }
 
-        End(null);
-
-        LoadDialogue(newDialogue);
+        //End(null);
+        OnEndAction = () => { LoadDialogue(newDialogue); OnEndAction = null; };
     }
 
     public void HandleStorySwitch()
@@ -288,7 +299,14 @@ public class Dialogues : MonoBehaviour {
             string s = (string)obj;
 
             try {
+                DialogueMode prevmode = mode;
+
                 mode = (DialogueMode)System.Enum.Parse(typeof(DialogueMode), s);
+
+                if(prevmode == DialogueMode.Ambient && mode == DialogueMode.Dialogue)
+                {
+                    nextButton.gameObject.SetActive(false);
+                }
 
             }
             catch
@@ -310,13 +328,13 @@ public class Dialogues : MonoBehaviour {
 
         text.text = node.comments[node.commentIndex];
 
-        if (node.extraData[node.commentIndex].Contains("dd="))
+        if (node.extraData[node.commentIndex].Contains("md="))
         {
             //contains extradata delay. use that.
             string[] extradata = node.extraData[node.commentIndex].Split(',');
             foreach(string s in extradata)
             {
-                if (s.Contains("dd="))
+                if (s.Contains("md="))
                 {
                     text.startdelay = float.Parse(s.Split('=')[1]); //should get the number after = !
                 }
@@ -350,13 +368,13 @@ public class Dialogues : MonoBehaviour {
 
 
         //SPEED
-        if (node.extraData[node.commentIndex].Contains("ds="))
+        if (node.extraData[node.commentIndex].Contains("ms="))
         {
             //contains extradata delay. use that.
             string[] extradata = node.extraData[node.commentIndex].Split(',');
             foreach (string s in extradata)
             {
-                if (s.Contains("ds="))
+                if (s.Contains("ms="))
                 {
                     text.rolldelay = float.Parse(s.Split('=')[1]); //should get the number after = !
                 }
