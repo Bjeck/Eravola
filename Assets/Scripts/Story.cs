@@ -10,6 +10,7 @@ using UnityEditor;
 /// </summary>
 public class Story : MonoBehaviour {
 
+    public Flags flags;
     public Sequences sequences;
     public UIManager ui;
     public Dialogues dia;

@@ -27,6 +27,8 @@ Naming Convention for Dialogues:
 
 
 
+|2| - in text wait time. will wait for 2 seconds.
+
 
 
 There's an OnActionNode(id). that's good to remember.

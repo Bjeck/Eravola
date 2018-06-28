@@ -40,29 +40,139 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 268dc70b105993846a123be43345df63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileIndex: 17
+  fileIndex: 21
   skinIndex: 3
   loadTag: 
   startID: 0
   curFocusID: 0
-  currentID: 4815
+  currentID: 4122
   autosave: 1
   previewPanning: 0
-  currentDiag: 17
+  currentDiag: 21
   locEdit: 0
   pNodeID: 0
   aNodeID: 2
   S_playerDiags:
-  - commentCount: 5
+  - commentCount: 1
     s_comment:
-    - text: The tree is at the other side of the pond. We start sprinting to the left
-        of the shallow water, and I faintly notice movement under the surface.
+    - text: '"Yeah, I see it too," <the Sage says while people are running.>'
       text_secondary: 
-      extraData: ms=0.01
+      extraData: ExtraData
       inputSetIndex: 0
       outputNodeIndex: 1
       outActionIndex: -1
-      showmore: 1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 29
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 0
+    rect:
+      serializedVersion: 2
+      x: 10620
+      y: 5380
+      width: 453
+      height: 129
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 0
+  - commentCount: 2
+    s_comment:
+    - text: Should we run?
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 1
+      outputNodeIndex: 2
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    - text: What is it?
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 1
+      outputNodeIndex: 3
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 81
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 1
+    rect:
+      serializedVersion: 2
+      x: 10620
+      y: 5500
+      width: 453
+      height: 143
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 1
+  - commentCount: 1
+    s_comment:
+    - text: Yes, we should.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 2
+      outputNodeIndex: 4
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 2
+    rect:
+      serializedVersion: 2
+      x: 11310
+      y: 5430
+      width: 453
+      height: 121
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 0
+  - commentCount: 1
+    s_comment:
+    - text: Something really big. I have never seen a weatherhex this huge. And I
+        don't know how it connects to the purple infestation. We need to get away
+        from here.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 3
+      outputNodeIndex: 4
+      outActionIndex: -1
+      showmore: 0
       outRect:
         serializedVersion: 2
         x: 406
@@ -72,107 +182,231 @@ MonoBehaviour:
       sprites: {fileID: 0}
       audios: {fileID: 0}
       visible: 1
-    - text: My feet feel light and springy on the summer grass, the smell of the waving
-        flowers seething into my nostrils. We're sidestepping toe to toe, whistling
-        across the pond-side almost soundlessly, as we hear the wind clatter at our
-        ears.
-      text_secondary: 
-      extraData: ms=0.008
-      inputSetIndex: 0
-      outputNodeIndex: -1
-      outActionIndex: -1
-      showmore: 1
-      outRect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-      sprites: {fileID: 0}
-      audios: {fileID: 0}
-      visible: 1
-    - text: She had a slight head start, so while I would consider myself faster,
-        she gets her first foot up on the tree. Oddly coloured flowers pique my interest
-        for a thin moment, but I pull myself up, clawing my bare feet into the slitful
-        bark. I can feel my feet pinch a little, almost feel pain, but I pull myself
-        up and latch onto a branch on top of me.
-      text_secondary: 
-      extraData: 
-      inputSetIndex: 0
-      outputNodeIndex: -1
-      outActionIndex: -1
-      showmore: 1
-      outRect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-      sprites: {fileID: 0}
-      audios: {fileID: 0}
-      visible: 1
-    - text: We hear the cracking of branches, and the rough sliding of skin across
-        the tree-bark as we both scramble up the unruly tree, moving away any little
-        annoyance in our way, were it branches or leaves or each other. My feet skid
-        and tumble, desperate to grip anything and clutching down at it when I do.
-      text_secondary: 
-      extraData: ExtraData
-      inputSetIndex: 0
-      outputNodeIndex: -1
-      outActionIndex: -1
-      showmore: 0
-      outRect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-      sprites: {fileID: 0}
-      audios: {fileID: 0}
-      visible: 1
-    - text: Ceara's got her hand above me and I step up, but she sees me coming and
-        slides her hand up, blocking my fingers from reaching the tree. With a smile
-        she steps up and hurls herself further upward while I have to reset my grip,
-        almost falling over in sheer surprise.
-      text_secondary: 
-      extraData: ExtraData
-      inputSetIndex: 0
-      outputNodeIndex: -1
-      outActionIndex: -1
-      showmore: 0
-      outRect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-      sprites: {fileID: 0}
-      audios: {fileID: 0}
-      visible: 1
-    ID: 0
+    ID: 3
     rect:
       serializedVersion: 2
-      x: 3280
-      y: 580
+      x: 10950
+      y: 5690
       width: 453
-      height: 897
+      height: 168
     pTag: 
-    expand: 1
+    expand: 0
     sprite: {fileID: 0}
-    vars:
-    - 0.007
-    - Ambient
-    varKeys:
-    - speed
-    - mode
+    vars: []
+    varKeys: []
     isPlayer: 0
   - commentCount: 2
     s_comment:
-    - text: However, she smiled a little too long. AS she reaches above me, her grip
-        falters, and she keels sideways, trying to get a grip with her foot.
+    - text: To Caudden? You want to go towards it?
       text_secondary: 
       extraData: ExtraData
-      inputSetIndex: 1
+      inputSetIndex: 4
+      outputNodeIndex: 5
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 29
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    - text: I want to go north.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 4
+      outputNodeIndex: 6
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 89
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 4
+    rect:
+      serializedVersion: 2
+      x: 11480
+      y: 5680
+      width: 453
+      height: 151
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 1
+  - commentCount: 1
+    s_comment:
+    - text: Yes. It's a slim chance, but we need to.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 5
+      outputNodeIndex: 7
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 29
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 5
+    rect:
+      serializedVersion: 2
+      x: 11960
+      y: 5600
+      width: 453
+      height: 129
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 0
+  - commentCount: 1
+    s_comment:
+    - text: You go north then. I'm going to Caudden.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 6
+      outputNodeIndex: 8
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 29
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 6
+    rect:
+      serializedVersion: 2
+      x: 11970
+      y: 5790
+      width: 453
+      height: 129
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 0
+  - commentCount: 2
+    s_comment:
+    - text: Ok, let's go.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 7
+      outputNodeIndex: 9
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    - text: No, I... I'm going north.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 7
+      outputNodeIndex: 10
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 81
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 7
+    rect:
+      serializedVersion: 2
+      x: 12420
+      y: 5580
+      width: 453
+      height: 143
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 1
+  - commentCount: 2
+    s_comment:
+    - text: Hmm.. Ok, nevermind I'm going to Caudden
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 8
+      outputNodeIndex: 9
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 59
+        width: 30
+        height: 29
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    - text: Good luck.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 8
+      outputNodeIndex: 10
+      outActionIndex: -1
+      showmore: 0
+      outRect:
+        serializedVersion: 2
+        x: 406
+        y: 89
+        width: 30
+        height: 21
+      sprites: {fileID: 0}
+      audios: {fileID: 0}
+      visible: 1
+    ID: 8
+    rect:
+      serializedVersion: 2
+      x: 12440
+      y: 5790
+      width: 453
+      height: 151
+    pTag: 
+    expand: 0
+    sprite: {fileID: 0}
+    vars: []
+    varKeys: []
+    isPlayer: 1
+  - commentCount: 2
+    s_comment:
+    - text: I realize the infestation has caught up to us. It's right there, on the
+        grass beneath us, only about two feet away. The Sage rushes to the right,
+        and I go with him, running now, to get away from a thing we can't see moving--only
+        taking leaps to where we are.
+      text_secondary: 
+      extraData: ExtraData
+      inputSetIndex: 9
       outputNodeIndex: -1
       outActionIndex: 0
       showmore: 0
@@ -181,15 +415,15 @@ MonoBehaviour:
         x: 406
         y: 59
         width: 30
-        height: 68
+        height: 120
       sprites: {fileID: 0}
       audios: {fileID: 0}
       visible: 1
-    - text: She's in a bad spot, though so her foot finds no solid branch to stand
-        on, and without holding anything her balance is tipped over.
+    - text: "We run towards the stables, where he says he has a horse.           \nBut
+        I doubt it's still there."
       text_secondary: 
       extraData: ExtraData
-      inputSetIndex: 1
+      inputSetIndex: 9
       outputNodeIndex: -1
       outActionIndex: -1
       showmore: 0
@@ -202,50 +436,48 @@ MonoBehaviour:
       sprites: {fileID: 0}
       audios: {fileID: 0}
       visible: 1
-    ID: 1
+    ID: 9
     rect:
       serializedVersion: 2
-      x: 3880
-      y: 600
+      x: 13030
+      y: 5430
       width: 453
-      height: 353
-    pTag: 
-    expand: 1
+      height: 263
+    pTag: Caudden
+    expand: 0
     sprite: {fileID: 0}
-    vars:
-    - 0.007
-    varKeys:
-    - speed
+    vars: []
+    varKeys: []
     isPlayer: 0
-  - commentCount: 3
+  - commentCount: 2
     s_comment:
-    - text: She falls down from the pine, glancing down with a shriek.
+    - text: "I realize the infestation has caught up to us. It\u2019s right there,
+        on the grass beneath us, only about two feet away. The Sage rushes to the
+        right, and I run north, to get away from a thing we can\u2019t see moving\u2014only
+        taking leaps to where we are."
       text_secondary: 
       extraData: ExtraData
-      inputSetIndex: 2
+      inputSetIndex: 10
       outputNodeIndex: -1
-      outActionIndex: -1
-      showmore: 1
+      outActionIndex: 1
+      showmore: 0
       outRect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
+        x: 406
+        y: 59
+        width: 30
+        height: 107
       sprites: {fileID: 0}
       audios: {fileID: 0}
       visible: 1
-    - text: "I started climbing down to her after a short while, she wasn't far away,
-        and it hadn't been a long fall, but she kept lying there.         \n\"Ceara?\"
-        I said, looking down at her still body. I hadn't judged the fall to be that
-        hard.     \nI slid down the tree as fast as I could, gliding with my feet
-        over the rough surface, hearing it crunch under me."
+    - text: "I don\u2019t see where he goes but I just continue to run away, running
+        away from the sun and everything I know."
       text_secondary: 
-      extraData: ms=0.02
-      inputSetIndex: 2
+      extraData: ExtraData
+      inputSetIndex: 10
       outputNodeIndex: -1
       outActionIndex: -1
-      showmore: 1
+      showmore: 0
       outRect:
         serializedVersion: 2
         x: 0
@@ -255,47 +487,39 @@ MonoBehaviour:
       sprites: {fileID: 0}
       audios: {fileID: 0}
       visible: 1
-    - text: I approached her slowly.
-      text_secondary: 
-      extraData: td=1
-      inputSetIndex: 2
-      outputNodeIndex: -1
-      outActionIndex: -1
-      showmore: 1
-      outRect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 0
-        height: 0
-      sprites: {fileID: 0}
-      audios: {fileID: 0}
-      visible: 1
-    ID: 2
+    ID: 10
     rect:
       serializedVersion: 2
-      x: 4570
-      y: 620
+      x: 13030
+      y: 5780
       width: 453
-      height: 473
+      height: 263
     pTag: 
-    expand: 1
+    expand: 0
     sprite: {fileID: 0}
     vars: []
     varKeys: []
     isPlayer: 0
   S_actionNodes:
   - pauseHere: 0
-    gameObjectName: Glitch
-    methodName: GltichScreenOnCommand
-    nameIndex: 15
-    methodIndex: 1
-    paramIndex: 4
+    gameObjectName: DialogueCanvas
+    methodName: HandleDialogueSwitch
+    nameIndex: 22
+    methodIndex: 9
+    paramIndex: 2
     opts:
     - '[No method]'
-    - GltichScreenOnCommand
-    - DisableAllEffects
-    - EnableAllEffects
+    - get_MainText
+    - get_ThoughtsText
+    - get_CurrentDialogue
+    - StartDialogues
+    - ForceNextNode
+    - NextNode
+    - DoesDialogueExist
+    - LoadDialogue
+    - HandleDialogueSwitch
+    - HandleStorySwitch
+    - HandleGeneralSwitch
     nameOpts:
     - '[No object]'
     - BackgroundText
@@ -322,17 +546,77 @@ MonoBehaviour:
     - DialogueCanvas
     - Placeholder
     param_bool: 0
-    param_string: 
+    param_string: Tari_Caudden
     param_int: 0
-    param_float: 1
+    param_float: 0
     rect:
       serializedVersion: 2
-      x: 4350
-      y: 670
+      x: 13660
+      y: 5490
       width: 200
-      height: 178
-    ID: 3
-    outPlayerIndex: 2
+      height: 176
+    ID: 11
+    outPlayerIndex: -1
+    outActionIndex: -1
+    more: 0
+    ovrStartNode: -1
+    renameDialogue: 
+  - pauseHere: 0
+    gameObjectName: DialogueCanvas
+    methodName: HandleDialogueSwitch
+    nameIndex: 22
+    methodIndex: 9
+    paramIndex: 2
+    opts:
+    - '[No method]'
+    - get_MainText
+    - get_ThoughtsText
+    - get_CurrentDialogue
+    - StartDialogues
+    - ForceNextNode
+    - NextNode
+    - DoesDialogueExist
+    - LoadDialogue
+    - HandleDialogueSwitch
+    - HandleStorySwitch
+    - HandleGeneralSwitch
+    nameOpts:
+    - '[No object]'
+    - BackgroundText
+    - DatabaseCanvas
+    - BackgroundText
+    - Text
+    - Thoughts
+    - Text
+    - TextMeshPro - InputField
+    - TextMeshPro Text
+    - TextMeshPro Text
+    - AmbientThoughts (Dial)
+    - TextMeshPro Text
+    - UI
+    - AmbientText
+    - Sound
+    - Glitch
+    - TextMeshPro Text
+    - TextMeshPro Text
+    - TextMeshPro Text
+    - Story
+    - Text
+    - Main Camera
+    - DialogueCanvas
+    - Placeholder
+    param_bool: 0
+    param_string: Tari_North
+    param_int: 0
+    param_float: 0
+    rect:
+      serializedVersion: 2
+      x: 13640
+      y: 5820
+      width: 200
+      height: 176
+    ID: 12
+    outPlayerIndex: -1
     outActionIndex: -1
     more: 0
     ovrStartNode: -1

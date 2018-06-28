@@ -9056,6 +9056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7117c35b3399c964eb37e9f15ba15396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flags: {fileID: 0}
   sequences: {fileID: 1631959648}
   ui: {fileID: 1046033161}
   dia: {fileID: 1916620750}
@@ -9097,8 +9098,18 @@ MonoBehaviour:
   - MrCube
   - NPCOnly
   - QuestChartDemo
+  - Tari_Cursed_1
+  - Tari_Cursed_2
+  - Tari_Inn_1
+  - Tari_Inn_2
+  - Tari_Inn_3
   - Tari_Intro
   - Tari_Intro_2
+  - Tari_Pond_1
+  - Tari_Pond_2
+  - Tari_Ritual_1
+  - Tari_Ritual_2
+  - Tari_RitualPrep_1
   - Test
   - TriggeredDude
   - Witch
