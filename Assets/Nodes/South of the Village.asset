@@ -9,16 +9,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: facc97c4c63ec124ca8f665ea4566327, type: 3}
-  m_Name: Village South
+  m_Name: South of the Village
   m_EditorClassIdentifier: 
-  test:
-    boo: 0
-  ID: Village South
   requiredFlag:
     Name: TariToCaudden
     Value: 1
-    NEWVAL: 0
+    LoadOnStartup: 0
   isBound: 0
-  coordinates: {x: 102.99999, y: 71}
-  nodeToBindTo: {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  coordinates: {x: -82.7, y: -201.9}
+  nodeToBindTo: {fileID: 11400000, guid: 0ed63080027ed7d42b0ed5313e855bc2, type: 2}
   optionsFromMe: []
+  text: 
+  simulationTarget: Tari's Dad

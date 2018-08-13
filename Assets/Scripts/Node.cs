@@ -9,7 +9,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Node : ScriptableObject
 {
-    public string ID;
     public Flag requiredFlag;
     public bool isBound = false;
     public Vector2 coordinates;

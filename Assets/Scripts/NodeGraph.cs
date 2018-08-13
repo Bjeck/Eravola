@@ -78,10 +78,10 @@ public class NodeGraph : MonoBehaviour
 
         foreach(NodeBehaviour nb in currentNodes)
         {
-            NodeBehaviour nodeToBindThisTo = currentNodes.Find(x => x.nodeIam.ID == nb.nodeIam.nodeToBindTo.ID);
+            NodeBehaviour nodeToBindThisTo = currentNodes.Find(x => x.nodeIam.name == nb.nodeIam.nodeToBindTo.name);
             if (nodeToBindThisTo != null)
             {
-                if(nb.nodeIam.optionsFromMe.Exists(x=>x.ID == nodeToBindThisTo.nodeIam.ID))
+                if(nb.nodeIam.optionsFromMe.Exists(x=>x.name == nodeToBindThisTo.nodeIam.name))
                 {
                     // Already has this option! Ignore.
                 }
@@ -109,7 +109,7 @@ public class NodeGraph : MonoBehaviour
 
     public Node FindNodeInAll(string ID)
     {
-        return allNodes.Find(x => x.ID == ID);
+        return allNodes.Find(x => x.name == ID);
     }
 
     public Node FindNodeInAll(Flag flag)

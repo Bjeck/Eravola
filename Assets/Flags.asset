@@ -13,8 +13,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flags:
   - Name: TariToCaudden
-    Value: 0
+    Value: 1
     LoadOnStartup: 1
   - Name: StartedGame
+    Value: 1
+    LoadOnStartup: 1
+  - Name: CearasStoryDone
+    Value: 1
+    LoadOnStartup: 1
+  - Name: InTheInnWithTheWives
+    Value: 1
+    LoadOnStartup: 1
+  - Name: DeidresStoryDone
+    Value: 1
+    LoadOnStartup: 1
+  - Name: PernasStoryDone
+    Value: 1
+    LoadOnStartup: 1
+  - Name: MikalsStoryDone
+    Value: 1
+    LoadOnStartup: 1
+  - Name: IllijsPastRevealed
+    Value: 1
+    LoadOnStartup: 1
+  - Name: TheSagesStoryDone
+    Value: 1
+    LoadOnStartup: 1
+  - Name: LirrasJourneyDone
+    Value: 1
+    LoadOnStartup: 1
+  - Name: MaugesStoryDone
     Value: 1
     LoadOnStartup: 1

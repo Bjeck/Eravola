@@ -34,7 +34,7 @@ public class NodeGraphEditor : Editor
             foreach(NodeBehaviour nb in nodegraph.allNodesInEditor)
             {
                 nb.nodeIam.coordinates = nb.GetComponent<RectTransform>().anchoredPosition;
-                nb.nodeIam.ID = nb.nodeIam.name;
+                nb.nodeIam.name = nb.nodeIam.name;
             }
         }
 

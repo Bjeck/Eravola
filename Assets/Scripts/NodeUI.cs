@@ -43,7 +43,7 @@ public class NodeUI : MonoBehaviour {
 
     public void LoadNode(string nodeID)
     {
-        Node node = nodegraph.currentNodes.Find(x => x.nodeIam.ID == nodeID).nodeIam;
+        Node node = nodegraph.currentNodes.Find(x => x.nodeIam.name == nodeID).nodeIam;
 
         Clear();
         if(node == null)
@@ -94,8 +94,8 @@ public class NodeUI : MonoBehaviour {
 
     void GoToNode(Node node)
     {
-        LoadNode(node.ID);
-        Storage.CurrentNodeID = node.ID;
+        LoadNode(node.name);
+        Storage.CurrentNodeID = node.name;
     }
 
     public void ToggleMap()
