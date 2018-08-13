@@ -29,19 +29,19 @@ MonoBehaviour:
     LoadOnStartup: 1
   - Name: PernasStoryDone
     Value: 1
-    LoadOnStartup: 1
+    LoadOnStartup: 0
   - Name: MikalsStoryDone
     Value: 1
-    LoadOnStartup: 1
+    LoadOnStartup: 0
   - Name: IllijsPastRevealed
     Value: 1
-    LoadOnStartup: 1
+    LoadOnStartup: 0
   - Name: TheSagesStoryDone
     Value: 1
-    LoadOnStartup: 1
+    LoadOnStartup: 0
   - Name: LirrasJourneyDone
     Value: 1
-    LoadOnStartup: 1
+    LoadOnStartup: 0
   - Name: MaugesStoryDone
     Value: 1
-    LoadOnStartup: 1
+    LoadOnStartup: 0

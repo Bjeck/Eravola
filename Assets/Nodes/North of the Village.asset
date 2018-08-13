@@ -19,7 +19,7 @@ MonoBehaviour:
   coordinates: {x: -67.3, y: 157.4}
   nodeToBindTo: {fileID: 11400000, guid: 4093b6c378dec0f468d5fdd38d905eb9, type: 2}
   optionsFromMe:
-  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  - {fileID: 11400000, guid: 4093b6c378dec0f468d5fdd38d905eb9, type: 2}
   text: 'Village North
 
 

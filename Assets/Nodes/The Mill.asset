@@ -15,9 +15,10 @@ MonoBehaviour:
     Name: StartedGame
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
-  coordinates: {x: -112.10002, y: -102}
+  isBound: 1
+  coordinates: {x: -185, y: -28}
   nodeToBindTo: {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
   text: The Mill
   simulationTarget: None

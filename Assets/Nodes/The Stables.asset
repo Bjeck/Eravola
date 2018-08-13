@@ -15,9 +15,12 @@ MonoBehaviour:
     Name: StartedGame
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
+  isBound: 1
   coordinates: {x: 91.2, y: 67.3}
   nodeToBindTo: {fileID: 11400000, guid: 4093b6c378dec0f468d5fdd38d905eb9, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: d8a75fcf7b17f3045ab1f9efac7cb2ba, type: 2}
+  - {fileID: 11400000, guid: 4093b6c378dec0f468d5fdd38d905eb9, type: 2}
+  - {fileID: 11400000, guid: 2908b92795e769542baccd512dcad81e, type: 2}
   text: The Stables
   simulationTarget: None

@@ -15,9 +15,10 @@ MonoBehaviour:
     Name: MikalsStoryDone
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
+  isBound: 1
   coordinates: {x: 137, y: -102}
   nodeToBindTo: {fileID: 11400000, guid: 0ed63080027ed7d42b0ed5313e855bc2, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: 0ed63080027ed7d42b0ed5313e855bc2, type: 2}
   text: Lirra's House
   simulationTarget: Lirra

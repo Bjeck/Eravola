@@ -15,9 +15,10 @@ MonoBehaviour:
     Name: StartedGame
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
+  isBound: 1
   coordinates: {x: 243.3, y: 51.2}
   nodeToBindTo: {fileID: 11400000, guid: 54fce51b21071a6429887deeda45beeb, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: 54fce51b21071a6429887deeda45beeb, type: 2}
   text: The Lake
   simulationTarget: Ceara

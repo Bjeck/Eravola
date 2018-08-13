@@ -15,9 +15,11 @@ MonoBehaviour:
     Name: MaugesStoryDone
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
-  coordinates: {x: -258.3, y: -67.2}
+  isBound: 1
+  coordinates: {x: -280, y: -87}
   nodeToBindTo: {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  - {fileID: 11400000, guid: 15b812d18c60ee04f8618b59d3c6c167, type: 2}
   text: The Inn
   simulationTarget: Perna

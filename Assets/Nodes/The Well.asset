@@ -15,9 +15,12 @@ MonoBehaviour:
     Name: StartedGame
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
-  coordinates: {x: -112.10002, y: 51.200012}
+  isBound: 1
+  coordinates: {x: -114, y: -116}
   nodeToBindTo: {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: 52736c7d387bb69458026b8d2c9f6698, type: 2}
+  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  - {fileID: 11400000, guid: 8ab46a12edd0c2142997bfb65e004b52, type: 2}
   text: The Well
   simulationTarget: None

@@ -29,19 +29,25 @@ public class NodeGraph : MonoBehaviour
     {
         foreach(Flag f in story.flags)
         {
-            if(currentNodes.Exists(x=>x.nodeIam.requiredFlag.Name == f.Name))
+            if(currentNodes.Exists(x=>x.nodeIam.requiredFlag.Name == f.Name)) //if node already exists
             {
-                Node n = currentNodes.Find(x => x.nodeIam.requiredFlag.Name == f.Name).nodeIam;
-                if (n.isBound)
-                {
-                    continue; //node is already bound, continue.
-                }
+                List<NodeBehaviour> nn = currentNodes.FindAll(x => x.nodeIam.requiredFlag.Name == f.Name);
 
-                //node already here - check if it needs connection ( f.Value is the same as requiredFlag.value
-                if (n.requiredFlag.Value == f.Value)
+                foreach(NodeBehaviour nb in nn)
                 {
-                    //if so, we need to Place it!
-                    PlaceNode(n);
+                    Node n = nb.nodeIam;
+
+                    if (n.isBound)
+                    {
+                        continue; //node is already bound, continue.
+                    }
+
+                    //node already here - check if it needs connection ( f.Value is the same as requiredFlag.value
+                    if (n.requiredFlag.Value == f.Value)
+                    {
+                        //if so, we need to Place it!
+                        PlaceNode(n);
+                    }
                 }
             }
             else
@@ -50,7 +56,12 @@ public class NodeGraph : MonoBehaviour
                 if(allNodes.Exists(x=>x.requiredFlag.Name == f.Name && x.requiredFlag.Value == f.Value))
                 {
                     //if we have a flag that's identical, then we should place it!
-                    PlaceNode(FindNodeInAll(f));
+                    List<Node> nodes = FindNodeInAll(f);
+                    foreach(Node n in nodes)
+                    {
+                        PlaceNode(n);
+                    }
+                    
                 }
             }
         }
@@ -112,13 +123,13 @@ public class NodeGraph : MonoBehaviour
         return allNodes.Find(x => x.name == ID);
     }
 
-    public Node FindNodeInAll(Flag flag)
+    public List<Node> FindNodeInAll(Flag flag)
     {
         if(!allNodes.Exists(x => x.requiredFlag.Name == flag.Name))
         {
             Debug.LogError("Flag " + flag.Name + "doesn't exist in all nodes! How did that happen?");
             return null;
         }
-        return allNodes.Find(x => x.requiredFlag.Name == flag.Name);
+        return allNodes.FindAll(x => x.requiredFlag.Name == flag.Name);
     }
 }

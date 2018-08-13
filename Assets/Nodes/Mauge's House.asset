@@ -15,9 +15,10 @@ MonoBehaviour:
     Name: CearasStoryDone
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
+  isBound: 1
   coordinates: {x: -347.6, y: 102.2}
   nodeToBindTo: {fileID: 11400000, guid: 4093b6c378dec0f468d5fdd38d905eb9, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: 4093b6c378dec0f468d5fdd38d905eb9, type: 2}
   text: Mauge's House
   simulationTarget: Mauge

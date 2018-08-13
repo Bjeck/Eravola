@@ -15,9 +15,10 @@ MonoBehaviour:
     Name: MaugesStoryDone
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
-  coordinates: {x: -287.3, y: -104.3}
+  isBound: 1
+  coordinates: {x: -309, y: -124.1}
   nodeToBindTo: {fileID: 11400000, guid: 425b5bd37dd328942bcb7bbf017ce1cd, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: 425b5bd37dd328942bcb7bbf017ce1cd, type: 2}
   text: The Kitchen
   simulationTarget: Deidre

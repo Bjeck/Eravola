@@ -15,11 +15,15 @@ MonoBehaviour:
     Name: StartedGame
     Value: 1
     LoadOnStartup: 1
-  isBound: 0
-  coordinates: {x: -85.5, y: -5.8}
+  isBound: 1
+  coordinates: {x: -48, y: 26}
   nodeToBindTo: {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
   optionsFromMe:
   - {fileID: 11400000, guid: e7a5728d87a555a4485111fa428086b6, type: 2}
+  - {fileID: 11400000, guid: 54fce51b21071a6429887deeda45beeb, type: 2}
+  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  - {fileID: 11400000, guid: 3bc6c960aac88cc4fb848dcc08a6a3ff, type: 2}
+  - {fileID: 11400000, guid: 08a49073bfb73a044a516bf33b00edd3, type: 2}
   text: 'The Village Center
 
 

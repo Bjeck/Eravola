@@ -15,9 +15,12 @@ MonoBehaviour:
     Name: TariToCaudden
     Value: 1
     LoadOnStartup: 0
-  isBound: 0
+  isBound: 1
   coordinates: {x: -82.7, y: -201.9}
   nodeToBindTo: {fileID: 11400000, guid: 0ed63080027ed7d42b0ed5313e855bc2, type: 2}
-  optionsFromMe: []
+  optionsFromMe:
+  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  - {fileID: 11400000, guid: 0ed63080027ed7d42b0ed5313e855bc2, type: 2}
+  - {fileID: 11400000, guid: 3a22859551a53a5499e235765e6adc66, type: 2}
   text: 
   simulationTarget: Tari's Dad
