@@ -13,7 +13,7 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 [AddComponentMenu("Image Effects/GlitchEffect")]
-public class GlitchEffect : MonoBehaviour{
+public class GlitchEffect : MonoBehaviour {
 	public Texture2D displacementMap;
 	float glitchup, glitchdown, flicker,
 			glitchupTime = 0.05f, glitchdownTime = 0.05f, flickerTime = 0.5f;

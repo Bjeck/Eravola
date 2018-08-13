@@ -19,6 +19,7 @@ public class DebugMenu : EditorWindow {
 
     public bool enableDebug = false;
     public bool forcingAllowed = false;
+    public bool startAtDrone = false;
 
     SearchField searchField;
     [SerializeField]
@@ -51,6 +52,7 @@ public class DebugMenu : EditorWindow {
     void SaveSettings()
     {
         EditorPrefs.SetBool("EnableDebug",enableDebug);
+        EditorPrefs.SetBool("StartAtDrone", startAtDrone);
         EditorPrefs.SetString("StartDialogue", dialogueNodeToStart);
         EditorPrefs.SetInt("StartNode", nodeID);
         EditorPrefs.SetBool("ForcingAllowed", forcingAllowed);
@@ -68,6 +70,13 @@ public class DebugMenu : EditorWindow {
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("Forcing Allowed?");
         forcingAllowed = EditorGUILayout.Toggle(forcingAllowed);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.Space();
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Label("Start At Drone");
+        startAtDrone = EditorGUILayout.Toggle(startAtDrone);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();

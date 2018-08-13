@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: facc97c4c63ec124ca8f665ea4566327, type: 3}
+  m_Name: Village North
+  m_EditorClassIdentifier: 
+  ID: Village North
+  requiredFlag:
+    Name: TariToCaudden
+    Value: 0
+    LoadOnStartup: 0
+  isBound: 1
+  coordinates: {x: -89, y: 151}
+  nodeToBindTo: {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  optionsFromMe:
+  - {fileID: 11400000, guid: ea514d0d9c5d86449831f2ad99943731, type: 2}
+  text: 'Village North
+
+
+    Where ravens go to cry.'
+  simulationTarget: None

@@ -12,4 +12,8 @@ public static class GlobalVariables {
 
     public static string DefaultStartDialogue = "Tari_Intro";
 
+    public static string DRONE = "DRONE";
+
+    public static string DefaultStartNode = "Village Center";
+
 }

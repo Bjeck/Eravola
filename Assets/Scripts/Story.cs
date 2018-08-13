@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Reflection;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -8,17 +11,25 @@ using UnityEditor;
 /// <summary>
 /// This script manages the story on a large scale - which part of the story we're in. who we're following, and has links to stored data, so we know what has happened before this.
 /// </summary>
-public class Story : MonoBehaviour {
+public class Story : MonoBehaviour
+{
 
-    public Flags flags;
+    [SerializeField] private Flags defaultflags; //This is editortime
+
+    public List<Flag> flags; //This is runtime
+
     public Sequences sequences;
     public UIManager ui;
     public Dialogues dia;
+    public NodeUI nodemap;
 
     public bool startStoryOnStartup = true;
+    public bool startAtDrone = false;
+    public bool debugSkipToStory = true;
 
-    public static bool debugSkipToStory = true;
     public static bool forcingAllowed = true;
+
+    private List<string> characterNames = new List<string>();
 
     string startDialogue = "";
     int startNode = 0;
@@ -32,14 +43,50 @@ public class Story : MonoBehaviour {
         startDialogue = EditorPrefs.GetString("StartDialogue");
         startNode = EditorPrefs.GetInt("StartNode");
         forcingAllowed = EditorPrefs.GetBool("ForcingAllowed");
+        startAtDrone = EditorPrefs.GetBool("StartAtDrone");
     }
     
 #endif
 
+    void LoadFlagsOnStartUp()
+    {
+        foreach(Flag f in defaultflags.flags)
+        {
+            if (f.LoadOnStartup)
+            {
+                flags.Add(f);
+            }
+        }
+    }
+
+    void LoadCharacterNamesOnStartUp()
+    {
+        List<string> strings = new List<string>();
+
+        Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var subclasses = from assembly in assemblies
+                            from type in assembly.GetTypes()
+                            where type.Name == "CharacterNames"
+                            select type;
+
+        foreach (Type subclass in subclasses)
+        {
+            var IDs = subclass.GetFields().Where((f) => f.IsLiteral && !f.IsInitOnly);
+
+            foreach (var property in IDs)
+            {
+                strings.Add(property.GetRawConstantValue() as string);
+            }
+        }
+        characterNames = strings;
+    }
 
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
+        LoadFlagsOnStartUp();
+        LoadCharacterNamesOnStartUp();
 
 #if UNITY_EDITOR
         LoadEditorValues();
@@ -49,32 +96,49 @@ public class Story : MonoBehaviour {
         {
             if (debugSkipToStory)
             {
-                dia.LoadDialogue(startDialogue,startNode);
-                ui.SetSoleCanvas(ui.mainCanvas);
+                if (startAtDrone)
+                {
+                    ChangeStoryPoint(GlobalVariables.DRONE);
+                }
+                else
+                {
+                    ChangeStoryPoint(startDialogue);
+                }
             }
             else
             {
-                ui.SetSoleCanvas(ui.bootCanvas);
-                sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(GlobalVariables.DefaultStartDialogue); ui.SetSoleCanvas(ui.mainCanvas); });
+                ui.SetSoleCanvas(UIManager.CanvasType.Boot);
+                sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(GlobalVariables.DefaultStartDialogue); ui.SetSoleCanvas(UIManager.CanvasType.Main); });
             }
         }
     }
 
 
     public void ChangeStoryPoint(string newStoryPoint) //??
-    {
+    { 
 
         if (dia.DoesDialogueExist(newStoryPoint))
         {
             //it's a dialogue. let's assume we should start this dialogue
 
-            //might have to enable/disable canvases but dunno how to check that yet?
+            ui.SetSoleCanvas(UIManager.CanvasType.Main);
             dia.LoadDialogue(newStoryPoint);
             return;
         }
-        else
+
+        if(characterNames.Exists(x=>x == newStoryPoint))
         {
-            Debug.LogError(newStoryPoint + "Doesn't exist in dialogue database.");
+            //Story point is a character name! That means we should probably find the intro story for that character and run that!
+            ChangeStoryPoint((newStoryPoint + "_Intro"));
+            return;
+        }
+
+        if(newStoryPoint == GlobalVariables.DRONE)
+        {
+            //DO DRONE SHIT
+            ui.SetSoleCanvas(UIManager.CanvasType.Drone);
+            nodemap.LoadNodeSpace();
+            return;
         }
 
 
@@ -82,6 +146,11 @@ public class Story : MonoBehaviour {
         //don't mind if it's a little jumpy. glitches make that work wonderfully.
 
         //need to store the node we got to and reload from that (I'm preeetty sure we can do that in VIDE). DialogueName & nodeID should be enough.
+
+
+
+        Debug.LogError(newStoryPoint + " Didn't result in any story point. Soemthing went wrong.");
+
     }
 
 

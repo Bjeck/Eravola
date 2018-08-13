@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flags:
   - Name: TariToCaudden
+    Value: 0
+    LoadOnStartup: 1
+  - Name: StartedGame
     Value: 1
-  - Name: NiceItGetsRenamed
-    Value: 0
-  - Name: WhatIsThis
-    Value: 0
+    LoadOnStartup: 1

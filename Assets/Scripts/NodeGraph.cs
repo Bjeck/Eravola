@@ -3,25 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class NodeGraph : MonoBehaviour {
 
-    [SerializeField] Flags flags;
+public class NodeGraph : MonoBehaviour
+{
+    public Story story;
 
-    public List<Node> allNodes = new List<Node>();
+    public NodeGraphObject nodegraph;
 
-    public List<Node> currentNodes = new List<Node>();
+    public List<Node> allNodes = new List<Node>(); //should get loaded on startup
 
+    public List<NodeBehaviour> currentNodes = new List<NodeBehaviour>();
 
+    [SerializeField] private GameObject nodeObject;
 
+    [SerializeField] Transform nodegraphParent;
 
+    private void Awake()
+    {
+        allNodes = nodegraph.allNodes;
+    }
+
+    //LIVE NODE GRAPH
 
     public void LoadNodeGraph()
     {
-        foreach(Flag f in flags.flags)
+        foreach(Flag f in story.flags)
         {
-            if(currentNodes.Exists(x=>x.requiredFlag.Name == f.Name))
+            if(currentNodes.Exists(x=>x.nodeIam.requiredFlag.Name == f.Name))
             {
-                Node n = currentNodes.Find(x => x.requiredFlag.Name == f.Name);
+                Node n = currentNodes.Find(x => x.nodeIam.requiredFlag.Name == f.Name).nodeIam;
                 if (n.isBound)
                 {
                     continue; //node is already bound, continue.
@@ -37,10 +47,10 @@ public class NodeGraph : MonoBehaviour {
             else
             {
                 //okay, node doesn't exist. Should it?
-                if(allNodes.Exists(x=>x.requiredFlag == f))
+                if(allNodes.Exists(x=>x.requiredFlag.Name == f.Name && x.requiredFlag.Value == f.Value))
                 {
                     //if we have a flag that's identical, then we should place it!
-                    PlaceNode(allNodes.Find(x => x.requiredFlag == f));
+                    PlaceNode(FindNodeInAll(f));
                 }
             }
         }
@@ -48,9 +58,67 @@ public class NodeGraph : MonoBehaviour {
 
     public void PlaceNode(Node n)
     {
-        //will take care of binding!
+        GameObject g = Instantiate(nodeObject, nodegraphParent);
+        NodeBehaviour objectNode = g.GetComponent<NodeBehaviour>();
+        objectNode.nodeIam = n;
+        objectNode.nodeIam.optionsFromMe.Clear();
+        g.GetComponent<RectTransform>().anchoredPosition = objectNode.nodeIam.coordinates;
+
+        currentNodes.Add(objectNode); //Do I need check that nodes can't be added twice? Hopefully that have happened earlier?
+
+        CheckBindings();
     }
 
-    //another thign I'm not doing yet is handling the optinos for the nodes we're binding to. When we bind to a node we need to add myself to its options!
 
+    public void CheckBindings()
+    {
+        //Foreach node. Check that their nodetobindto is now present in currentnodes
+        //if it is, bind it
+        //(and if it has been bound before?) hm.
+
+        foreach(NodeBehaviour nb in currentNodes)
+        {
+            NodeBehaviour nodeToBindThisTo = currentNodes.Find(x => x.nodeIam.ID == nb.nodeIam.nodeToBindTo.ID);
+            if (nodeToBindThisTo != null)
+            {
+                if(nb.nodeIam.optionsFromMe.Exists(x=>x.ID == nodeToBindThisTo.nodeIam.ID))
+                {
+                    // Already has this option! Ignore.
+                }
+                else
+                {
+                    NodeBindToNode(nodeToBindThisTo.nodeIam, nb.nodeIam);
+                }
+            }
+        }
+    }
+
+
+    public void NodeBindToNode(Node nodeThatIsOption, Node nodeOptionWillBeAddedTo)
+    {
+        // Setup options for binded node etc.
+        nodeOptionWillBeAddedTo.optionsFromMe.Add(nodeThatIsOption);
+
+        nodeThatIsOption.optionsFromMe.Add(nodeOptionWillBeAddedTo); //add the reverse as well.
+
+        nodeOptionWillBeAddedTo.isBound = true;
+
+        print("Added option to " + nodeOptionWillBeAddedTo.name + ", option is: " + nodeThatIsOption);
+    }
+
+
+    public Node FindNodeInAll(string ID)
+    {
+        return allNodes.Find(x => x.ID == ID);
+    }
+
+    public Node FindNodeInAll(Flag flag)
+    {
+        if(!allNodes.Exists(x => x.requiredFlag.Name == flag.Name))
+        {
+            Debug.LogError("Flag " + flag.Name + "doesn't exist in all nodes! How did that happen?");
+            return null;
+        }
+        return allNodes.Find(x => x.requiredFlag.Name == flag.Name);
+    }
 }

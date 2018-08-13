@@ -10,16 +10,21 @@ using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour {
 
+    public enum CanvasType { Main, Boot, Database, Drone, World }
+
     public TextRoll roll;
 
     public EventSystem eventSys;
 
-    public Canvas currentCanvas;
+    public CanvasType currentCanvas;
 
-    public Canvas mainCanvas;
-    public Canvas bootCanvas;
-    public Canvas databaseCanvas;
-    public Canvas worldCanvas;
+    public Dictionary<CanvasType, Canvas> canvases = new Dictionary<CanvasType, Canvas>();
+
+    [SerializeField] Canvas mainCanvas;
+    [SerializeField] Canvas bootCanvas;
+    [SerializeField] Canvas databaseCanvas;
+    [SerializeField] Canvas worldCanvas;
+    [SerializeField] Canvas droneCanvas;
 
     public Database database;
     
@@ -27,22 +32,26 @@ public class UIManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-
-	}
+        canvases.Add(CanvasType.Main, mainCanvas);
+        canvases.Add(CanvasType.Boot, bootCanvas);
+        canvases.Add(CanvasType.Database, databaseCanvas);
+        canvases.Add(CanvasType.Drone, droneCanvas);
+        canvases.Add(CanvasType.World, worldCanvas);
+    }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.H))
         {
-            if(currentCanvas == worldCanvas)
+            if(currentCanvas == CanvasType.World)
             {
-                SetSoleCanvas(mainCanvas);
+                SetSoleCanvas(CanvasType.Main);
                 Glitch.instance.EnableAllEffects();
                 Sound.instance.SetMasterVolume(0);
             }
             else
             {
-                SetSoleCanvas(worldCanvas);
+                SetSoleCanvas(CanvasType.World);
                 Glitch.instance.DisableAllEffects();
                 Sound.instance.SetMasterVolume(-80);
             }
@@ -52,77 +61,34 @@ public class UIManager : MonoBehaviour {
 
     public void OpenDatabase()
     {
-        EnableCanvas(databaseCanvas);
+        EnableCanvas(CanvasType.Database);
         eventSys.SetSelectedGameObject(null);
         database.ShowDatabase();
     }
 	
 
 
-    public void SetSoleCanvas(Canvas c)
+    public void SetSoleCanvas(CanvasType c)
     {
         currentCanvas = c;
-        mainCanvas.enabled = false;
-        bootCanvas.enabled = false;
-        databaseCanvas.enabled = false;
-        worldCanvas.enabled = false;
-
-        if (mainCanvas == c)
+        foreach(CanvasType ct in canvases.Keys)
         {
-            mainCanvas.enabled = true;
+            if(ct != c)
+            {
+                canvases[ct].enabled = false;
+            }
         }
-        if (bootCanvas == c)
-        {
-            bootCanvas.enabled = true;
-        }
-        if (databaseCanvas == c)
-        {
-            databaseCanvas.enabled = true;
-        }
-        if (worldCanvas == c)
-        {
-            worldCanvas.enabled = true;
-        }
+        canvases[c].enabled = true;
     }
 
-    public void EnableCanvas(Canvas c)
+    public void EnableCanvas(CanvasType c)
     {
-        if (mainCanvas == c)
-        {
-            mainCanvas.enabled = true;
-        }
-        if (bootCanvas == c)
-        {
-            bootCanvas.enabled = true;
-        }
-        if (databaseCanvas == c)
-        {
-            databaseCanvas.enabled = true;
-        }
-        if (worldCanvas == c)
-        {
-            worldCanvas.enabled = true;
-        }
+        canvases[c].enabled = true;
     }
 
-    public void DisableCanvas(Canvas c)
+    public void DisableCanvas(CanvasType c)
     {
-        if (mainCanvas == c)
-        {
-            mainCanvas.enabled = false;
-        }
-        if (bootCanvas == c)
-        {
-            bootCanvas.enabled = false;
-        }
-        if (databaseCanvas == c)
-        {
-            databaseCanvas.enabled = false;
-        }
-        if (worldCanvas == c)
-        {
-            worldCanvas.enabled = false;
-        }
+        canvases[c].enabled = false;
     }
 
 }

@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Flag
+public class DRAWERTESTER
 {
-    public string Name;
-    public bool Value;
-
-    public bool LoadOnStartup;
+    public bool boo;
 }

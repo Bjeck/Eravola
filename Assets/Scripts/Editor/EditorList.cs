@@ -31,12 +31,14 @@ public static class EditorList {
                 EditorGUILayout.PropertyField(volume);
                 EditorGUILayout.PropertyField(loop);
                 EditorGUILayout.PropertyField(mixer);
-                EditorGUILayout.EndHorizontal();
 
-                if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
+                if (GUILayout.Button("X"))
                 {
                     list.DeleteArrayElementAtIndex(i);
                 }
+
+                EditorGUILayout.EndHorizontal();
+               
                 EditorGUILayout.Space();
             }
         }
@@ -92,6 +94,12 @@ public static class EditorList {
                         EditorGUILayout.BeginHorizontal("BOX");
                         EditorGUILayout.PropertyField(volume);
                         EditorGUILayout.PropertyField(loop);
+
+                        if (GUILayout.Button("X"))
+                        {
+                            list.DeleteArrayElementAtIndex(j);
+                        }
+
                         EditorGUILayout.EndHorizontal();
                         EditorGUILayout.Space();
 
