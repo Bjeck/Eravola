@@ -19,7 +19,7 @@ public class TextRoll : MonoBehaviour {
 
     public void StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null)
     {
-        TextInfo txt = new TextInfo(@text.text.Replace("¤", System.Environment.NewLine),text.rolldelay,text.startdelay); //do I even need the ¤ check anymore? I can do linebreaks in VIDE...
+        TextInfo txt = new TextInfo(@text.text.Replace("¤", System.Environment.NewLine),text.rolldelay,text.startdelay); //do I even need the ¤ check anymore? I can do linebreaks in VIDE... I do have it in the static strings, though.
 
         print("Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
 

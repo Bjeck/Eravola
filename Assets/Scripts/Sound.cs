@@ -18,11 +18,12 @@ public class Sound : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-    public enum SFXIDS { Click, Boot, Text, Password, Message, StartProcess, Shutdown, Scanning, Warning, Hover, Work, TextGlitch, TextNoise }
+    //ONLY EVER ADD TO THE END OF THESE BECAUSE ENUMS :(
+    public enum SFXIDS { Click, Boot, Text, Password, Message, StartProcess, Shutdown, Scanning, Warning, Hover, Work, TextGlitch, TextNoise, Bleep }
 
     public enum SFXLISTS { Keyboards, Glitches }
     
-    public enum AMBIENCES { Computer, Room, Inn, Pond, Village, DeadVillage, Wind }
+    public enum AMBIENCES { Computer, Room, Inn, Pond, Village, DeadVillage, Wind, Drone }
 
 
     public enum UNIQUESOURCES { Text }
@@ -167,6 +168,12 @@ public class Sound : MonoBehaviour {
         audiosources[poolidx].Play();
     }
 
+    /// <summary>
+    /// Playing Sacred means that it plays without switching which audio source plays the file. This is good for sound effects that play a lot and never at the same time. For example, text beeping.
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="uniqueID"></param>
+    /// <param name="randomPitch"></param>
     public void PlaySacred(SFXIDS sound, UNIQUESOURCES uniqueID, bool randomPitch = false)
     {
         AudioSource source;
@@ -218,6 +225,18 @@ public class Sound : MonoBehaviour {
         SetAudioSourceToInfoSettings(audiosources[poolidx], s);
         audiosources[poolidx].Play();
 
+    }
+
+    public void StopAmbient(AMBIENCES sound)
+    {
+        AmbienceInfo s = ambiences[sound];
+        for (int i = 0; i < audiosources.Count; i++)
+        {
+            if(audiosources[i].clip == s.audio)
+            {
+                audiosources[i].Stop();
+            }
+        }
     }
 
     public void PlayGlitched(SFXIDS sound)  //the idea being I can play any sound glitched -- but dunno how it'll work yet.

@@ -113,8 +113,6 @@ public class NodeGraph : MonoBehaviour
         nodeThatIsOption.optionsFromMe.Add(nodeOptionWillBeAddedTo); //add the reverse as well.
 
         nodeOptionWillBeAddedTo.isBound = true;
-
-        print("Added option to " + nodeOptionWillBeAddedTo.name + ", option is: " + nodeThatIsOption);
     }
 
 

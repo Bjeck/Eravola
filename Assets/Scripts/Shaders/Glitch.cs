@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.PostProcessing;
+using Kino;
 
 public class Glitch : MonoBehaviour {
+
+    public enum TimingNames { Standard, Mystery, Tension, Cursed, Dangerous, Bad, Terrible, Insane }
 
     public static Glitch instance { get; private set; }
 
@@ -22,10 +25,14 @@ public class Glitch : MonoBehaviour {
     public CRTShaderScript crt;
     public VHSPostProcessEffect vhsEf;
     public PostProcessingBehaviour postProcessing;
+    public AnalogGlitch analogGlitch;
+    public DigitalGlitch digitalGlitch;
 
-    public Dictionary<string, GlitchTiming> timings = new Dictionary<string, GlitchTiming>();
+    public List<GlitchText> texts = new List<GlitchText>();
 
-    GlitchTiming curTiming;
+    public Dictionary<TimingNames, GlitchTiming> timings = new Dictionary<TimingNames, GlitchTiming>();
+
+    public GlitchTiming curTiming;
 
     [SerializeField] float timeToGlitch = 0f;
     float glitchSustain = 0f;
@@ -37,7 +44,9 @@ public class Glitch : MonoBehaviour {
 
         SetupTimings();
 
-        curTiming = timings["default"]; //dEbug for now
+        texts.AddRange(GameObject.FindObjectsOfType<GlitchText>());
+
+        curTiming = timings[TimingNames.Standard]; //dEbug for now
 
         timeToGlitch = UnityEngine.Random.Range(curTiming.timeToMin, curTiming.timeToMax);
 
@@ -62,6 +71,12 @@ public class Glitch : MonoBehaviour {
         timeToGlitch = UnityEngine.Random.Range(curTiming.timeToMin, curTiming.timeToMax);
         glitchSustain = UnityEngine.Random.Range(curTiming.sustainMin, curTiming.sustainMax);
         glEf.intensity = glitchIntensity * Random.Range(0.5f, 1.5f);
+        analogGlitch.intensity = glitchIntensity;
+
+        analogGlitch.enabled = true;
+        analogGlitch.scanLineJitter = Random.Range(0f, 0.3f);
+        analogGlitch.verticalJump = 0f;
+        analogGlitch.colorDrift = Random.Range(0f, 0.8f);
 
         while (glitchSustain > 0)
         {
@@ -70,6 +85,7 @@ public class Glitch : MonoBehaviour {
         }   
         glEf.intensity = 0;
         glEf.enabled = false;
+        analogGlitch.enabled = false;
         Sound.instance.EndGlitch();
 
         yield return 0;
@@ -92,6 +108,12 @@ public class Glitch : MonoBehaviour {
         StartCoroutine(GlitchScreenOC(time, -1, false));
     }
 
+    public void GlitchScreenOCBoot(float time, float inten = -1f)
+    {
+        analogGlitch.verticalJump = Random.Range(0.4f, 1f);
+        StartCoroutine(GlitchScreenOC(time, -1, false));
+    }
+
     IEnumerator GlitchScreenOC(float time, float inten = -1f, bool withVHS = false)
     {
         if (inten == -1f)
@@ -100,8 +122,12 @@ public class Glitch : MonoBehaviour {
         }
 
         glEf.enabled = true;
-        vhsEf.enabled = true;
         glEf.intensity = inten * Random.Range(0.8f, 1.2f);
+        analogGlitch.intensity = glitchIntensity;
+
+        analogGlitch.enabled = true;
+        analogGlitch.scanLineJitter = Random.Range(0f, 0.6f);
+        analogGlitch.colorDrift = Random.Range(0f, 0.8f);
 
         while (time > 0)
         {
@@ -109,8 +135,9 @@ public class Glitch : MonoBehaviour {
             yield return 0;
         }
         glEf.intensity = 0;
-        vhsEf.enabled = false;
+        analogGlitch.intensity = 0;
         glEf.enabled = false;
+        analogGlitch.enabled = false;
         Sound.instance.EndGlitch();
         yield return 0;
     }
@@ -135,11 +162,37 @@ public class Glitch : MonoBehaviour {
         postProcessing.enabled = true;
     }
 
+    public void EnableDroneEffects()
+    {
+        vhsEf.enabled = true;
+    }
+
+    public void DisableDroneEffects()
+    {
+        vhsEf.enabled = false;
+    }
 
 
+    public void ChangeTiming(string timingName)
+    {
+        try
+        {
+            TimingNames nam = (TimingNames) System.Enum.Parse(typeof(TimingNames), timingName);
+            ChangeTiming(nam);
+        }
+        catch
+        {
+            Debug.LogWarning("Couldn't parse name: " + timingName + ". Did you mispell? Should be in the TimingNames enum.");
+        }
+    }
 
-
-
+    public void ChangeTiming(TimingNames timingName)
+    {
+        if (timings.ContainsKey(timingName))
+        {
+            curTiming = timings[timingName];
+        }
+    }
 
 
     void SetupTimings()
@@ -150,18 +203,45 @@ public class Glitch : MonoBehaviour {
         t.sustainMin = 0.1f;
         t.sustainMax = 0.4f;
 
-        timings.Add("default", t);
+        t.textTimeMin = 2f;
+        t.textTimeMax = 30f;
+        t.sustainMin = 0.03f;
+        t.sustainMax = 0.08f;
+
+        timings.Add(Glitch.TimingNames.Standard, t);
+
+
+        t.timeToMin = 1f;
+        t.timeToMax = 20f;
+        t.sustainMin = 0.1f;
+        t.sustainMax = 0.4f;
+
+        t.textTimeMin = 2f;
+        t.textTimeMax = 3f;
+        t.sustainMin = 0.13f;
+        t.sustainMax = 0.28f;
+
+        timings.Add(Glitch.TimingNames.Mystery, t); //THIS IS NOT DONE YET!
+
+
     }
+
 }
 
 
 
-
+[System.Serializable]
 public class GlitchTiming
 {
     public float timeToMin = 1f;
     public float timeToMax = 5f;
     public float sustainMin = 0.03f;
     public float sustainMax = 0.05f;
+
+    public float textTimeMin = 1;
+    public float textTimeMax = 20;
+    public float textSustainMin = 0.1f;
+    public float textSustainMax = 0.2f;
+
 }
 

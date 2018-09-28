@@ -12,6 +12,8 @@ public class UIManager : MonoBehaviour {
 
     public enum CanvasType { Main, Boot, Database, Drone, World }
 
+    public Story story;
+
     public TextRoll roll;
 
     public EventSystem eventSys;
@@ -41,22 +43,34 @@ public class UIManager : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            if(currentCanvas == CanvasType.World)
+            if (Input.GetKeyDown(KeyCode.H))
             {
-                SetSoleCanvas(CanvasType.Main);
-                Glitch.instance.EnableAllEffects();
-                Sound.instance.SetMasterVolume(0);
+                if (currentCanvas == CanvasType.World)
+                {
+                    SetSoleCanvas(CanvasType.Main);
+                    Glitch.instance.EnableAllEffects();
+                    Sound.instance.SetMasterVolume(0);
+                }
+                else
+                {
+                    SetSoleCanvas(CanvasType.World);
+                    Glitch.instance.DisableAllEffects();
+                    Sound.instance.SetMasterVolume(-80);
+                }
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.D))
             {
-                SetSoleCanvas(CanvasType.World);
-                Glitch.instance.DisableAllEffects();
-                Sound.instance.SetMasterVolume(-80);
+                if(currentCanvas != CanvasType.Drone)
+                {
+                    story.ChangeStoryPoint(GlobalVariables.DRONE);
+                }
             }
-            
+
         }
+
     }
 
     public void OpenDatabase()

@@ -34,55 +34,63 @@ public class GlitchEffect : MonoBehaviour {
 			return curMaterial;
 		}
 	}
-	
-	// Called by camera to apply image effect
-	void OnRenderImage (RenderTexture source, RenderTexture destination) {
+
+    private void Start()
+    {
+        material.SetTexture("_DispTex", displacementMap);
+    }
+
+    // Called by camera to apply image effect
+    void OnRenderImage (RenderTexture source, RenderTexture destination) {
 		
 		material.SetFloat("_Intensity", intensity);
-		material.SetTexture("_DispTex", displacementMap);
 		
 		glitchup += Time.deltaTime * intensity;
 		glitchdown += Time.deltaTime * intensity;
 		flicker += Time.deltaTime * intensity;
 
-		if(flicker > flickerTime){ //FLIP
-			material.SetFloat("filterRadius", Random.Range(-3f, 3f) * intensity);
-			flicker = 0;
-			flickerTime = Random.value;
-			Sound.instance.PlayGlitch(1);
+        if (flicker > flickerTime) //FLIP
+        {
+            material.SetFloat("filterRadius", Random.Range(-3f, 3f) * intensity);
+            flicker = 0;
+            flickerTime = Random.value;
+            Sound.instance.PlayGlitch(1);
 
-		}
+        }
 
-		if(glitchup > glitchupTime){
-			if(Random.value < 0.1f * intensity)
-				material.SetFloat("flip_up", Random.Range(0, 1f) * intensity);
-			else
-				material.SetFloat("flip_up", 0);
+        if (glitchup > glitchupTime) //FLIP
+        {
+            if (Random.value < 0.1f * intensity)
+                material.SetFloat("flip_up", Random.Range(0, 1f) * intensity);
+            else
+                material.SetFloat("flip_up", 0);
 
             Sound.instance.PlayGlitch(2);
             glitchup = 0;
-			glitchupTime = Random.value/10f;
+            glitchupTime = Random.value / 10f;
 
-		}
+        }
 
-		if(glitchdown > glitchdownTime){
-			if(Random.value < 0.1f * intensity)
-				material.SetFloat("flip_down", 1-Random.Range(0, 1f) * intensity);
-			else
-				material.SetFloat("flip_down", 1);
-			
-			glitchdown = 0;
-			glitchdownTime = Random.value/10f;
-		}
+        if (glitchdown > glitchdownTime)
+        {
+            if (Random.value < 0.1f * intensity)
+                material.SetFloat("flip_down", 1 - Random.Range(0, 1f) * intensity);
+            else
+                material.SetFloat("flip_down", 1);
 
-		if(Random.value < 0.05 * intensity){
-			material.SetFloat("displace", Random.value * intensity);
-			material.SetFloat("scale", 1-Random.value * intensity);
+            glitchdown = 0;
+            glitchdownTime = Random.value / 10f;
+        }
+
+        if (Random.value < 0.05 * intensity)
+        {
+            material.SetFloat("displace", Random.value * intensity);
+            material.SetFloat("scale", 1 - Random.value * intensity);
             Sound.instance.PlayGlitch(0);
         }
         else
-			material.SetFloat("displace", 0);
+            material.SetFloat("displace", 0);
 
-		Graphics.Blit (source, destination, material);
+        Graphics.Blit (source, destination, material);
 	}
 }

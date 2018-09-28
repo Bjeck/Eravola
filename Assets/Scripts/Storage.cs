@@ -6,4 +6,6 @@ public static class Storage
 {
     public static string CurrentNodeID;
 
+    public static string CurrentStoryPoint;
+
 }

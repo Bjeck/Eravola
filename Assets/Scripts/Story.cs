@@ -88,6 +88,8 @@ public class Story : MonoBehaviour
         LoadFlagsOnStartUp();
         LoadCharacterNamesOnStartUp();
 
+        Sound.instance.PlayAmbient(Sound.AMBIENCES.Room);
+
 #if UNITY_EDITOR
         LoadEditorValues();
 #endif
@@ -96,6 +98,9 @@ public class Story : MonoBehaviour
         {
             if (debugSkipToStory)
             {
+                Sound.instance.Play(Sound.SFXIDS.Boot);
+                Sound.instance.PlayAmbient(Sound.AMBIENCES.Computer);
+
                 if (startAtDrone)
                 {
                     ChangeStoryPoint(GlobalVariables.DRONE);
@@ -115,7 +120,9 @@ public class Story : MonoBehaviour
 
 
     public void ChangeStoryPoint(string newStoryPoint) //??
-    { 
+    {
+        string previousStoryPoint = Storage.CurrentStoryPoint;
+        Storage.CurrentStoryPoint = newStoryPoint;
 
         if (dia.DoesDialogueExist(newStoryPoint))
         {
@@ -128,8 +135,16 @@ public class Story : MonoBehaviour
 
         if(characterNames.Exists(x=>x == newStoryPoint))
         {
-            //Story point is a character name! That means we should probably find the intro story for that character and run that!
-            ChangeStoryPoint((newStoryPoint + "_Intro"));
+            //Story point is a character name! That means we should probably find the intro story for that character and run that! First check if we're coming from Drone to handle through sequence.
+            if(previousStoryPoint == GlobalVariables.DRONE)
+            {
+                sequences.RunSequence(SequenceName.LoadToStoryFromDrone, () => { ChangeStoryPoint((newStoryPoint + "_Intro")); });
+            }
+            else
+            {
+                ChangeStoryPoint((newStoryPoint + "_Intro")); //I don't really see how this should happen, but it might!
+                Sound.instance.StopAmbient(Sound.AMBIENCES.Drone);
+            }
             return;
         }
 
@@ -138,6 +153,8 @@ public class Story : MonoBehaviour
             //DO DRONE SHIT
             ui.SetSoleCanvas(UIManager.CanvasType.Drone);
             nodemap.LoadNodeSpace();
+            Sound.instance.PlayAmbient(Sound.AMBIENCES.Drone);
+            Glitch.instance.EnableDroneEffects();
             return;
         }
 
@@ -148,7 +165,7 @@ public class Story : MonoBehaviour
         //need to store the node we got to and reload from that (I'm preeetty sure we can do that in VIDE). DialogueName & nodeID should be enough.
 
 
-
+        Storage.CurrentStoryPoint = previousStoryPoint; //revert back if the change didn't actually work.
         Debug.LogError(newStoryPoint + " Didn't result in any story point. Soemthing went wrong.");
 
     }

@@ -7,7 +7,7 @@ public static class GlobalStrings {
     public static TextInfo BootUpString = new TextInfo("                                      [ERAVOLA INVESTIGATION UNIT]                      ¤¤Boot initiated. Checking Status...Done.                ¤Transmission OK. Sequence found.                 ¤Loading... Done.         ¤Accessing Data... ... ...                          ¤Done.                                       ¤¤¤Password:"
                                                         ,0.05f,0f);
 
-
+    public static TextInfo LoadingCharacterString = new TextInfo("Searching for relevant Data... ... ...         ¤¤Transmission OK. Sequence found.                 ¤Loading... ... ¤¤Done.            ", 0.04f, 0f);
 
 
 }

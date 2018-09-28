@@ -38,9 +38,12 @@ public class DebugMenu : EditorWindow {
 
     private void OnEnable()
     {
-        story = GameObject.Find("Story").GetComponent<Story>();
-        LoadFiles();
-        FocusSearchField();
+        if (GameObject.Find("Story"))
+        {
+            story = GameObject.Find("Story").GetComponent<Story>();
+            LoadFiles();
+            FocusSearchField();
+        }
     }
 
     public void FocusSearchField()
