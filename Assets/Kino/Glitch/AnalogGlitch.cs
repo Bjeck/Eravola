@@ -77,7 +77,7 @@ namespace Kino
 
         #region Private Properties
 
-        [SerializeField] Shader _shader;
+        public Shader _shader;
 
         Material _material;
 

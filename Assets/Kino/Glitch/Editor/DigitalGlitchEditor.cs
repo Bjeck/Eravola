@@ -30,10 +30,12 @@ namespace Kino
     public class DigitalGlitchEditor : Editor
     {
         SerializedProperty _intensity;
+        SerializedProperty _shader;
 
         void OnEnable()
         {
             _intensity = serializedObject.FindProperty("_intensity");
+            _shader = serializedObject.FindProperty("_shader");
         }
 
         public override void OnInspectorGUI()
@@ -41,6 +43,7 @@ namespace Kino
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_intensity);
+            EditorGUILayout.PropertyField(_shader);
 
             serializedObject.ApplyModifiedProperties();
         }

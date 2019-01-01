@@ -9,7 +9,7 @@ public class ScreenEffectTest : MonoBehaviour {
 
     public void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        Graphics.Blit(source, mat);
+        Graphics.Blit(source, destination, mat);
     }
 
 

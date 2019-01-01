@@ -33,6 +33,7 @@ namespace Kino
         SerializedProperty _verticalJump;
         SerializedProperty _horizontalShake;
         SerializedProperty _colorDrift;
+        SerializedProperty _shader;
 
         void OnEnable()
         {
@@ -40,6 +41,7 @@ namespace Kino
             _verticalJump = serializedObject.FindProperty("_verticalJump");
             _horizontalShake = serializedObject.FindProperty("_horizontalShake");
             _colorDrift = serializedObject.FindProperty("_colorDrift");
+            _shader = serializedObject.FindProperty("_shader");
         }
 
         public override void OnInspectorGUI()
@@ -50,6 +52,8 @@ namespace Kino
             EditorGUILayout.PropertyField(_verticalJump);
             EditorGUILayout.PropertyField(_horizontalShake);
             EditorGUILayout.PropertyField(_colorDrift);
+            EditorGUILayout.PropertyField(_shader);
+
 
             serializedObject.ApplyModifiedProperties();
         }
