@@ -71,10 +71,10 @@ public class Dialogues : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
-        {
-            NextNode();
-        }
+        //if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    NextNode();
+        //}
     }
 
 

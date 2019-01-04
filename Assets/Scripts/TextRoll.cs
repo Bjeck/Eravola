@@ -7,48 +7,66 @@ using TMPro;
 
 public class TextRoll : MonoBehaviour {
 
-    public List<RollOptions> rollingTexts = new List<RollOptions>();
-    
+    Dictionary<TextMeshProUGUI, RollInfo> rollings = new Dictionary<TextMeshProUGUI, RollInfo>();
 
     public void StartRoll(string text, TextMeshProUGUI UI, Action callback = null)
     {
-        text = @text.Replace("¤", System.Environment.NewLine);
+        //text = @text.Replace("¤", System.Environment.NewLine);
         TextInfo textInfo = new TextInfo(text, GlobalVariables.TextRollDelay, GlobalVariables.TextStartDelay);
-        StartCoroutine(Roll(textInfo, UI, callback));
+        StartRoll(textInfo, UI, callback);
     }
 
     public void StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null)
     {
-        TextInfo txt = new TextInfo(@text.text.Replace("¤", System.Environment.NewLine),text.rolldelay,text.startdelay); //do I even need the ¤ check anymore? I can do linebreaks in VIDE... I do have it in the static strings, though.
+        TextInfo txt = new TextInfo(text.text,text.rolldelay,text.startdelay);
 
         print("Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
 
-        StartCoroutine(Roll(txt, UI, callback));
+        if (!rollings.ContainsKey(UI))
+        {
+            RollInfo info = new RollInfo(UI, text, callback);
+            rollings.Add(UI, info);
+        }
+        else
+        {
+            rollings[UI].textQueue.Enqueue(text);
+        }
+
+        if (!rollings[UI].isRunning)
+        {
+            rollings[UI].shouldStop = false;
+            StartCoroutine(Roll(rollings[UI].textQueue.Dequeue(), rollings[UI]));
+        }
+
     }
 
 
-    public IEnumerator Roll(TextInfo text, TextMeshProUGUI UI, Action callback = null)
+    //so the idea: when we get a new textinfo, we check the rolling dictionary to see if we have anything that rolls into that UI already (hence why UI is key). if not, we create a new one. then we add it to the queue of that list.
+    //after we've added to the queue we check if that's already running and if not we run it at the top of the queue
+    //at the end of the roll function (or in a top func?) we check if there are more things in the queue, and if so, we run those. each can call a callback?
+
+
+
+    public IEnumerator Roll(TextInfo text, RollInfo roll)
     {
-
-        RollOptions options = new RollOptions(UI, text, callback);
-        rollingTexts.Add(options);
-
-
         bool isColored = false;
 
-        int i = 0;
+        roll.currentlyWritingTextInfo = text;
+        roll.isRunning = true;
 
         if(text.startdelay > 0)
         {
             yield return new WaitForSeconds(text.startdelay);
         }
 
+
+        int i = 0;
         while (i < text.text.Length)
         {
 
-            if (options.shouldStop)
+            if (roll.shouldStop)
             {
-                EndRoll(options);
+                EndRoll(roll);
                 yield break;
             }
             //	if(shouldStopRolling){
@@ -81,25 +99,25 @@ public class TextRoll : MonoBehaviour {
             if (text.text[i] == '<')
             {
                 //default Escape Note: Color text.
-                UI.text += "<color=#1f1f1fff>" + "</color>"; //wow that hardcoding :P
+                roll.ui.text += "<color=#1f1f1fff>" + "</color>"; //wow that hardcoding :P
                 isColored = true;
             }
             else if (isColored)
             {
-                UI.text = UI.text.Substring(0, UI.text.Length - 8); //?? why is it overwriting UI.text here?
+                roll.ui.text = roll.ui.text.Substring(0, roll.ui.text.Length - 8); //?? deleting the </color> stuff i think?
                 if (text.text[i] == '>')
                 {
                     isColored = false;
-                    UI.text += "</color>";
+                    roll.ui.text += "</color>";
                 }
                 else
                 {
-                    UI.text += text.text[i] + "</color>";
+                    roll.ui.text += text.text[i] + "</color>";
                 }
             }
             else
             {
-                UI.text += text.text[i];
+                roll.ui.text += text.text[i];
             }
             if (text.text[i] != ' ')
             {
@@ -112,33 +130,51 @@ public class TextRoll : MonoBehaviour {
         }
 
 
-        rollingTexts.Remove(options);
 
-        if(callback != null)
+        if (rollings[roll.ui].textQueue.Count > 0)
         {
-            callback();
+            StartCoroutine(Roll(rollings[roll.ui].textQueue.Dequeue(), roll));
         }
+        else
+        {
+            roll.isRunning = false;
+            if (roll.callback != null)
+            {
+                roll.callback();
+            }
+        }
+
     }
 
     public void FinishRollForced(TextMeshProUGUI ui)
     {
-        if (rollingTexts.Exists(x => x.ui == ui))
+        Debug.Log("force stopping " + ui.name);
+        if (rollings.ContainsKey(ui))
         {
-            rollingTexts.Find(x => x.ui == ui).shouldStop = true;
+            rollings[ui].shouldStop = true;
         }
     }
 
-    private void EndRoll(RollOptions options)
+    private void EndRoll(RollInfo roll)
     {
-        options.ui.text = options.text.text;
-        options.isRunning = false;
 
-        rollingTexts.Remove(options);
+        roll.ui.text = roll.currentlyWritingTextInfo.text;
 
-
-        if (options.callback != null)
+        int count = roll.textQueue.Count;
+        for (int i = 0; i < count; i++)
         {
-            options.callback();
+            //if(roll.textQueue.Peek() != null)
+            //{
+                roll.ui.text += roll.textQueue.Dequeue().text;
+            //}
+        }
+        
+
+        roll.isRunning = false;
+
+        if (roll.callback != null)
+        {
+            roll.callback();
         }
     }
 
@@ -147,20 +183,20 @@ public class TextRoll : MonoBehaviour {
 
 }
 
-public class RollOptions
+public class RollInfo
 {
     public TextMeshProUGUI ui;
-    public TextInfo text;
+    public TextInfo currentlyWritingTextInfo;
+    public Queue<TextInfo> textQueue = new Queue<TextInfo>();
     public Action callback;
     public bool isRunning = false;
     public bool shouldStop = false;
     
-    public RollOptions(TextMeshProUGUI u, TextInfo t, Action c)
+    public RollInfo(TextMeshProUGUI u, TextInfo t, Action c)
     {
         ui = u;
-        text = t;
+        textQueue.Enqueue(t);
         callback = c;
-        isRunning = true;
     }
 
 }

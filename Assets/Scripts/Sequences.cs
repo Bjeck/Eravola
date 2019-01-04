@@ -79,7 +79,8 @@ public class Sequences : MonoBehaviour {
 
         TextInfo txt = new TextInfo(GlobalStrings.BootUpString.text.Replace("¤", System.Environment.NewLine), GlobalStrings.BootUpString.rolldelay, GlobalStrings.BootUpString.startdelay);
 
-        IEnumerator roll = Roller.Roll(txt, bootUpText);
+        RollInfo rollInfo = new RollInfo(bootUpText, txt, null);
+        IEnumerator roll = Roller.Roll(txt, rollInfo); //i don't like bypassing the start like this...
       //  StartCoroutine()
         while (roll.MoveNext())
         {

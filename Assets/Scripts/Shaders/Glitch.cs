@@ -24,7 +24,6 @@ public class Glitch : MonoBehaviour {
     public GlitchEffect glEf;
     public CRTShaderScript crt;
     public VHSPostProcessEffect vhsEf;
-    public PostProcessingBehaviour postProcessing;
     public AnalogGlitch analogGlitch;
     public DigitalGlitch digitalGlitch;
 
@@ -150,7 +149,6 @@ public class Glitch : MonoBehaviour {
         // glEf.enabled = false;
         crt.enabled = false;
         vhsEf.enabled = false;
-        postProcessing.enabled = false;
     }
 
     public void EnableAllEffects()
@@ -159,7 +157,6 @@ public class Glitch : MonoBehaviour {
 //        Sound.instance.vo
         crt.enabled = true;
         vhsEf.enabled = true;
-        postProcessing.enabled = true;
     }
 
     public void EnableDroneEffects()
@@ -205,11 +202,12 @@ public class Glitch : MonoBehaviour {
 
         t.textTimeMin = 2f;
         t.textTimeMax = 30f;
-        t.sustainMin = 0.03f;
-        t.sustainMax = 0.08f;
-
+        t.textSustainMin = 0.03f;
+        t.textSustainMax = 0.08f;
+        t.name = TimingNames.Standard;
         timings.Add(Glitch.TimingNames.Standard, t);
 
+        t = new GlitchTiming();
 
         t.timeToMin = 1f;
         t.timeToMax = 20f;
@@ -218,9 +216,9 @@ public class Glitch : MonoBehaviour {
 
         t.textTimeMin = 2f;
         t.textTimeMax = 3f;
-        t.sustainMin = 0.13f;
-        t.sustainMax = 0.28f;
-
+        t.textSustainMin = 0.13f;
+        t.textSustainMax = 0.28f;
+        t.name = TimingNames.Mystery;
         timings.Add(Glitch.TimingNames.Mystery, t); //THIS IS NOT DONE YET!
 
 
@@ -233,6 +231,7 @@ public class Glitch : MonoBehaviour {
 [System.Serializable]
 public class GlitchTiming
 {
+    public Glitch.TimingNames name;
     public float timeToMin = 1f;
     public float timeToMax = 5f;
     public float sustainMin = 0.03f;

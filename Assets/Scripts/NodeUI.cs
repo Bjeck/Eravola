@@ -43,7 +43,7 @@ public class NodeUI : MonoBehaviour {
 
     public void LoadNode(string nodeID)
     {
-        Node node = nodegraph.currentNodes.Find(x => x.nodeIam.name == nodeID).nodeIam;
+        Node node = nodegraph.currentNodes.Find(x => x.nodeIam.name.Contains(nodeID)).nodeIam;
 
         Clear();
         if(node == null)

@@ -13,7 +13,6 @@ using UnityEditor;
 /// </summary>
 public class Story : MonoBehaviour
 {
-
     [SerializeField] private Flags defaultflags; //This is editortime
 
     public List<Flag> flags; //This is runtime
@@ -21,6 +20,7 @@ public class Story : MonoBehaviour
     public Sequences sequences;
     public UIManager ui;
     public Dialogues dia;
+    public InkDialogues inkDia;
     public NodeUI nodemap;
 
     public bool startStoryOnStartup = true;
@@ -124,12 +124,14 @@ public class Story : MonoBehaviour
         string previousStoryPoint = Storage.CurrentStoryPoint;
         Storage.CurrentStoryPoint = newStoryPoint;
 
-        if (dia.DoesDialogueExist(newStoryPoint))
+        //inkDia.StartDialogue("story");
+        //return;
+        Debug.Log(newStoryPoint);
+        if (InkDatabase.Contains(newStoryPoint))
         {
             //it's a dialogue. let's assume we should start this dialogue
-
             ui.SetSoleCanvas(UIManager.CanvasType.Main);
-            dia.LoadDialogue(newStoryPoint);
+            inkDia.StartDialogue(newStoryPoint);
             return;
         }
 
@@ -164,10 +166,12 @@ public class Story : MonoBehaviour
 
         //need to store the node we got to and reload from that (I'm preeetty sure we can do that in VIDE). DialogueName & nodeID should be enough.
 
-
-        Storage.CurrentStoryPoint = previousStoryPoint; //revert back if the change didn't actually work.
+        if(previousStoryPoint != null)
+        {
+            Storage.CurrentStoryPoint = previousStoryPoint; //revert back if the change didn't actually work.
+            ChangeStoryPoint(Storage.CurrentStoryPoint);
+        }
         Debug.LogError(newStoryPoint + " Didn't result in any story point. Soemthing went wrong.");
-
     }
 
 

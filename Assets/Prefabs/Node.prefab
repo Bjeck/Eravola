@@ -410,5 +410,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeIam: {fileID: 11400000, guid: 3bc6c960aac88cc4fb848dcc08a6a3ff, type: 2}
-  text: {fileID: 0}
-  toBindToText: {fileID: 0}
+  text: {fileID: 7627628984219386883}
+  toBindToText: {fileID: 1795861223198241649}
