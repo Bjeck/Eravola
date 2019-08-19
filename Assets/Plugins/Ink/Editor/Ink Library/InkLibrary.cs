@@ -49,12 +49,16 @@ namespace Ink.UnityIntegration {
 		/// <summary>
 		/// Removes and null references in the library
 		/// </summary>
-		public static void Clean () {
+		public static bool Clean () {
+            bool wasDirty = false;
 			for (int i = InkLibrary.Instance.inkLibrary.Count - 1; i >= 0; i--) {
 				InkFile inkFile = InkLibrary.Instance.inkLibrary[i];
-				if (inkFile.inkAsset == null)
+				if (inkFile.inkAsset == null) {
 					InkLibrary.Instance.inkLibrary.RemoveAt(i);
+                    wasDirty = true;
+                }
 			}
+            return wasDirty;
 		}
 
 		/// <summary>
@@ -62,13 +66,17 @@ namespace Ink.UnityIntegration {
 		/// Can be called manually, but incurs a performance cost.
 		/// </summary>
 		public static void Rebuild () {
-			string[] inkFilePaths = GetAllInkFilePaths();
+            // Remove any old file connections
+            Clean();
 
+            // Add any new file connections (if any are found it replaces the old library entirely)
+			string[] inkFilePaths = GetAllInkFilePaths();
 			bool inkLibraryChanged = false;
 			List<InkFile> newInkLibrary = new List<InkFile>(inkFilePaths.Length);
 			for (int i = 0; i < inkFilePaths.Length; i++) {
 				InkFile inkFile = GetInkFileWithAbsolutePath(inkFilePaths [i]);
-				if(inkFile == null) {
+				// If the ink library doesn't have a representation for this file, then make one 
+                if(inkFile == null) {
 					inkLibraryChanged = true;
 					string localAssetPath = InkEditorUtils.AbsoluteToUnityRelativePath(inkFilePaths [i]);
 					DefaultAsset inkFileAsset = AssetDatabase.LoadAssetAtPath<DefaultAsset>(localAssetPath);
@@ -88,9 +96,11 @@ namespace Ink.UnityIntegration {
 			if(inkLibraryChanged)
 				Instance.inkLibrary = newInkLibrary;
 
-			var metaFiles = Instance.inkLibrary.Select(x => x.metaInfo).ToList();
-			bool metaFilesChanged = InkMetaLibrary.Instance.metaLibrary.SequenceEqual(metaFiles);
-			if(metaFilesChanged) InkMetaLibrary.Instance.metaLibrary = metaFiles;
+            // Validate the meta files
+			var metaFiles = Instance.inkLibrary.Select(x => x.metaInfo);
+			bool metaFilesChanged = !InkMetaLibrary.Instance.metaLibrary.SequenceEqual(metaFiles);
+			if(metaFilesChanged) 
+				InkMetaLibrary.Instance.metaLibrary = metaFiles.ToList();
 
 			InkMetaLibrary.RebuildInkFileConnections();
 
@@ -116,6 +126,7 @@ namespace Ink.UnityIntegration {
 			InkMetaLibrary.RebuildInkFileConnections();
 		}
 
+        // Finds absolute file paths of all the ink files in Application.dataPath
 		private static string[] GetAllInkFilePaths () {
 			string[] inkFilePaths = Directory.GetFiles(Application.dataPath, "*.ink", SearchOption.AllDirectories);
 			for (int i = 0; i < inkFilePaths.Length; i++) {
@@ -167,6 +178,7 @@ namespace Ink.UnityIntegration {
 					return inkFile;
 				}
 			}
+			Debug.LogWarning (file + " missing from ink library. Please rebuild.");
 			return null;
 		}
 

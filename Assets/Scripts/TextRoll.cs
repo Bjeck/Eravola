@@ -9,36 +9,50 @@ public class TextRoll : MonoBehaviour {
 
     Dictionary<TextMeshProUGUI, RollInfo> rollings = new Dictionary<TextMeshProUGUI, RollInfo>();
 
-    public void StartRoll(string text, TextMeshProUGUI UI, Action callback = null)
+    public void StartRoll(string text, TextMeshProUGUI UI, Action callback = null, bool start = true)
     {
         //text = @text.Replace("¤", System.Environment.NewLine);
         TextInfo textInfo = new TextInfo(text, GlobalVariables.TextRollDelay, GlobalVariables.TextStartDelay);
-        StartRoll(textInfo, UI, callback);
+        StartRoll(textInfo, UI, callback, start);
     }
 
-    public void StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null)
+
+    public IEnumerator StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null, bool start = true)
     {
-        TextInfo txt = new TextInfo(text.text,text.rolldelay,text.startdelay);
+        return StartRoll(text, new RollInfo(UI, text, callback), callback, start);
+    }
+
+
+    public IEnumerator StartRoll(TextInfo text, RollInfo rollInfo, Action callback = null, bool start = true)
+    {
+        TextInfo txt = new TextInfo(text.text, text.rolldelay, text.startdelay);
+        IEnumerator enumerator = null;
 
         print("Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
 
-        if (!rollings.ContainsKey(UI))
+        if (!rollings.ContainsKey(rollInfo.ui))
         {
-            RollInfo info = new RollInfo(UI, text, callback);
-            rollings.Add(UI, info);
+            rollings.Add(rollInfo.ui, rollInfo);
         }
         else
         {
-            rollings[UI].textQueue.Enqueue(text);
+            rollings[rollInfo.ui].textQueue.Enqueue(text);
         }
 
-        if (!rollings[UI].isRunning)
+        if (!rollings[rollInfo.ui].isRunning)
         {
-            rollings[UI].shouldStop = false;
-            StartCoroutine(Roll(rollings[UI].textQueue.Dequeue(), rollings[UI]));
+            rollings[rollInfo.ui].shouldStop = false;
+            enumerator = Roll(rollings[rollInfo.ui].textQueue.Dequeue(), rollings[rollInfo.ui]);
+            if (start)
+            {
+                StartCoroutine(enumerator);
+            }
         }
 
+        return enumerator;
     }
+
+
 
 
     //so the idea: when we get a new textinfo, we check the rolling dictionary to see if we have anything that rolls into that UI already (hence why UI is key). if not, we create a new one. then we add it to the queue of that list.
