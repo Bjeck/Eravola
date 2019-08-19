@@ -782,7 +782,7 @@ GameObject:
 --- !u!199 &227635759
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -9903,12 +9903,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114156912750723052, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
-        type: 3}
-      propertyPath: nodeObject
-      value: 
-      objectReference: {fileID: 1804299488156976, guid: 687ebdcce11b6bc4fa3ec15f86be85ac,
-        type: 3}
     - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: m_Camera
@@ -9919,6 +9913,12 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114156912750723052, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
+        type: 3}
+      propertyPath: nodeObject
+      value: 
+      objectReference: {fileID: 1804299488156976, guid: 687ebdcce11b6bc4fa3ec15f86be85ac,
+        type: 3}
     - target: {fileID: 224449520657500796, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12354,7 +12354,7 @@ MonoBehaviour:
   nodemap: {fileID: 90096341}
   startStoryOnStartup: 1
   startAtDrone: 0
-  debugSkipToStory: 1
+  debugSkipToStory: 0
 --- !u!4 &1631959650
 Transform:
   m_ObjectHideFlags: 0
@@ -12902,7 +12902,7 @@ GameObject:
 --- !u!199 &1684547981
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -17852,7 +17852,7 @@ GameObject:
 --- !u!199 &1784314108
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -22579,6 +22579,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1681175299}
+    - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114156912750723052, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: story
@@ -22590,16 +22600,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 26ec54d550136354697e13c3f7d68b75,
         type: 2}
-    - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
-        type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1681175299}
-    - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 224449520657500796, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -22792,7 +22792,7 @@ GameObject:
 --- !u!199 &1890780096
 ParticleSystemRenderer:
   serializedVersion: 6
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -27650,6 +27650,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114893256052078942, guid: 1325d67835ea2ec42a9ec7c25d9f6807,
+        type: 3}
+      propertyPath: displacementMap
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4778582874485546, guid: 1325d67835ea2ec42a9ec7c25d9f6807, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -28460,11 +28465,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DroneCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 114156912750723052, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
-        type: 3}
-      propertyPath: story
-      value: 
-      objectReference: {fileID: 1631959649}
     - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: m_Camera
@@ -28475,6 +28475,15 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 90096341, guid: 6ed05cb86ce3b6242a5de510fd8822d5, type: 3}
+      propertyPath: story
+      value: 
+      objectReference: {fileID: 1631959649}
+    - target: {fileID: 114156912750723052, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
+        type: 3}
+      propertyPath: story
+      value: 
+      objectReference: {fileID: 1631959649}
     - target: {fileID: 224449520657500796, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -28580,10 +28589,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 90096341, guid: 6ed05cb86ce3b6242a5de510fd8822d5, type: 3}
-      propertyPath: story
-      value: 
-      objectReference: {fileID: 1631959649}
     - target: {fileID: 1855926123, guid: 6ed05cb86ce3b6242a5de510fd8822d5, type: 3}
       propertyPath: m_havePropertiesChanged
       value: 1
