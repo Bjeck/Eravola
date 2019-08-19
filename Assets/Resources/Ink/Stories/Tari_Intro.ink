@@ -1,11 +1,11 @@
 %%Dialogue%%
 - I looked at Monsieur Fogg 
-*   ... and I could contain myself no longer [] ¤S=0.01
-    'What is the purpose of our journey, Monsieur?' ¤S=0.02
-    'A wager,' he replied. ¤D=1
+*   ... and I could contain myself no longer [] ¤S=0.01 # fun
+    'What is the purpose of our journey, Monsieur?' ¤S=0.02 # and games
+    'A wager,' he replied. ¤D=1 # laughter
     §§...Please. ¤d=3.7
     * *     'A wager!'[] I returned.
-            He nodded. ¤S=0.1,D=1.5
+            He nodded. ¤S=0.1,D=1.5 # wager!
             * * *   'But surely that is foolishness!' ¤0.01
             * * *  'A most serious matter then!'
             - - -   He nodded again.
