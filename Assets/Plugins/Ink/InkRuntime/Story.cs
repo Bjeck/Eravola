@@ -19,7 +19,7 @@ namespace Ink.Runtime
         public const int inkVersionCurrent = 19;
 
         // Version numbers are for engine itself and story file, rather
-        // than the story state save format (which is um, currently nonexistant)
+        // than the story state save format
         //  -- old engine, new format: always fail
         //  -- new engine, old format: possibly cope, based on this number
         // When incrementing the version number above, the question you
@@ -168,9 +168,9 @@ namespace Ink.Runtime
 
             int formatFromFile = (int)versionObj;
             if (formatFromFile > inkVersionCurrent) {
-                throw new System.Exception ("Version of ink used to build story was newer than the current verison of the engine");
+                throw new System.Exception ("Version of ink used to build story was newer than the current version of the engine");
             } else if (formatFromFile < inkVersionMinimumCompatible) {
-                throw new System.Exception ("Version of ink used to build story is too old to be loaded by this verison of the engine");
+                throw new System.Exception ("Version of ink used to build story is too old to be loaded by this version of the engine");
             } else if (formatFromFile != inkVersionCurrent) {
                 System.Diagnostics.Debug.WriteLine ("WARNING: Version of ink used to build story doesn't match current version of engine. Non-critical, but recommend synchronising.");
             }
@@ -192,18 +192,59 @@ namespace Ink.Runtime
         /// <summary>
         /// The Story itself in JSON representation.
         /// </summary>
-        public string ToJsonString()
+        public string ToJson()
         {
-            var rootContainerJsonList = (List<object>) Json.RuntimeObjectToJToken (_mainContentContainer);
+            //return ToJsonOld();
+            var writer = new SimpleJson.Writer();
+            ToJson(writer);
+            return writer.ToString();
+        }
 
-            var rootObject = new Dictionary<string, object> ();
-            rootObject ["inkVersion"] = inkVersionCurrent;
-            rootObject ["root"] = rootContainerJsonList;
+        /// <summary>
+        /// The Story itself in JSON representation.
+        /// </summary>
+        public void ToJson(Stream stream)
+        {
+            var writer = new SimpleJson.Writer(stream);
+            ToJson(writer);
+        }
 
-            if (_listDefinitions != null)
-                rootObject ["listDefs"] = Json.ListDefinitionsToJToken (_listDefinitions);
+        void ToJson(SimpleJson.Writer writer)
+        {
+            writer.WriteObjectStart();
 
-            return SimpleJson.DictionaryToText (rootObject);
+            writer.WriteProperty("inkVersion", inkVersionCurrent);
+
+            // Main container content
+            writer.WriteProperty("root", w => Json.WriteRuntimeContainer(w, _mainContentContainer));
+
+            // List definitions
+            if (_listDefinitions != null) {
+
+                writer.WritePropertyStart("listDefs");
+                writer.WriteObjectStart();
+
+                foreach (ListDefinition def in _listDefinitions.lists)
+                {
+                    writer.WritePropertyStart(def.name);
+                    writer.WriteObjectStart();
+
+                    foreach (var itemToVal in def.items)
+                    {
+                        InkListItem item = itemToVal.Key;
+                        int val = itemToVal.Value;
+                        writer.WriteProperty(item.itemName, val);
+                    }
+
+                    writer.WriteObjectEnd();
+                    writer.WritePropertyEnd();
+                }
+
+                writer.WriteObjectEnd();
+                writer.WritePropertyEnd();
+            }
+
+            writer.WriteObjectEnd();
         }
             
         /// <summary>
@@ -249,7 +290,7 @@ namespace Ink.Runtime
             if (_mainContentContainer.namedContent.ContainsKey ("global decl")) {
                 var originalPointer = state.currentPointer;
 
-                ChoosePathString ("global decl", resetCallstack: false);
+                ChoosePath (new Path ("global decl"), incrementingTurnIndex: false);
 
                 // Continue, but without validating external bindings,
                 // since we may be doing this reset at initialisation time.
@@ -380,9 +421,8 @@ namespace Ink.Runtime
             if (outputStreamEndsInNewline || !canContinue) {
 
                 // Need to rewind, due to evaluating further than we should?
-                if( _stateAtLastNewline != null ) {
-    				RestoreStateSnapshot (_stateAtLastNewline);
-                    _stateAtLastNewline = null;
+                if( _stateSnapshotAtLastNewline != null ) {
+    				RestoreStateSnapshot ();
                 }
 
                 // Finished a section of content / reached a choice point?
@@ -440,19 +480,19 @@ namespace Ink.Runtime
 
                 // We previously found a newline, but were we just double checking that
                 // it wouldn't immediately be removed by glue?
-                if (_stateAtLastNewline != null) {
+                if (_stateSnapshotAtLastNewline != null) {
 
                     // Has proper text or a tag been added? Then we know that the newline
                     // that was previously added is definitely the end of the line.
                     var change = CalculateNewlineOutputStateChange (
-                        _stateAtLastNewline.currentText,       state.currentText, 
-                        _stateAtLastNewline.currentTags.Count, state.currentTags.Count
+                        _stateSnapshotAtLastNewline.currentText,       state.currentText, 
+                        _stateSnapshotAtLastNewline.currentTags.Count, state.currentTags.Count
                     );
 
                     // The last time we saw a newline, it was definitely the end of the line, so we
                     // want to rewind to that point.
                     if (change == OutputStateChange.ExtendedBeyondNewline) {
-                        RestoreStateSnapshot (_stateAtLastNewline);
+                        RestoreStateSnapshot ();
 
                         // Hit a newline for sure, we're done
                         return true;
@@ -461,7 +501,7 @@ namespace Ink.Runtime
                     // Newline that previously existed is no longer valid - e.g.
                     // glue was encounted that caused it to be removed.
                     else if (change == OutputStateChange.NewlineRemoved) {
-                        _stateAtLastNewline = null;
+                        DiscardSnapshot();
                     }
                 }
 
@@ -478,14 +518,14 @@ namespace Ink.Runtime
                         // e.g.:
                         // Hello world\n            // record state at the end of here
                         // ~ complexCalculation()   // don't actually need this unless it generates text
-                        if (_stateAtLastNewline == null)
-                            _stateAtLastNewline = StateSnapshot ();
+                        if (_stateSnapshotAtLastNewline == null)
+                            StateSnapshot ();
                     }
 
                     // Can't continue, so we're about to exit - make sure we
                     // don't have an old state hanging around.
                     else {
-                        _stateAtLastNewline = null;
+                        DiscardSnapshot();
                     }
 
                 }
@@ -609,16 +649,96 @@ namespace Ink.Runtime
             return p;
         }
 
-        StoryState StateSnapshot()
+        // Maximum snapshot stack:
+        //  - stateSnapshotDuringSave -- not retained, but returned to game code
+        //  - _stateSnapshotAtLastNewline (has older patch)
+        //  - _state (current, being patched)
+
+        void StateSnapshot()
         {
-            return state.Copy ();
+            _stateSnapshotAtLastNewline = _state;
+            _state = _state.CopyAndStartPatching();
         }
 
-        void RestoreStateSnapshot(StoryState state)
+        void RestoreStateSnapshot()
         {
-            _state = state;
+            // Patched state had temporarily hijacked our
+            // VariablesState and set its own callstack on it,
+            // so we need to restore that.
+            // If we're in the middle of saving, we may also
+            // need to give the VariablesState the old patch.
+            _stateSnapshotAtLastNewline.RestoreAfterPatch();
+
+            _state = _stateSnapshotAtLastNewline;
+            _stateSnapshotAtLastNewline = null;
+
+            // If save completed while the above snapshot was
+            // active, we need to apply any changes made since
+            // the save was started but before the snapshot was made.
+            if( !_asyncSaving ) {
+                _state.ApplyAnyPatch();
+            }
         }
-            
+
+        void DiscardSnapshot()
+        {
+            // Normally we want to integrate the patch
+            // into the main global/counts dictionaries.
+            // However, if we're in the middle of async
+            // saving, we simply stay in a "patching" state,
+            // albeit with the newer cloned patch.
+            if( !_asyncSaving )
+                _state.ApplyAnyPatch();
+
+            // No longer need the snapshot.
+            _stateSnapshotAtLastNewline = null;
+        }
+
+        /// <summary>
+        /// Advanced usage!
+        /// If you have a large story, and saving state to JSON takes too long for your
+        /// framerate, you can temporarily freeze a copy of the state for saving on 
+        /// a separate thread. Internally, the engine maintains a "diff patch".
+        /// When you've finished saving your state, call BackgroundSaveComplete()
+        /// and that diff patch will be applied, allowing the story to continue
+        /// in its usual mode.
+        /// </summary>
+        /// <returns>The state for background thread save.</returns>
+        public StoryState CopyStateForBackgroundThreadSave()
+        {
+            IfAsyncWeCant("start saving on a background thread");
+            if (_asyncSaving) throw new System.Exception("Story is already in background saving mode, can't call CopyStateForBackgroundThreadSave again!");
+            var stateToSave = _state;
+            _state = _state.CopyAndStartPatching();
+            _asyncSaving = true;
+            return stateToSave;
+        }
+
+        /// <summary>
+        /// See CopyStateForBackgroundThreadSave. This method releases the
+        /// "frozen" save state, applying its patch that it was using internally.
+        /// </summary>
+        public void BackgroundSaveComplete()
+        {
+            // CopyStateForBackgroundThreadSave must be called outside
+            // of any async ink evaluation, since otherwise you'd be saving
+            // during an intermediate state.
+            // However, it's possible to *complete* the save in the middle of
+            // a glue-lookahead when there's a state stored in _stateSnapshotAtLastNewline.
+            // This state will have its own patch that is newer than the save patch.
+            // We hold off on the final apply until the glue-lookahead is finished.
+            // In that case, the apply is always done, it's just that it may
+            // apply the looked-ahead changes OR it may simply apply the changes
+            // made during the save process to the old _stateSnapshotAtLastNewline state.
+            if ( _stateSnapshotAtLastNewline == null ) {
+                _state.ApplyAnyPatch();
+            }
+
+            _asyncSaving = false;
+        }
+
+
+
         void Step ()
         {
             bool shouldAddToStream = true;
@@ -725,10 +845,10 @@ namespace Ink.Runtime
         {
             if ( !container.countingAtStartOnly || atStart ) {
                 if( container.visitsShouldBeCounted )
-                    IncrementVisitCountForContainer (container);
+                    state.IncrementVisitCountForContainer (container);
 
                 if (container.turnIndexShouldBeCounted)
-                    RecordTurnIndexVisitToContainer (container);
+                    state.RecordTurnIndexVisitToContainer (container);
             }
         }
 
@@ -761,7 +881,8 @@ namespace Ink.Runtime
             if (currentChildOfContainer == null) return;
 
             Container currentContainerAncestor = currentChildOfContainer.parent as Container;
-			while (currentContainerAncestor && !_prevContainers.Contains(currentContainerAncestor)) {
+
+            while (currentContainerAncestor && (!_prevContainers.Contains(currentContainerAncestor) || currentContainerAncestor.countingAtStartOnly)) {
 
                 // Check whether this ancestor container is being entered at the start,
                 // by checking whether the child object is the first.
@@ -803,7 +924,7 @@ namespace Ink.Runtime
 
             // Don't create choice if player has already read this content
             if (choicePoint.onceOnly) {
-                var visitCount = VisitCountForContainer (choicePoint.choiceTarget);
+                var visitCount = state.VisitCountForContainer (choicePoint.choiceTarget);
                 if (visitCount > 0) {
                     showChoice = false;
                 }
@@ -820,7 +941,15 @@ namespace Ink.Runtime
             choice.targetPath = choicePoint.pathOnChoice;
             choice.sourcePath = choicePoint.path.ToString ();
             choice.isInvisibleDefault = choicePoint.isInvisibleDefault;
-            choice.threadAtGeneration = state.callStack.currentThread.Copy ();
+
+            // We need to capture the state of the callstack at the point where
+            // the choice was generated, since after the generation of this choice
+            // we may go on to pop out from a tunnel (possible if the choice was
+            // wrapped in a conditional), or we may pop out from a thread,
+            // at which point that thread is discarded.
+            // Fork clones the thread, gives it a new ID, but without affecting
+            // the thread stack itself.
+            choice.threadAtGeneration = state.callStack.ForkThread();
 
             // Set final text for the choice
             choice.text = (startText + choiceOnlyText).Trim(' ', '\t');
@@ -1065,6 +1194,10 @@ namespace Ink.Runtime
                     state.PushEvaluationStack (new Runtime.IntValue (choiceCount));
                     break;
 
+                case ControlCommand.CommandType.Turns:
+                    state.PushEvaluationStack (new IntValue (state.currentTurnIndex+1));
+                    break;
+
                 case ControlCommand.CommandType.TurnsSince:
                 case ControlCommand.CommandType.ReadCount:
                     var target = state.PopEvaluationStack();
@@ -1082,9 +1215,9 @@ namespace Ink.Runtime
                     int eitherCount;
                     if (container != null) {
                         if (evalCommand.commandType == ControlCommand.CommandType.TurnsSince)
-                            eitherCount = TurnsSinceForContainer (container);
+                            eitherCount = state.TurnsSinceForContainer (container);
                         else
-                            eitherCount = VisitCountForContainer (container);
+                            eitherCount = state.VisitCountForContainer (container);
                     } else {
                         if (evalCommand.commandType == ControlCommand.CommandType.TurnsSince)
                             eitherCount = -1; // turn count, default to never/unknown
@@ -1096,32 +1229,34 @@ namespace Ink.Runtime
                     
                     state.PushEvaluationStack (new IntValue (eitherCount));
                     break;
+                    
 
-                case ControlCommand.CommandType.Random:
-                    var maxInt = state.PopEvaluationStack () as IntValue;
-                    var minInt = state.PopEvaluationStack () as IntValue;
+                case ControlCommand.CommandType.Random: {
+                        var maxInt = state.PopEvaluationStack () as IntValue;
+                        var minInt = state.PopEvaluationStack () as IntValue;
 
-                    if (minInt == null)
-                        Error ("Invalid value for minimum parameter of RANDOM(min, max)");
+                        if (minInt == null)
+                            Error ("Invalid value for minimum parameter of RANDOM(min, max)");
 
-                    if (maxInt == null)
-                        Error ("Invalid value for maximum parameter of RANDOM(min, max)");
+                        if (maxInt == null)
+                            Error ("Invalid value for maximum parameter of RANDOM(min, max)");
 
-                    // +1 because it's inclusive of min and max, for e.g. RANDOM(1,6) for a dice roll.
-                    var randomRange = maxInt.value - minInt.value + 1;
-                    if (randomRange <= 0)
-                        Error ("RANDOM was called with minimum as " + minInt.value + " and maximum as " + maxInt.value + ". The maximum must be larger");
+                        // +1 because it's inclusive of min and max, for e.g. RANDOM(1,6) for a dice roll.
+                        var randomRange = maxInt.value - minInt.value + 1;
+                        if (randomRange <= 0)
+                            Error ("RANDOM was called with minimum as " + minInt.value + " and maximum as " + maxInt.value + ". The maximum must be larger");
 
-                    var resultSeed = state.storySeed + state.previousRandom;
-                    var random = new Random(resultSeed);
+                        var resultSeed = state.storySeed + state.previousRandom;
+                        var random = new Random (resultSeed);
 
-                    var nextRandom = random.Next ();
-                    var chosenValue = (nextRandom % randomRange) + minInt.value;
-                    state.PushEvaluationStack (new IntValue (chosenValue));
+                        var nextRandom = random.Next ();
+                        var chosenValue = (nextRandom % randomRange) + minInt.value;
+                        state.PushEvaluationStack (new IntValue (chosenValue));
 
-                    // Next random number (rather than keeping the Random object around)
-                    state.previousRandom = nextRandom;
-                    break;
+                        // Next random number (rather than keeping the Random object around)
+                        state.previousRandom = nextRandom;
+                        break;
+                    }
 
                 case ControlCommand.CommandType.SeedRandom:
                     var seed = state.PopEvaluationStack () as IntValue;
@@ -1137,7 +1272,7 @@ namespace Ink.Runtime
                     break;
 
                 case ControlCommand.CommandType.VisitIndex:
-                    var count = VisitCountForContainer(state.currentPointer.container) - 1; // index not count
+                    var count = state.VisitCountForContainer(state.currentPointer.container) - 1; // index not count
                     state.PushEvaluationStack (new IntValue (count));
                     break;
 
@@ -1201,52 +1336,59 @@ namespace Ink.Runtime
                     break;
 
                 case ControlCommand.CommandType.ListRange: {
-                        var max = state.PopEvaluationStack ();
-                        var min = state.PopEvaluationStack ();
+                        var max = state.PopEvaluationStack () as Value;
+                        var min = state.PopEvaluationStack () as Value;
 
                         var targetList = state.PopEvaluationStack () as ListValue;
 
                         if (targetList == null || min == null || max == null)
                             throw new StoryException ("Expected list, minimum and maximum for LIST_RANGE");
 
-                        // Allow either int or a particular list item to be passed for the bounds,
-                        // so wrap up a function to handle this casting for us.
-                        Func<Runtime.Object, int> IntBound = (obj) => {
-                            var listValue = obj as ListValue;
-                            if (listValue) {
-                                return (int)listValue.value.maxItem.Value;
+                        var result = targetList.value.ListWithSubRange(min.valueObject, max.valueObject);
+
+                        state.PushEvaluationStack (new ListValue(result));
+                        break;
+                    }
+
+                case ControlCommand.CommandType.ListRandom: {
+
+                        var listVal = state.PopEvaluationStack () as ListValue;
+                        if (listVal == null)
+                            throw new StoryException ("Expected list for LIST_RANDOM");
+                        
+                        var list = listVal.value;
+
+                        InkList newList = null;
+
+                        // List was empty: return empty list
+                        if (list.Count == 0) {
+                            newList = new InkList ();
+                        } 
+
+                        // Non-empty source list
+                        else {
+                            // Generate a random index for the element to take
+                            var resultSeed = state.storySeed + state.previousRandom;
+                            var random = new Random (resultSeed);
+
+                            var nextRandom = random.Next ();
+                            var listItemIndex = nextRandom % list.Count;
+
+                            // Iterate through to get the random element
+                            var listEnumerator = list.GetEnumerator ();
+                            for (int i = 0; i <= listItemIndex; i++) {
+                                listEnumerator.MoveNext ();
                             }
+                            var randomItem = listEnumerator.Current;
 
-                            var intValue = obj as IntValue;
-                            if (intValue) {
-                                return intValue.value;
-                            }
+                            // Origin list is simply the origin of the one element
+                            newList = new InkList (randomItem.Key.originName, this);
+                            newList.Add (randomItem.Key, randomItem.Value);
 
-                            return -1;
-                        };
-
-                        int minVal = IntBound (min);
-                        int maxVal = IntBound (max);
-                        if (minVal == -1)
-                            throw new StoryException ("Invalid min range bound passed to LIST_VALUE(): " + min);
-
-                        if (maxVal == -1)
-                            throw new StoryException ("Invalid max range bound passed to LIST_VALUE(): " + max);
-
-                        // Extract the range of items from the origin list
-                        ListValue result = new ListValue ();
-                        var origins = targetList.value.origins;
-
-                        if (origins != null) {
-                            foreach(var origin in origins) {
-                                var rangeFromOrigin = origin.ListRange (minVal, maxVal);
-                                foreach (var kv in rangeFromOrigin.value) {
-                                    result.value [kv.Key] = kv.Value;
-                                }
-                            }
+                            state.previousRandom = nextRandom;
                         }
-                            
-                        state.PushEvaluationStack (result);
+
+                        state.PushEvaluationStack (new ListValue(newList));
                         break;
                     }
 
@@ -1282,7 +1424,7 @@ namespace Ink.Runtime
                 if (varRef.pathForCount != null) {
 
                     var container = varRef.containerForCount;
-                    int count = VisitCountForContainer (container);
+                    int count = state.VisitCountForContainer (container);
                     foundValue = new IntValue (count);
                 }
 
@@ -1292,18 +1434,8 @@ namespace Ink.Runtime
                     foundValue = state.variablesState.GetVariableWithName (varRef.name);
 
                     if (foundValue == null) {
-                        var defaultVal = state.variablesState.TryGetDefaultVariableValue (varRef.name);
-                        if (defaultVal != null) {
-                            Warning ("Variable not found in save state: '" + varRef.name + "', but seems to have been newly created. Assigning value from latest ink's declaration: " + defaultVal);
-                            foundValue = defaultVal;
-
-                            // Save for future usage, preventing future errors
-                            // Only do this for variables that are known to be globals, not those that may be missing temps.
-                            state.variablesState.SetGlobal(varRef.name, foundValue);
-                        } else {
-                            Warning ("Variable not found: '" + varRef.name + "'. Using default value of 0 (false). This can happen with temporary variables if the declaration hasn't yet been hit.");
-                            foundValue = new IntValue (0);
-                        }
+                        Warning ("Variable not found: '" + varRef.name + "'. Using default value of 0 (false). This can happen with temporary variables if the declaration hasn't yet been hit. Globals are always given a default value on load if a value doesn't exist in the save state.");
+                        foundValue = new IntValue (0);
                     }
                 }
 
@@ -1390,9 +1522,9 @@ namespace Ink.Runtime
                 throw new System.Exception ("Can't " + activityStr + ". Story is in the middle of a ContinueAsync(). Make more ContinueAsync() calls or a single Continue() call beforehand.");
         }
             
-        internal void ChoosePath(Path p)
+        internal void ChoosePath(Path p, bool incrementingTurnIndex = true)
         {
-            state.SetChosenPath (p);
+            state.SetChosenPath (p, incrementingTurnIndex);
 
             // Take a note of newly visited containers for read counts etc
             VisitChangedContainersDueToDivert ();
@@ -1928,9 +2060,9 @@ namespace Ink.Runtime
 
             // Remove observer for all variables
             else {
-                foreach (var keyValue in _variableObservers) {
-                    var varName = keyValue.Key;
-                    _variableObservers [varName] -= observer;
+                var keys = new List<string>(_variableObservers.Keys);
+                foreach (var varName in keys) {
+                    _variableObservers[varName] -= observer;
                 }
             }
         }
@@ -2133,53 +2265,15 @@ namespace Ink.Runtime
 
             var choice = invisibleChoices [0];
 
-            ChoosePath (choice.targetPath);
+            // Invisible choice may have been generated on a different thread,
+            // in which case we need to restore it before we continue
+            state.callStack.currentThread = choice.threadAtGeneration;
+
+            ChoosePath (choice.targetPath, incrementingTurnIndex: false);
 
             return true;
         }
             
-        int VisitCountForContainer(Container container)
-        {
-            if( !container.visitsShouldBeCounted ) {
-                Error ("Read count for target ("+container.name+" - on "+container.debugMetadata+") unknown. The story may need to be compiled with countAllVisits flag (-c).");
-                return 0;
-            }
-
-            int count = 0;
-            var containerPathStr = container.path.ToString();
-            state.visitCounts.TryGetValue (containerPathStr, out count);
-            return count;
-        }
-
-        void IncrementVisitCountForContainer(Container container)
-        {
-            int count = 0;
-            var containerPathStr = container.path.ToString();
-            state.visitCounts.TryGetValue (containerPathStr, out count);
-            count++;
-            state.visitCounts [containerPathStr] = count;
-        }
-
-        void RecordTurnIndexVisitToContainer(Container container)
-        {
-            var containerPathStr = container.path.ToString();
-            state.turnIndices [containerPathStr] = state.currentTurnIndex;
-        }
-
-        int TurnsSinceForContainer(Container container)
-        {
-            if( !container.turnIndexShouldBeCounted ) {
-                Error ("TURNS_SINCE() for target ("+container.name+" - on "+container.debugMetadata+") unknown. The story may need to be compiled with countAllVisits flag (-c).");
-            }
-
-            int index = 0;
-            var containerPathStr = container.path.ToString();
-            if (state.turnIndices.TryGetValue (containerPathStr, out index)) {
-                return state.currentTurnIndex - index;
-            } else {
-                return -1;
-            }
-        }
 
         // Note that this is O(n), since it re-evaluates the shuffle indices
         // from a consistent seed each time.
@@ -2354,11 +2448,13 @@ namespace Ink.Runtime
         StoryState _state;
 
         bool _asyncContinueActive;
-        StoryState _stateAtLastNewline = null;
+        StoryState _stateSnapshotAtLastNewline = null;
 
         int _recursiveContinueCount = 0;
 
-		Profiler _profiler;
+        bool _asyncSaving;
+
+        Profiler _profiler;
 	}
 }
 
