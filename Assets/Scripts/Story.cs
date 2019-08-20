@@ -32,7 +32,7 @@ public class Story : MonoBehaviour
     private List<string> characterNames = new List<string>();
 
     string startDialogue = "";
-    int startNode = 0;
+    string startNode = "START";
 
 #if UNITY_EDITOR
 
@@ -41,7 +41,7 @@ public class Story : MonoBehaviour
         print("loading editorvalues");
         debugSkipToStory = EditorPrefs.GetBool("EnableDebug");
         startDialogue = EditorPrefs.GetString("StartDialogue");
-        startNode = EditorPrefs.GetInt("StartNode");
+        startNode = EditorPrefs.GetString("StartNode");
         forcingAllowed = EditorPrefs.GetBool("ForcingAllowed");
         startAtDrone = EditorPrefs.GetBool("StartAtDrone");
     }
@@ -131,7 +131,7 @@ public class Story : MonoBehaviour
         {
             //it's a dialogue. let's assume we should start this dialogue
             ui.SetSoleCanvas(UIManager.CanvasType.Main);
-            inkDia.StartDialogue(newStoryPoint);
+            inkDia.StartDialogue(newStoryPoint, startNode);
             return;
         }
 

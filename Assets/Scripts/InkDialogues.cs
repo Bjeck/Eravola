@@ -75,9 +75,13 @@ public class InkDialogues : MonoBehaviour
         //}
     }
 
-    public void StartDialogue(string dialName)
+    public void StartDialogue(string dialName, string overrideStart = "START")
     {
         CurrentDialogue = new Ink.Runtime.Story(InkDatabase.Get(dialName).text); //currently doesn't care about name. need to load from resources.
+        if(overrideStart != "START")
+        {
+            CurrentDialogue.ChoosePathString(overrideStart);
+        }
         Setup();
         RefreshView();
     }
@@ -133,7 +137,6 @@ public class InkDialogues : MonoBehaviour
             Debug.LogError("Dialogues didn't contain " + newStory + "Make sure we're in the right spot and everything is spelled right.");
             return;
         }
-
         StartDialogue(newStory);
     }
 
@@ -147,7 +150,7 @@ public class InkDialogues : MonoBehaviour
     // Creates a button showing the choice text
     void CreateContentView(string text, Ink.Runtime.Story inkStory)
     {
-        if (text.Contains("%%") || text.Contains("@@"))
+        if (text.Contains("%%") || text.Contains("@@")) //@@ is for changing to new story, is handled by RefreshView
         {
             //mode switch!
             ParseAndSetModeFromNode(text);
@@ -160,15 +163,13 @@ public class InkDialogues : MonoBehaviour
 
             if (text.StartsWith("§§"))
             {
-                roll.StartRoll(ConvertCommentToTextInfo(text.Substring(2, text.Length - 2), Place.Secondary), ThoughtsText);
+                roll.StartRoll(ConvertCommentToTextInfo(text.Substring(2, text.Length - 2), inkStory, Place.Secondary), ThoughtsText);
             }
             else
             {
-                roll.StartRoll(ConvertCommentToTextInfo(text, Place.Main), MainText, callback);
+                roll.StartRoll(ConvertCommentToTextInfo(text, inkStory, Place.Main), MainText, callback);
             }
-
         }
-        
     }
 
 
@@ -222,66 +223,44 @@ public class InkDialogues : MonoBehaviour
     }
 
 
-    TextInfo ConvertCommentToTextInfo(string txt, Place place)
+    TextInfo ConvertCommentToTextInfo(string txt, Ink.Runtime.Story inkStory, Place place)
     {
         TextInfo text = new TextInfo();
 
         text.rolldelay = GlobalVariables.TextRollDelay; //needs to be setup! :D
         text.startdelay = GlobalVariables.TextStartDelay;
 
-        if (txt.Contains("¤"))
+        if(inkStory.currentTags.Count > 0) //getting delay and speed from tags in ink story
         {
-            string[] split = txt.Split('¤');
-            txt = split[0] + "\n";
-            string varsAll = split[1]; // do something with these!
-
-            string[] vars = varsAll.Split(',');
-
-            for (int i = 0; i < vars.Length; i++)
+            for (int i = 0; i < inkStory.currentTags.Count; i++)
             {
-
-                if (vars[i].Contains(variableIdentifiers[place][Id.Speed]))
+                if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.Speed]))
                 {
-                    text.rolldelay = float.Parse(vars[i].Split('=')[1]); //should get the number after = !
+                    text.rolldelay = float.Parse(inkStory.currentTags[i].Split('=')[1]); //should get the number after = !
                 }
-                if (vars[i].Contains(variableIdentifiers[place][Id.Delay]))
+                if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.Delay]))
                 {
-                    text.startdelay = float.Parse(vars[i].Split('=')[1]); //should get the number after = !
+                    text.startdelay = float.Parse(inkStory.currentTags[i].Split('=')[1]); //should get the number after = !
                 }
             }
         }
-
+        
         text.text = txt;
-
 
         return text;
     }
 
-    Dictionary<Place, Dictionary<Id, string>> variableIdentifiers = new Dictionary<Place, Dictionary<Id, string>>()
+
+    Dictionary<Id, string> variableIdentifiers = new Dictionary<Id, string>()
     {
         {
-            Place.Main, new Dictionary<Id, string>()
-            {
-                {
-                    Id.Speed, "S="
-                },
-                {
-                    Id.Delay, "D="
-                }
-            }
+            Id.Speed, "S="
         },
         {
-            Place.Secondary, new Dictionary<Id, string>()
-            {
-                {
-                    Id.Speed, "s="
-                },
-                {
-                    Id.Delay, "="
-                }
-            }
+            Id.Delay, "D="
         }
     };
+    
 
 
     void ClearText()

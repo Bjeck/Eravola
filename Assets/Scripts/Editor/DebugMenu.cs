@@ -57,7 +57,14 @@ public class DebugMenu : EditorWindow {
         EditorPrefs.SetBool("EnableDebug",enableDebug);
         EditorPrefs.SetBool("StartAtDrone", startAtDrone);
         EditorPrefs.SetString("StartDialogue", dialogueNodeToStart);
-        EditorPrefs.SetInt("StartNode", nodeID);
+        if(nodeTexts.Values.ToArray().Length > 0)
+        {
+            EditorPrefs.SetString("StartNode", nodeTexts.Values.ToArray()[nodeID]);
+        }
+        else
+        {
+            EditorPrefs.SetString("StartNode", "START");
+        }
         EditorPrefs.SetBool("ForcingAllowed", forcingAllowed);
     }
 
@@ -153,7 +160,6 @@ public class DebugMenu : EditorWindow {
         EditorGUILayout.EndVertical();
 
         SaveSettings();
-
     }
 
 
@@ -168,54 +174,71 @@ public class DebugMenu : EditorWindow {
             return;
         }
 
-        TextAsset file = Resources.Load<TextAsset>("Dialogues/"+dialogueNodeToStart);
+        TextAsset file = Resources.Load<TextAsset>("Ink/Stories/" + dialogueNodeToStart);
         //json it into object
 
-        object obj = MiniJSON_VIDE.DiagJson.Deserialize(file.text);
-        Dictionary<string, object> dict = obj as Dictionary<string, object>;
-
-        int actionnodes = ToInt(dict["actionNodes"]);
-        int playernodes = ToInt(dict["playerDiags"]);
-        int totalNodes = actionnodes + playernodes;
-        defaultStartNode = ToInt(dict["startPoint"]);
-        
-
-        Dictionary<int, string> unsortednodeTexts = new Dictionary<int, string>();
+        Dictionary<string, object> rootObject = Ink.Runtime.SimpleJson.TextToDictionary(file.text);
 
 
-        for (int i = 0; i < playernodes; i++)
+        var list = rootObject["root"] as List<object>;
+        Dictionary<string, object> knots = (list)[2] as Dictionary<string, object>;
+
+        Debug.Log("hi");
+
+        //object obj = MiniJSON_VIDE.DiagJson.Deserialize(file.text);
+        //Dictionary<string, object> dict = obj as Dictionary<string, object>;
+
+        //int actionnodes = ToInt(dict["actionNodes"]);
+        //int playernodes = ToInt(dict["playerDiags"]);
+        //int totalNodes = actionnodes + playernodes;
+
+        List<string> texts = list[0] as List<string>;
+        nodeTexts.Add(0, "START");
+
+        Dictionary<int, string> sortedKnots = new Dictionary<int, string>();
+
+        List<string> keys = knots.Keys.ToList();
+
+        for (int i = 0; i < keys.Count; i++)
         {
-            bool player = (bool)dict["pd_isp_" + i];
-
-            string p = player ? "Player" : "NPC";
-
-            int idx = ToInt(dict["pd_ID_" + i]);
-
-            string text = idx + " " + p + ": " + (string)dict["pd_" + i + "_com_0text"];
-            unsortednodeTexts.Add(idx, text );
-        }
-
-        for (int i = 0; i < actionnodes; i++)
-        {
-            int idx = ToInt(dict["ac_ID_" + i]);
-            string text = idx + " ACTION: " + (string)dict["ac_meth_" + i];
-            unsortednodeTexts.Add(idx, text);
+            nodeTexts.Add(i + 1, keys[i]);
         }
 
 
-        List<int> ids = unsortednodeTexts.Keys.ToList();
+        //for (int i = 0; i < playernodes; i++)
+        //{
+        //    bool player = (bool)dict["pd_isp_" + i];
 
-        ids.Sort();
+        //    string p = player ? "Player" : "NPC";
 
-        for (int i = 0; i < ids.Count; i++)
-        {
-            nodeTexts.Add(ids[i], unsortednodeTexts[ids[i]]);
-        }
+        //    int idx = ToInt(dict["pd_ID_" + i]);
+
+        //    string text = idx + " " + p + ": " + (string)dict["pd_" + i + "_com_0text"];
+        //    unsortednodeTexts.Add(idx, text );
+        //}
+
+        //for (int i = 0; i < actionnodes; i++)
+        //{
+        //    int idx = ToInt(dict["ac_ID_" + i]);
+        //    string text = idx + " ACTION: " + (string)dict["ac_meth_" + i];
+        //    unsortednodeTexts.Add(idx, text);
+        //}
+
+
+        //List<int> ids = unsortednodeTexts.Keys.ToList();
+
+        //ids.Sort();
+
+        //for (int i = 0; i < ids.Count; i++)
+        //{
+        //    nodeTexts.Add(ids[i], unsortednodeTexts[ids[i]]);
+        //}
         
 
 
         //read objects node counts
 
+        defaultStartNode = 0;
         nodeID = defaultStartNode;
 
     }
@@ -232,7 +255,7 @@ public class DebugMenu : EditorWindow {
         AssetDatabase.Refresh();
 
 
-        TextAsset[] files = Resources.LoadAll<TextAsset>("Dialogues");
+        TextAsset[] files = Resources.LoadAll<TextAsset>("Ink/Stories");
         dialogues = new List<string>();
 
         if (files.Length < 1) return;
