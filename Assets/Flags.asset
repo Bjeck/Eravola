@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flags:
   - Name: TariToCaudden
-    Value: 1
-    LoadOnStartup: 1
+    Value: 0
+    LoadOnStartup: 0
   - Name: StartedGame
     Value: 1
     LoadOnStartup: 1

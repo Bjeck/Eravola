@@ -103,11 +103,11 @@ public class Story : MonoBehaviour
 
                 if (startAtDrone)
                 {
-                    ChangeStoryPoint(GlobalVariables.DRONE);
+                    ChangeStoryPoint(GlobalVariables.DRONE, true);
                 }
                 else
                 {
-                    ChangeStoryPoint(startDialogue);
+                    ChangeStoryPoint(startDialogue, true);
                 }
             }
             else
@@ -119,65 +119,84 @@ public class Story : MonoBehaviour
     }
 
 
-    public void ChangeStoryPoint(string newStoryPoint) //??
+    public void ChangeStoryPoint(string newStoryPoint, bool overrideSequencing = false) //??
     {
         string previousStoryPoint = Storage.CurrentStoryPoint;
         Storage.CurrentStoryPoint = newStoryPoint;
 
-        //inkDia.StartDialogue("story");
-        //return;
-        Debug.Log(newStoryPoint);
+        Debug.Log("Loading new story point: " + newStoryPoint);
+
+
+        //If it is an intro and we are coming from drone, then load character intro.
+        //if (newStoryPoint.Contains("Intro"))
+        //{
+        //    string storypoint = newStoryPoint.Replace("_Intro", "");
+        //    if (characterNames.Exists(x => x == storypoint))
+        //    {
+        //        //Story point is a character name! That means we should probably find the intro story for that character and run that! First check if we're coming from Drone to handle through sequence.
+        //        if (overrideSequencing)
+        //        {
+        //            ui.SetSoleCanvas(UIManager.CanvasType.Main);
+        //            inkDia.StartDialogue(newStoryPoint, startNode);
+        //        }
+        //        else
+        //        {
+        //            sequences.RunSequence(SequenceName.LoadToStoryFromDrone, () =>
+        //            {
+        //                ui.SetSoleCanvas(UIManager.CanvasType.Main);
+        //                inkDia.StartDialogue(newStoryPoint, startNode);
+        //            });
+        //        }
+        //        return;
+        //    }
+        //}
+
+
+        //load story point normally if it exists in database.
         if (InkDatabase.Contains(newStoryPoint))
         {
             //it's a dialogue. let's assume we should start this dialogue
-            ui.SetSoleCanvas(UIManager.CanvasType.Main);
-            inkDia.StartDialogue(newStoryPoint, startNode);
-            return;
-        }
-
-        if(characterNames.Exists(x=>x == newStoryPoint))
-        {
-            //Story point is a character name! That means we should probably find the intro story for that character and run that! First check if we're coming from Drone to handle through sequence.
-            if(previousStoryPoint == GlobalVariables.DRONE)
+            if (overrideSequencing)
             {
-                sequences.RunSequence(SequenceName.LoadToStoryFromDrone, () => { ChangeStoryPoint((newStoryPoint + "_Intro")); });
+                ui.SetSoleCanvas(UIManager.CanvasType.Main);        //TODO: This is ugly.
+                inkDia.StartDialogue(newStoryPoint, startNode);
             }
             else
             {
-                ChangeStoryPoint((newStoryPoint + "_Intro")); //I don't really see how this should happen, but it might!
-                Sound.instance.StopAmbient(Sound.AMBIENCES.Drone);
+                sequences.RunSequence(SequenceName.LoadToStoryFromDrone, () =>
+                {
+                    ui.SetSoleCanvas(UIManager.CanvasType.Main);
+                    inkDia.StartDialogue(newStoryPoint, startNode);
+                });
             }
             return;
         }
 
-        if(newStoryPoint == GlobalVariables.DRONE)
+
+        //DO DRONE SHIT
+        if (newStoryPoint == GlobalVariables.DRONE)
         {
-            //DO DRONE SHIT
-            ui.SetSoleCanvas(UIManager.CanvasType.Drone);
-            nodemap.LoadNodeSpace();
-            Sound.instance.PlayAmbient(Sound.AMBIENCES.Drone);
-            Glitch.instance.EnableDroneEffects();
+            if (overrideSequencing)
+            {
+                ui.SetSoleCanvas(UIManager.CanvasType.Drone);
+                nodemap.LoadNodeSpace();
+                Sound.instance.PlayAmbient(Sound.AMBIENCES.Drone);
+                Glitch.instance.EnableDroneEffects();
+            }
+            else
+            {
+                sequences.RunSequence(SequenceName.LoadToDrone, () =>
+                {
+                    ui.SetSoleCanvas(UIManager.CanvasType.Drone);
+                    nodemap.LoadNodeSpace();
+                });
+            }
             return;
         }
 
 
-        //this needs to be able to take any point (presumably, an end point) and proceed from there, and find out how to continue. Either jump out to drone part or skip to other person or something. yes?
-        //don't mind if it's a little jumpy. glitches make that work wonderfully.
-
-        //need to store the node we got to and reload from that (I'm preeetty sure we can do that in VIDE). DialogueName & nodeID should be enough.
-
-        if(previousStoryPoint != null)
-        {
-            Storage.CurrentStoryPoint = previousStoryPoint; //revert back if the change didn't actually work.
-            ChangeStoryPoint(Storage.CurrentStoryPoint);
-        }
+        //Throw error if the change didn't actually work.
         Debug.LogError(newStoryPoint + " Didn't result in any story point. Soemthing went wrong.");
     }
-
-
-
-
-
-
 
 }

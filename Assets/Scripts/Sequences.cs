@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 
-public enum SequenceName { BootUp, FirstCrash, LoadToStoryFromDrone };
+public enum SequenceName { BootUp, FirstCrash, LoadToStoryFromDrone, LoadToDrone };
 
 
 
@@ -32,29 +32,22 @@ public class Sequences : MonoBehaviour {
         sequences.Add(SequenceName.BootUp, BootUpSequence());
         sequences.Add(SequenceName.FirstCrash, FirstCrash());
         sequences.Add(SequenceName.LoadToStoryFromDrone, LoadToStoryFromDrone());
+        sequences.Add(SequenceName.LoadToDrone, LoadToDroneFromStory());
 
 
 
         //RunSequence(SequenceName.BootUp);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-
-
     public void RunSequence(SequenceName sequenceToPlay, Action callback = null)
     {
+        Debug.Log("Run Sequence " + sequenceToPlay);
+        StopAllCoroutines();
         IEnumerator x = sequences[sequenceToPlay];
         callbackToCurrentSequence = callback;
+        Debug.Log(x);
         StartCoroutine(x);
     }
-
-
-
-
 
 
 
@@ -165,10 +158,11 @@ public class Sequences : MonoBehaviour {
 
     IEnumerator LoadToStoryFromDrone()
     {
+        Debug.Log("Load To Story START");
         Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
         Glitch.instance.GlitchScreenOnCommand(0.5f, 0.7f);
         yield return new WaitForSeconds(0.5f);
-        //bootUpStatic.gameObject.SetActive(false);
+        bootUpStatic.gameObject.SetActive(false);
 
 
 
@@ -176,10 +170,53 @@ public class Sequences : MonoBehaviour {
         Sound.instance.StopAmbient(Sound.AMBIENCES.Drone);
         story.ui.SetSoleCanvas(UIManager.CanvasType.Boot);
         Sound.instance.StopAmbient(Sound.AMBIENCES.Computer);
+
+        yield return new WaitForSeconds(0.5f);
+
+        yield return LoadingBlip();
+
+        Sound.instance.Play(Sound.SFXIDS.Boot);
+        Sound.instance.PlayAmbient(Sound.AMBIENCES.Computer);
+
+        if (callbackToCurrentSequence != null)
+        {
+            callbackToCurrentSequence();
+        }
+        Debug.Log("Load To Start END");
+
+    }
+
+    IEnumerator LoadToDroneFromStory()
+    {
+        Debug.Log("Load To Drone START");
+
+        Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
+        Glitch.instance.GlitchScreenOnCommand(0.5f, 0.7f);
+        yield return new WaitForSeconds(0.5f);
+
+        Sound.instance.StopAmbient(Sound.AMBIENCES.Computer);
+        story.ui.SetSoleCanvas(UIManager.CanvasType.Boot);
         bootUpStatic.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(0.5f);
 
+        yield return LoadingBlip();
+
+        Sound.instance.Play(Sound.SFXIDS.Boot);
+        Sound.instance.PlayAmbient(Sound.AMBIENCES.Drone);
+        Glitch.instance.EnableDroneEffects();
+
+        if (callbackToCurrentSequence != null)
+        {
+            callbackToCurrentSequence();
+        }
+        Debug.Log("Load To Drone END");
+
+    }
+
+
+    IEnumerator LoadingBlip()
+    {
         for (int i = 0; i < 3; i++)
         {
             simulationText.gameObject.SetActive(true);
@@ -187,53 +224,6 @@ public class Sequences : MonoBehaviour {
             yield return new WaitForSeconds(0.7f);
             simulationText.gameObject.SetActive(false);
             yield return new WaitForSeconds(0.7f);
-        }
-
-        //bootUpStatic.gameObject.SetActive(true);
-        //  Glitch.instance.GlitchScreenOnCommand(0.6f, 1.2f);
-
-        Sound.instance.Play(Sound.SFXIDS.Boot);
-        Sound.instance.PlayAmbient(Sound.AMBIENCES.Computer);
-
-
-        //TextInfo txt = new TextInfo(GlobalStrings.LoadingCharacterString.text.Replace("¤", System.Environment.NewLine), GlobalStrings.LoadingCharacterString.rolldelay, GlobalStrings.LoadingCharacterString.startdelay);
-
-        //IEnumerator roll = Roller.Roll(txt, bootUpText);
-        ////  StartCoroutine()
-        //while (roll.MoveNext())
-        //{
-        //    yield return roll.Current;
-        //}
-
-
-        //List<int> foundIndexes = new List<int>();
-        //for (int i = 0; i < bootUpText.text.Length; i++)
-        //{
-        //    if (bootUpText.text[i] == System.Environment.NewLine.ToCharArray()[0])
-        //        foundIndexes.Add(i);
-        //}
-
-        //int j = foundIndexes.Count - 1;
-        //while (bootUpText.text.Length > 100)
-        //{
-        //    yield return new WaitForSeconds(0.075f);
-
-        //    bootUpText.text = bootUpText.text.Remove(foundIndexes[j], (bootUpText.text.Length - foundIndexes[j]));
-        //    j--;
-        //}
-
-        //yield return new WaitForSeconds(0.35f);
-        //Glitch.instance.GlitchScreenOnCommand(0.15f, 1f);
-        //yield return new WaitForSeconds(0.15f);
-        //bootUpText.text = "";
-
-
-
-        //yield return new WaitForSeconds(0.6f);
-
-        if (callbackToCurrentSequence != null)
-        {
-            callbackToCurrentSequence();
         }
     }
 

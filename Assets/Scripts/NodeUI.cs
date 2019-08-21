@@ -64,7 +64,8 @@ public class NodeUI : MonoBehaviour {
         if(node.simulationTarget != CharacterNames.None)
         {
             goInButton.gameObject.SetActive(true);
-            goInButton.onClick.AddListener(() => story.ChangeStoryPoint(node.simulationTarget));
+            goInButton.GetComponentInChildren<TextMeshProUGUI>().text = "Go In [" + node.simulationTarget + "]";
+            goInButton.onClick.AddListener(() => story.ChangeStoryPoint(node.simulationTarget + "_Intro")); //hardcoded?
         }
 
 

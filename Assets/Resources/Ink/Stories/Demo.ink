@@ -1,5 +1,5 @@
 %%Dialogue%%
-(intro) I looked at Monsieur Fogg 
+- I looked at Monsieur Fogg 
 *   ... and I could contain myself no longer [] # S=0.01
     'What is the purpose of our journey, Monsieur?' # S=0.02
     'A wager,' he replied. # D=1
