@@ -5,13 +5,12 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 
-public enum SequenceName { BootUp, FirstCrash, LoadToStoryFromDrone, LoadToDrone };
+public enum SequenceName { BootUp, FirstCrash, LoadToStoryFromDrone, LoadToDrone, Dummy };
 
+public class Sequences : MonoBehaviour
+{
 
-
-public class Sequences : MonoBehaviour {
-
-    Dictionary<SequenceName, IEnumerator> sequences = new Dictionary<SequenceName, IEnumerator>();
+    Dictionary<SequenceName, IEnumerable> sequences = new Dictionary<SequenceName, IEnumerable>();
 
     public TextRoll Roller;
 
@@ -23,38 +22,46 @@ public class Sequences : MonoBehaviour {
     public TMP_InputField passwordInput;
     bool passwordsubmitted = false;
 
+    IEnumerable currentRoutine = null;
     Action callbackToCurrentSequence;
 
     
     // Use this for initialization
-    void Start () {
-        
+    void Start ()
+    {
         sequences.Add(SequenceName.BootUp, BootUpSequence());
         sequences.Add(SequenceName.FirstCrash, FirstCrash());
         sequences.Add(SequenceName.LoadToStoryFromDrone, LoadToStoryFromDrone());
         sequences.Add(SequenceName.LoadToDrone, LoadToDroneFromStory());
-
-
-
-        //RunSequence(SequenceName.BootUp);
+        sequences.Add(SequenceName.Dummy, Dummy());
 	}
 	
     public void RunSequence(SequenceName sequenceToPlay, Action callback = null)
     {
-        Debug.Log("Run Sequence " + sequenceToPlay);
         StopAllCoroutines();
-        IEnumerator x = sequences[sequenceToPlay];
+        currentRoutine = sequences[sequenceToPlay];
         callbackToCurrentSequence = callback;
-        Debug.Log(x);
-        StartCoroutine(x);
+        StartCoroutine(Runner(sequenceToPlay,callback));
     }
 
+    IEnumerator Runner(SequenceName sequenceToPlay, Action callback = null)
+    {
+        yield return currentRoutine.GetEnumerator();
+        if (callbackToCurrentSequence != null)
+        {
+            callbackToCurrentSequence();
+        }
+    }
 
+    IEnumerable Dummy()
+    {
+        yield return null;
+    }
 
 
     #region Sequence Coroutines
 
-    IEnumerator BootUpSequence()
+    IEnumerable BootUpSequence()
     {
         bootUpText.text = "";
         passwordInput.gameObject.SetActive(false);
@@ -116,55 +123,22 @@ public class Sequences : MonoBehaviour {
         bootUpText.text = "";
 
         yield return new WaitForSeconds(0.2f);
-
-
-        print("BOOT DONE");
-        if (callbackToCurrentSequence != null)
-        {
-            callbackToCurrentSequence();
-        }
-    }
-    
-    void KeyPressed()
-    {
-        Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
-    }
-
-    void PasswordSubmitted(string fieldText)
-    {
-        if(fieldText.Length > 0)
-        {
-            passwordsubmitted = true;
-        }
-        else
-        {
-            passwordsubmitted = false;
-        }
     }
     
 
-    IEnumerator FirstCrash()
+
+    IEnumerable FirstCrash()
     {
         yield return new WaitForEndOfFrame();
-
-
-
-        if (callbackToCurrentSequence != null)
-        {
-            callbackToCurrentSequence();
-        }
     }
 
 
-    IEnumerator LoadToStoryFromDrone()
+    IEnumerable LoadToStoryFromDrone()
     {
-        Debug.Log("Load To Story START");
         Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
         Glitch.instance.GlitchScreenOnCommand(0.5f, 0.7f);
         yield return new WaitForSeconds(0.5f);
         bootUpStatic.gameObject.SetActive(false);
-
-
 
         Glitch.instance.DisableDroneEffects();
         Sound.instance.StopAmbient(Sound.AMBIENCES.Drone);
@@ -177,19 +151,10 @@ public class Sequences : MonoBehaviour {
 
         Sound.instance.Play(Sound.SFXIDS.Boot);
         Sound.instance.PlayAmbient(Sound.AMBIENCES.Computer);
-
-        if (callbackToCurrentSequence != null)
-        {
-            callbackToCurrentSequence();
-        }
-        Debug.Log("Load To Start END");
-
     }
 
-    IEnumerator LoadToDroneFromStory()
+    IEnumerable LoadToDroneFromStory()
     {
-        Debug.Log("Load To Drone START");
-
         Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
         Glitch.instance.GlitchScreenOnCommand(0.5f, 0.7f);
         yield return new WaitForSeconds(0.5f);
@@ -205,15 +170,12 @@ public class Sequences : MonoBehaviour {
         Sound.instance.Play(Sound.SFXIDS.Boot);
         Sound.instance.PlayAmbient(Sound.AMBIENCES.Drone);
         Glitch.instance.EnableDroneEffects();
-
-        if (callbackToCurrentSequence != null)
-        {
-            callbackToCurrentSequence();
-        }
-        Debug.Log("Load To Drone END");
-
     }
 
+    #endregion
+
+
+    #region Utility Things
 
     IEnumerator LoadingBlip()
     {
@@ -224,6 +186,23 @@ public class Sequences : MonoBehaviour {
             yield return new WaitForSeconds(0.7f);
             simulationText.gameObject.SetActive(false);
             yield return new WaitForSeconds(0.7f);
+        }
+    }
+
+    void KeyPressed()
+    {
+        Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
+    }
+
+    void PasswordSubmitted(string fieldText)
+    {
+        if (fieldText.Length > 0)
+        {
+            passwordsubmitted = true;
+        }
+        else
+        {
+            passwordsubmitted = false;
         }
     }
 

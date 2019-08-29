@@ -134,7 +134,7 @@ public class InkDialogues : MonoBehaviour
     {
         if (!InkDatabase.Contains(newStory))
         {
-            Debug.LogError("Dialogues didn't contain " + newStory + "Make sure we're in the right spot and everything is spelled right.");
+            Debug.LogError("Dialogues didn't contain " + newStory + "! Make sure we're in the right spot and everything is spelled right.");
             return;
         }
         StartDialogue(newStory);
