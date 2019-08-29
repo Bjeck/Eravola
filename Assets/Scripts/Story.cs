@@ -103,11 +103,11 @@ public class Story : MonoBehaviour
 
                 if (startAtDrone)
                 {
-                    ChangeStoryPoint(GlobalVariables.DRONE, false);
+                    ChangeStoryPoint(GlobalVariables.DRONE, true);
                 }
                 else
                 {
-                    ChangeStoryPoint(startDialogue, false);
+                    ChangeStoryPoint(startDialogue, true);
                 }
             }
             else

@@ -55,7 +55,7 @@ The most exciting thing that happens in this town is when the smoke changes colo
 §§And I gotta prepare. See you at the inn.
 
 * * [Next]
-@@InnIntro
+@@Tari_InnIntro
 -> END
 
 

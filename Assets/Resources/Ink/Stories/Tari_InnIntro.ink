@@ -93,5 +93,5 @@ He shakes his head. 'Bunch of girls, you are.'
 But I don't get to ask that question. Ceara and Illij both look away from me.
 §§...What's?
 * [-Look over-]
-@@SageIntro
+@@Tari_InnSageArrives
 -> END
