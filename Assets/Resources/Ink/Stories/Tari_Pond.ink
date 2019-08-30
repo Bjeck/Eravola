@@ -57,9 +57,7 @@ So... how the pond, huh? she asks.
   
  - * [Next]
  §§Ceara’s got her hand above me and I step up, but she sees me coming and slides her hand up, blocking my fingers from reaching the tree. With a smile she steps up and hurls herself further upward while I have to reset my grip, almost falling over in sheer surprise.
-  
+ 
  - * [Next]
-  
- - * [Next]
-
+@@Tari_CearaCursed
 ->END

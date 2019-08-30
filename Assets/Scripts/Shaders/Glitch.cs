@@ -102,7 +102,7 @@ public class Glitch : MonoBehaviour {
         StartCoroutine(GlitchScreenOC(time, inten, withVHS));
     }
     
-    public void GltichScreenOnCommand(float time)
+    public void GlitchScreenOnCommand(float time)
     {
         StartCoroutine(GlitchScreenOC(time, -1, false));
     }
