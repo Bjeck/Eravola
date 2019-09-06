@@ -13,7 +13,7 @@ public class InkDialogues : MonoBehaviour
 {
     public enum DialogueMode { Dialogue, Ambient }
     public enum Place { Main, Secondary }
-    enum Id { Speed, Delay }
+    enum Id { Speed, Delay, GlitchTiming, GlitchCommand }
 
 
     [SerializeField] TextAsset inkJSONAsset;
@@ -242,6 +242,14 @@ public class InkDialogues : MonoBehaviour
                 {
                     text.startdelay = float.Parse(inkStory.currentTags[i].Split('=')[1]); //should get the number after = !
                 }
+                if(inkStory.currentTags[i].Contains(variableIdentifiers[Id.GlitchTiming]))
+                {
+                    Glitch.instance.ChangeTiming(inkStory.currentTags[i].Split('=')[1]);
+                }
+                if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.GlitchCommand]))
+                {
+                    Glitch.instance.GlitchScreenOnCommand(float.Parse(inkStory.currentTags[i].Split('=')[1]));
+                }
             }
         }
         
@@ -258,6 +266,12 @@ public class InkDialogues : MonoBehaviour
         },
         {
             Id.Delay, "D="
+        },
+        {
+            Id.GlitchTiming, "GT"
+        },
+        {
+            Id.GlitchCommand, "GC"
         }
     };
     

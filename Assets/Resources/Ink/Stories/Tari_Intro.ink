@@ -1,109 +1,59 @@
 %%Dialogue%%
-Hey, Tari.
+"Hey, Tari."
 §§Ceara? Why's she not at school yet?
 * [Hey]
-You here for the rumours too?
+"You here for the rumours too?"
  * * [What rumours?]
  * * [No?]
- What do you mean no? <>
+ "What do you mean no? <>
 * [What are you doing here?]
-You didn't hear? <>
+"You didn't hear? <>
 
-- There's a Sage coming today.
+- There's a Sage coming today."
 §§...? # D=0.5
 * [What for?]
-Who knows? Just heard it from Illij. Said he knows him too. Apparently it's some expert from the South.
+"Who knows? Just heard it from Illij. Said he knows him too. Apparently it's some expert from the South."
 * [From Caudden?]
-No, not even. It's some southern guy. Illij said he knows him.
+"No, not even. It's some southern guy. Illij said he knows him."
 
  - §§...Lovely # D=1
 * [Will he stay long?]
-I dunno. <>
+"I dunno. <>
 * [Hope he doesn't stay long.]
-Right? <>
+"Right? <>
 
- - I only learned of him last night. Mum said Deidre got a notice about preparing a bed for him. Who sends a notice that they'll be at a town inn? <>
+ - I only learned of him last night. Mum said Deidre got a notice about preparing a bed for him. Who sends a notice that they"ll be at a town inn?" <>
  * [What? That's ridiculous.]
- Yeah, well, half the town's already lost about tales of his greatness, though. They're all <>
+ "Yeah, well, half the town's already lost about tales of his greatness, though. They"re all <>
  * [So school's canceled?]
- Yeah. The one nice thing about it. Everyone's <>
+ "Yeah. The one nice thing about it. Everyone's <>
  * [He's probably just heading to Caudden...]
- Then why didn't he just head straight there? No reason to stop for a full day in Sauddoc. Anyways, everyone's <>
+ "Then why didn't he just head straight there? No reason to stop for a full day in Sauddoc. Anyways, everyone's <>
  
- -  gathering at the inn.
+ -  gathering at the inn."
  
  * [Should we go watch?]
- Yeah, we probably should, shouldn't we? At least until it gets boring.
+" Yeah, we probably should, shouldn't we? At least until it gets boring."
  * * [-Go to the Inn-]
  * [Want do go anywhere but the inn, then?]
- Hah, well, let's check it out? I feel like we should at least give it a shot.
+" Hah, well, let's check it out? I feel like we should at least give it a shot."
  * * [-Go to the Inn-]
  - -> AmbientIntro
  
 ===AmbientIntro===
  %%Ambient%%
 I live in a small hovel on the outskirts of Caudden City, far enough away that you can’t smell the shit but still close enough that the chimneys line the sky.
-§§ 'What?' #D=1.5
-§§'Yes. He's coming today.'
-§§'When?' 
-§§'Don't know. Soon.'
+§§"What?" #D=1.5
+§§"Yes. He's coming today."
+§§"When?" 
+§§"Don't know. Soon."
  
  
  * [Next]
 The most exciting thing that happens in this town is when the smoke changes colour because of a mage experiment gone wrong in the city.
-§§Well, I better go tell Rasmin. #D=1.5
-§§And I gotta prepare. See you at the inn.
+§§"Well, I better go tell Rasmin." #D=1.5
+§§"And I gotta prepare. See you at the inn."
 
 * * [Next]
 @@Tari_InnIntro
 -> END
-
-
-
-
-
-
-/*
-
-(intro) I looked at Monsieur Fogg 
-*   ... and I could contain myself no longer [] # S=0.01
-    'What is the purpose of our journey, Monsieur?' # S=0.02
-    'A wager,' he replied. # D=1
-    §§...Please. # D=3.7
-    * *     'A wager!'[] I returned.
-            He nodded. # S=0.1 # D=1.5
-            * * *   'But surely that is foolishness!' # S=0.01
-            * * *  'A most serious matter then!'
-            - - -   He nodded again.
-            * * *   'But can we win?'
-                    'That is what we will endeavour to find out,' he answered.
-            * * *   'A modest wager, I trust?'
-                    'Twenty thousand pounds,' he replied, quite flatly.
-            * * *   I asked nothing further of him then[.], and after a final, polite cough, he offered nothing more to me. <>
-    * *     'Ah[.'],' I replied, uncertain what I thought.
-    - -     After that, <>
-*   ... but I said nothing[] and <>
-- we passed the day in silence.
-We really did.
-*   [We waited.]
--> Rooftops
-
-== Rooftops
-%%Ambient%%
-We ran through the rooftops, until we could smell the roses. It was pretty great, if I may say so.
-*   [Next]
-We ran and ran and ran.
-- *   [Next]
-@@Tim
-- -> END
-
-== More
-Hello there. this is something, isn't it!
--> END
-
-
-== Fourth_thing
-lalalalla
-lala
--> END
-*/

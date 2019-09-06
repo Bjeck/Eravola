@@ -74,19 +74,19 @@ public class DebugMenu : EditorWindow {
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("Enable Debug?");
-        enableDebug = EditorGUILayout.Toggle(enableDebug);
+        enableDebug = EditorGUILayout.Toggle(enableDebug, GUILayout.Width(350));
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("Forcing Allowed?");
-        forcingAllowed = EditorGUILayout.Toggle(forcingAllowed);
+        forcingAllowed = EditorGUILayout.Toggle(forcingAllowed, GUILayout.Width(350));
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
 
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("Start At Drone");
-        startAtDrone = EditorGUILayout.Toggle(startAtDrone);
+        startAtDrone = EditorGUILayout.Toggle(startAtDrone, GUILayout.Width(350));
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
@@ -166,8 +166,7 @@ public class DebugMenu : EditorWindow {
     public void PopulateNodeIDs()
     {
         nodeTexts.Clear();
-
-        Debug.Log("pop");
+        
         if (!dialogues.Contains(dialogueNodeToStart))
         {
             Debug.Log("returning");
@@ -182,16 +181,7 @@ public class DebugMenu : EditorWindow {
 
         var list = rootObject["root"] as List<object>;
         Dictionary<string, object> knots = (list)[2] as Dictionary<string, object>;
-
-        Debug.Log("hi");
-
-        //object obj = MiniJSON_VIDE.DiagJson.Deserialize(file.text);
-        //Dictionary<string, object> dict = obj as Dictionary<string, object>;
-
-        //int actionnodes = ToInt(dict["actionNodes"]);
-        //int playernodes = ToInt(dict["playerDiags"]);
-        //int totalNodes = actionnodes + playernodes;
-
+        
         List<string> texts = list[0] as List<string>;
         nodeTexts.Add(0, "START");
 
@@ -199,44 +189,10 @@ public class DebugMenu : EditorWindow {
 
         List<string> keys = knots.Keys.ToList();
 
-        for (int i = 0; i < keys.Count; i++)
+        for (int i = 0; i < keys.Count - 1; i++) // -1 because the last knot in Ink is apparently always #f (????)
         {
             nodeTexts.Add(i + 1, keys[i]);
         }
-
-
-        //for (int i = 0; i < playernodes; i++)
-        //{
-        //    bool player = (bool)dict["pd_isp_" + i];
-
-        //    string p = player ? "Player" : "NPC";
-
-        //    int idx = ToInt(dict["pd_ID_" + i]);
-
-        //    string text = idx + " " + p + ": " + (string)dict["pd_" + i + "_com_0text"];
-        //    unsortednodeTexts.Add(idx, text );
-        //}
-
-        //for (int i = 0; i < actionnodes; i++)
-        //{
-        //    int idx = ToInt(dict["ac_ID_" + i]);
-        //    string text = idx + " ACTION: " + (string)dict["ac_meth_" + i];
-        //    unsortednodeTexts.Add(idx, text);
-        //}
-
-
-        //List<int> ids = unsortednodeTexts.Keys.ToList();
-
-        //ids.Sort();
-
-        //for (int i = 0; i < ids.Count; i++)
-        //{
-        //    nodeTexts.Add(ids[i], unsortednodeTexts[ids[i]]);
-        //}
-        
-
-
-        //read objects node counts
 
         defaultStartNode = 0;
         nodeID = defaultStartNode;

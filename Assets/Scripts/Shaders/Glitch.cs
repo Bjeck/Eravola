@@ -188,6 +188,7 @@ public class Glitch : MonoBehaviour {
         if (timings.ContainsKey(timingName))
         {
             curTiming = timings[timingName];
+            timeToGlitch = 0;
         }
     }
 
@@ -205,7 +206,7 @@ public class Glitch : MonoBehaviour {
         t.textSustainMin = 0.03f;
         t.textSustainMax = 0.08f;
         t.name = TimingNames.Standard;
-        timings.Add(Glitch.TimingNames.Standard, t);
+        timings.Add(t.name, t);
 
         t = new GlitchTiming();
 
@@ -219,9 +220,22 @@ public class Glitch : MonoBehaviour {
         t.textSustainMin = 0.13f;
         t.textSustainMax = 0.28f;
         t.name = TimingNames.Mystery;
-        timings.Add(Glitch.TimingNames.Mystery, t); //THIS IS NOT DONE YET!
+        timings.Add(t.name, t); //THIS IS NOT DONE YET!
 
+        t = new GlitchTiming();
 
+        t.timeToMin = 1f;
+        t.timeToMax = 5f;
+        t.sustainMin = 0.1f;
+        t.sustainMax = 1f;
+
+        t.textTimeMin = 0.01f;
+        t.textTimeMax = 1f;
+        t.textSustainMin = 0.01f;
+        t.textSustainMax = 0.5f;
+        t.name = TimingNames.Insane;
+        timings.Add(t.name, t); //THIS IS NOT DONE YET!
+        
     }
 
 }

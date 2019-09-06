@@ -110,16 +110,16 @@ public class TextRoll : MonoBehaviour {
                 i = i + (tIdx-i);
             }
 
-            if (text.text[i] == '<')
+            if (text.text[i] == '>')
             {
                 //default Escape Note: Color text.
-                roll.ui.text += "<color=#1f1f1fff>" + "</color>"; //wow that hardcoding :P
+                roll.ui.text += "<color=#6f6f6fff>" + "</color>"; //wow that hardcoding :P
                 isColored = true;
             }
             else if (isColored)
             {
                 roll.ui.text = roll.ui.text.Substring(0, roll.ui.text.Length - 8); //?? deleting the </color> stuff i think?
-                if (text.text[i] == '>')
+                if (text.text[i] == '<')
                 {
                     isColored = false;
                     roll.ui.text += "</color>";
