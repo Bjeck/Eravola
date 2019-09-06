@@ -1,21 +1,21 @@
 %%Ambient
-§§However, she smiled a little too long. As she reaches above me, her grip falters, and she keels sideways, trying to get a grip with her foot. #S=0.007
- 
+However, she smiled a little too long. As she reaches above me, her grip falters, and she keels sideways, trying to get a grip with her foot. #S=0.007
+
 - * [Next]
-§§She's in a bad spot, though, so her foot finds no solid branch to stay on, and without holding anything, her balance is tipped over. #S=0.007
- 
+She's in a bad spot, though, so her foot finds no solid branch to stay on, and without holding anything, her balance is tipped over. #S=0.007
+
 - * [Next]
-§§She falls down from the pine, glancing down with a shriek. #S=0.007 #GC=1,1
- 
+She falls down from the pine, glancing down with a shriek. #S=0.007 #GC=1,1
+
 - * [Next]
-§§I started climbing down to her after a short while. She wasn’t far away, and it hadn’t been a long fall, but she keeps lying there.     
-§§‘Ceara?’ I said, looking down at her still body. I hadn’t judged the fall to be that hard.      
-§§I slid down the tree as fast as I could, gliding with my feet over the rough surface, hearing it crunch under me. 
- 
+I started climbing down to her after a short while. She wasn’t far away, and it hadn’t been a long fall, but she keeps lying there.     
+‘Ceara?’ I said, looking down at her still body. I hadn’t judged the fall to be that hard.      
+I slid down the tree as fast as I could, gliding with my feet over the rough surface, hearing it crunch under me. 
+
 - * [Next]
-§§I approached her slowly.   
-§§'Are you okay?'
- 
+I approached her slowly.   
+'Are you okay?'
+
 - * [Next]
 -> cursed
 
@@ -88,5 +88,5 @@ She points at a flower just below her. It has... no, the entire flowerbed has th
 * * [Right. Won't touch you. Just... come on. Please.]
 ...Okay.
 * * * [Thank you.]
-@@Tari_CursedToInn
+@@Tari_CursedBackToInn
 -> END

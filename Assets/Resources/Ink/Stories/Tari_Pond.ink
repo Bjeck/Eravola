@@ -1,13 +1,13 @@
 %%Ambient%%
-Ceara lets out a long sigh. #D=1
-'Damn it was hot in there'
-'Yeah' I say.
-§§We trudge our way through the thick crowds and breathe fresh air again.
+§§Ceara lets out a long sigh. #D=1
+§§'Damn it was hot in there'
+§§'Yeah' I say.
+We trudge our way through the thick crowds and breathe fresh air again.
 * [Next]
-So... how the pond, huh? she asks.
-§§I don’t have to think twice before answering that. #D=1
+§§So... how the pond, huh? she asks.
+I don’t have to think twice before answering that. #D=1
 - * [Next]
-§§The pond is a bit towards Caudden, which is why we’re generally not allowed to go there. But it also has color-fish and wild moving-plants, and an ancient willowtree that’s great fun to climb. #D=0.5
+The pond is a bit towards Caudden, which is why we’re generally not allowed to go there. But it also has color-fish and wild moving-plants, and an ancient willowtree that’s great fun to climb. #D=0.5
  
 - * [Next]
 -> TreeBet
