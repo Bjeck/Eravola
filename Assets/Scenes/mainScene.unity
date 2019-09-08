@@ -9753,6 +9753,11 @@ MonoBehaviour:
     volume: 0.5
     loop: 0
     mixer: {fileID: 0}
+  - ID: 8
+    audio: {fileID: 8300000, guid: 2ff1854c117cf9a48916b0ddb97e77dd, type: 3}
+    volume: 0.5
+    loop: 0
+    mixer: {fileID: 0}
   serialSFXList:
   - ID: 0
     topmixer: {fileID: 0}
@@ -28469,6 +28474,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DroneCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1033549560051380, guid: 6ed05cb86ce3b6242a5de510fd8822d5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 223482474183644934, guid: 6ed05cb86ce3b6242a5de510fd8822d5,
         type: 3}
       propertyPath: m_Camera
@@ -28831,7 +28840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1767369226, guid: 6ed05cb86ce3b6242a5de510fd8822d5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 23.72499
+      value: 23.724976
       objectReference: {fileID: 0}
     - target: {fileID: 1767369226, guid: 6ed05cb86ce3b6242a5de510fd8822d5, type: 3}
       propertyPath: m_SizeDelta.x

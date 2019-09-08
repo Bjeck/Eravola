@@ -141,6 +141,6 @@ But I doubt it’s still there anymore.
 
 
 = crash
-@@CRASH
+@@FIRST_CRASH
 -> END
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Linq;
 
 
 public class Sound : MonoBehaviour {
@@ -28,6 +29,15 @@ public class Sound : MonoBehaviour {
 
     public enum UNIQUESOURCES { Text }
 
+
+    public enum MasterMixerVars { masterVolume, inWorldVolume, computerVolume }
+    public Dictionary<MasterMixerVars, float> masterMixerDefaultValues = new Dictionary<MasterMixerVars, float>()
+    {
+        { MasterMixerVars.masterVolume, 0 },
+        { MasterMixerVars.inWorldVolume, 0 },
+        { MasterMixerVars.computerVolume, 0 },
+    };
+
     //FOR SERIALIZATION
     public List<SFXInfo> serialSFX = new List<SFXInfo>(0);
     public List<SFXListInfo> serialSFXList = new List<SFXListInfo>(0);
@@ -41,6 +51,8 @@ public class Sound : MonoBehaviour {
     public Dictionary<SFXLISTS, SFXListInfo> sfxLists = new Dictionary<SFXLISTS, SFXListInfo>();
     public Dictionary<AMBIENCES, AmbienceInfo> ambiences = new Dictionary<AMBIENCES, AmbienceInfo>();
 
+    public Dictionary<SFXInfo, AudioSource> sfxPlayed = new Dictionary<SFXInfo, AudioSource>(); //i dunno. this needs to be remved from again, dunno how to do that.
+
 
     public List<AudioSource> glitchSounds = new List<AudioSource>(3);
 
@@ -53,9 +65,6 @@ public class Sound : MonoBehaviour {
     int poolidx = 0;
     public List<AudioSource> audiosources = new List<AudioSource>();
     public Dictionary<UNIQUESOURCES, AudioSource> sacredsources = new Dictionary<UNIQUESOURCES, AudioSource>();
-
-    //Text sounds should probably run on a separate audiosource outside the pool because it flies through them all so quick.
-    //maybe the same also with glitch sounds?
 
     // Use this for initialization
     void Start () {
@@ -95,8 +104,12 @@ public class Sound : MonoBehaviour {
             AddNewAudiosourceToPool();
         }
 
-
-
+        foreach(KeyValuePair<MasterMixerVars,float> kvp in masterMixerDefaultValues)
+        {
+            float val = 0;
+            masterMixer.GetFloat(kvp.Key.ToString(), out val);
+            masterMixerDefaultValues[kvp.Key] = val;
+        }
 
     }
 	
@@ -146,12 +159,17 @@ public class Sound : MonoBehaviour {
         Play(sfx[sound]);
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED!
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="pitch"></param>
     public void Play(SFXIDS sound, float pitch) //play with a pitch ???
     {
 
     }
 
-    public void Play(SFXIDS sound, bool randomPitch)
+    public void Play(SFXIDS sound, bool randomPitch) //This shouldn't be a separate play!!! That's Bad!
     {
         SFXInfo s = sfx[sound];
         if (audiosources[poolidx].isPlaying)
@@ -197,15 +215,23 @@ public class Sound : MonoBehaviour {
         sacredsources[uniqueID].Play();
     }
 
+    /// <summary>
+    /// NOT IMPLEMENTED!
+    /// </summary>
+    /// <param name="sound"></param>
+    /// <param name="delay"></param>
     public void PlayDelayed(string sound, float delay)
     {
 
     }
 
-    public void PlaySpecificFromList(SFXLISTS list, int idx)
+    public void Stop(SFXIDS id)
     {
-    //    sfxLists[list].list[idx].audio
+        
     }
+
+
+
 
     public void PlayRandomFromList(SFXLISTS list)
     {
@@ -238,6 +264,21 @@ public class Sound : MonoBehaviour {
             }
         }
     }
+
+
+
+    public void MuteMixer(MasterMixerVars mixer)
+    {
+        masterMixer.SetFloat(mixer.ToString(), -80);
+
+    }
+
+    public void UnMuteMixer(MasterMixerVars mixer)
+    {
+        masterMixer.SetFloat(mixer.ToString(), masterMixerDefaultValues[mixer]);
+    }
+
+
 
     public void PlayGlitched(SFXIDS sound)  //the idea being I can play any sound glitched -- but dunno how it'll work yet.
     {

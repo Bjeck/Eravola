@@ -116,7 +116,6 @@ public class Sequences : MonoBehaviour
             j--;
         }
 
-        //yield return new WaitForSeconds(1f);    //THIS NEEDS TO BE THERE?? dunno why. it doesn't actually wait 1 second, but making it 0 doesn't work either. apparently not anymore...?????? wth
         yield return new WaitForSeconds(0.35f);
         Glitch.instance.GlitchScreenOCBoot(0.15f, 1f);
         yield return new WaitForSeconds(0.15f);
@@ -129,6 +128,15 @@ public class Sequences : MonoBehaviour
 
     IEnumerable FirstCrash()
     {
+        Glitch.instance.GlitchScreenOnCommand(5f, 1.5f);
+        Sound.instance.MuteMixer(Sound.MasterMixerVars.inWorldVolume);
+        Sound.instance.Play(Sound.SFXIDS.Warning);
+        yield return new WaitForSeconds(5);
+        story.ui.SetSoleCanvas(UIManager.CanvasType.Boot);
+        Sound.instance.stop
+        bootUpText.text = "";
+
+
         yield return new WaitForEndOfFrame();
     }
 
