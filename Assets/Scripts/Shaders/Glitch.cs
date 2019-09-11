@@ -107,10 +107,16 @@ public class Glitch : MonoBehaviour {
         StartCoroutine(GlitchScreenOC(time, -1, false));
     }
 
-    public void GlitchScreenOCBoot(float time, float inten = -1f)
+    public void GlitchScreenOCWithVerticalJump(float time, float inten = -1f)
     {
         analogGlitch.verticalJump = Random.Range(0.4f, 1f);
-        StartCoroutine(GlitchScreenOC(time, -1, false));
+        StartCoroutine(GlitchScreenOC(time, inten, false));
+    }
+
+    public void GlitchScreenOCWithDigital(float time, float inten = -1f)
+    {
+        digitalGlitch.intensity = Random.Range(0.2f, 0.5f);
+        StartCoroutine(GlitchScreenOC(time, inten, false));
     }
 
     IEnumerator GlitchScreenOC(float time, float inten = -1f, bool withVHS = false)
@@ -123,6 +129,7 @@ public class Glitch : MonoBehaviour {
         glEf.enabled = true;
         glEf.intensity = inten * Random.Range(0.8f, 1.2f);
         analogGlitch.intensity = glitchIntensity;
+        digitalGlitch.enabled = true;
 
         analogGlitch.enabled = true;
         analogGlitch.scanLineJitter = Random.Range(0f, 0.6f);
@@ -135,7 +142,9 @@ public class Glitch : MonoBehaviour {
         }
         glEf.intensity = 0;
         analogGlitch.intensity = 0;
+        digitalGlitch.enabled = false;
         glEf.enabled = false;
+        analogGlitch.verticalJump = 0;
         analogGlitch.enabled = false;
         Sound.instance.EndGlitch();
         yield return 0;

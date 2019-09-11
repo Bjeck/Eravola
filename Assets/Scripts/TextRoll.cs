@@ -61,7 +61,7 @@ public class TextRoll : MonoBehaviour {
 
 
 
-    public IEnumerator Roll(TextInfo text, RollInfo roll)
+    private IEnumerator Roll(TextInfo text, RollInfo roll)
     {
         bool isColored = false;
 

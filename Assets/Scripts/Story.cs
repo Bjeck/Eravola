@@ -113,7 +113,7 @@ public class Story : MonoBehaviour
             else
             {
                 ui.SetSoleCanvas(UIManager.CanvasType.Boot);
-                sequences.RunSequence(SequenceName.BootUp, () => { ChangeStoryPoint(GlobalVariables.DefaultStartDialogue); ui.SetSoleCanvas(UIManager.CanvasType.Main); });
+                sequences.RunSequence(SequenceName.FirstBoot, () => { ChangeStoryPoint(GlobalVariables.DefaultStartDialogue, true); ui.SetSoleCanvas(UIManager.CanvasType.Main); });
             }
         }
     }
@@ -125,32 +125,6 @@ public class Story : MonoBehaviour
         Storage.CurrentStoryPoint = newStoryPoint;
 
         Debug.Log("Loading new story point: " + newStoryPoint);
-
-
-        //If it is an intro and we are coming from drone, then load character intro.
-        //if (newStoryPoint.Contains("Intro"))
-        //{
-        //    string storypoint = newStoryPoint.Replace("_Intro", "");
-        //    if (characterNames.Exists(x => x == storypoint))
-        //    {
-        //        //Story point is a character name! That means we should probably find the intro story for that character and run that! First check if we're coming from Drone to handle through sequence.
-        //        if (overrideSequencing)
-        //        {
-        //            ui.SetSoleCanvas(UIManager.CanvasType.Main);
-        //            inkDia.StartDialogue(newStoryPoint, startNode);
-        //        }
-        //        else
-        //        {
-        //            sequences.RunSequence(SequenceName.LoadToStoryFromDrone, () =>
-        //            {
-        //                ui.SetSoleCanvas(UIManager.CanvasType.Main);
-        //                inkDia.StartDialogue(newStoryPoint, startNode);
-        //            });
-        //        }
-        //        return;
-        //    }
-        //}
-
 
         //load story point normally if it exists in database.
         if (InkDatabase.Contains(newStoryPoint))
@@ -191,6 +165,16 @@ public class Story : MonoBehaviour
                     nodemap.LoadNodeSpace();
                 });
             }
+            return;
+        }
+
+
+        if(newStoryPoint == GlobalVariables.FIRST_CRASH)
+        {
+            sequences.RunSequence(SequenceName.FirstCrash, () =>
+             {
+                 ChangeStoryPoint(GlobalVariables.DRONE);
+             });
             return;
         }
 

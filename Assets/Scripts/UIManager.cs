@@ -69,6 +69,11 @@ public class UIManager : MonoBehaviour {
                 }
             }
 
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                story.ChangeStoryPoint(GlobalVariables.FIRST_CRASH);
+            }
+
         }
 
     }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 
-public enum SequenceName { BootUp, FirstCrash, LoadToStoryFromDrone, LoadToDrone, Dummy };
+public enum SequenceName { FirstBoot, FirstCrash, LoadToStoryFromDrone, LoadToDrone, Dummy };
 
 public class Sequences : MonoBehaviour
 {
@@ -20,6 +20,8 @@ public class Sequences : MonoBehaviour
     public TextMeshProUGUI bootUpText;
     public TextMeshProUGUI simulationText;
     public TMP_InputField passwordInput;
+    public Button bootButton;
+    public Button passwordButton;
     bool passwordsubmitted = false;
 
     IEnumerable currentRoutine = null;
@@ -29,7 +31,7 @@ public class Sequences : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        sequences.Add(SequenceName.BootUp, BootUpSequence());
+        sequences.Add(SequenceName.FirstBoot, FirstBoot());
         sequences.Add(SequenceName.FirstCrash, FirstCrash());
         sequences.Add(SequenceName.LoadToStoryFromDrone, LoadToStoryFromDrone());
         sequences.Add(SequenceName.LoadToDrone, LoadToDroneFromStory());
@@ -61,26 +63,30 @@ public class Sequences : MonoBehaviour
 
     #region Sequence Coroutines
 
-    IEnumerable BootUpSequence()
+    IEnumerable FirstBoot()
     {
         bootUpText.text = "";
         passwordInput.gameObject.SetActive(false);
+        bootButton.gameObject.SetActive(false);
 
         Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
 
-        //  print("BOOT UP");
         bootUpStatic.gameObject.SetActive(true);
         Glitch.instance.GlitchScreenOnCommand(1f,1.2f);
         yield return new WaitForSeconds(1f);
         bootUpStatic.gameObject.SetActive(false);
 
+        yield return BootUp(GlobalStrings.FirstBootUpString).GetEnumerator();
+    }
+
+
+
+    IEnumerable BootUp(TextInfo text)
+    {
         Sound.instance.Play(Sound.SFXIDS.Boot);
         Sound.instance.PlayAmbient(Sound.AMBIENCES.Computer);
 
-        TextInfo txt = new TextInfo(GlobalStrings.BootUpString.text.Replace("¤", System.Environment.NewLine), GlobalStrings.BootUpString.rolldelay, GlobalStrings.BootUpString.startdelay);
-
-        RollInfo rollInfo = new RollInfo(bootUpText, txt, null);
-        IEnumerator roll = Roller.StartRoll(txt, rollInfo.ui, null, false);
+        IEnumerator roll = Roller.StartRoll(text, bootUpText);
 
         while (roll.MoveNext())
         {
@@ -89,7 +95,9 @@ public class Sequences : MonoBehaviour
 
         passwordInput.gameObject.SetActive(true);
         passwordInput.onSubmit.AddListener((fieldText) => PasswordSubmitted(fieldText));
-        passwordInput.onValueChanged.AddListener((text) => KeyPressed());
+        passwordInput.onValueChanged.AddListener((t) => KeyPressed());
+        passwordButton.gameObject.SetActive(true);
+        passwordsubmitted = false;
 
         passwordInput.Select();
 
@@ -99,6 +107,7 @@ public class Sequences : MonoBehaviour
         }
 
         passwordInput.text = "";
+        passwordButton.gameObject.SetActive(false);
 
         List<int> foundIndexes = new List<int>();
         for (int i = 0; i < bootUpText.text.Length; i++)
@@ -111,13 +120,13 @@ public class Sequences : MonoBehaviour
         while (bootUpText.text.Length > 100)
         {
             yield return new WaitForSeconds(0.075f);
-            
+
             bootUpText.text = bootUpText.text.Remove(foundIndexes[j], (bootUpText.text.Length - foundIndexes[j]));
             j--;
         }
 
         yield return new WaitForSeconds(0.35f);
-        Glitch.instance.GlitchScreenOCBoot(0.15f, 1f);
+        Glitch.instance.GlitchScreenOCWithVerticalJump(0.15f, 1f);
         yield return new WaitForSeconds(0.15f);
         bootUpText.text = "";
 
@@ -128,17 +137,65 @@ public class Sequences : MonoBehaviour
 
     IEnumerable FirstCrash()
     {
-        Glitch.instance.GlitchScreenOnCommand(5f, 1.5f);
+        Glitch.instance.GlitchScreenOCWithDigital(3f, 1.5f);
         Sound.instance.MuteMixer(Sound.MasterMixerVars.inWorldVolume);
         Sound.instance.Play(Sound.SFXIDS.Warning);
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         story.ui.SetSoleCanvas(UIManager.CanvasType.Boot);
-        Sound.instance.stop
+        Sound.instance.Stop(Sound.SFXIDS.Warning);
+        bootUpStatic.gameObject.SetActive(false);
+
+        Sound.instance.PlayAmbient(Sound.AMBIENCES.Work);
         bootUpText.text = "";
+        bootButton.gameObject.SetActive(true);
+        bootButton.onClick.RemoveAllListeners();
+
+
+        TextMeshProUGUI buttonText = bootButton.GetComponentInChildren<TextMeshProUGUI>();
+        IEnumerator roll = Roller.StartRoll(GlobalStrings.BrokenNextButton, buttonText);
+
+        yield return roll;
+
+        yield return WaitForButton();
+
+        bootButton.gameObject.SetActive(false);
+
+        buttonText.text = "";
+
+        roll = Roller.StartRoll(GlobalStrings.Crash, bootUpText);
+
+        yield return roll;
+
+        yield return new WaitForSeconds(1);
+        bootUpText.text += "\n";
+
+        roll = Roller.StartRoll(GlobalStrings.CrashLoadingDrone, bootUpText);
+
+        yield return roll;
+
+        yield return new WaitForSeconds(1);
+
+        Sound.instance.PlayRandomFromList(Sound.SFXLISTS.Keyboards);
+        bootUpText.text = "";
+
+        Sound.instance.StopAmbient(Sound.AMBIENCES.Computer);
+
+        yield return new WaitForSeconds(4);
+
+        IEnumerator boot = BootUp(GlobalStrings.BootToDroneString).GetEnumerator();
+
+        yield return boot;
+
+        Sound.instance.StopAmbient(Sound.AMBIENCES.Work);
 
 
         yield return new WaitForEndOfFrame();
+
     }
+
+
+
+
 
 
     IEnumerable LoadToStoryFromDrone()
@@ -196,6 +253,22 @@ public class Sequences : MonoBehaviour
             yield return new WaitForSeconds(0.7f);
         }
     }
+
+    IEnumerator WaitForButton()
+    {
+        bootButton.onClick.RemoveAllListeners();
+        bool clicked = false;
+
+        bootButton.onClick.AddListener(() => { clicked = true; });
+
+        while (!clicked)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        bootButton.onClick.RemoveAllListeners();
+    }
+
 
     void KeyPressed()
     {

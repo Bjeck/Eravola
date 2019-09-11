@@ -24,18 +24,19 @@ public class Sound : MonoBehaviour {
 
     public enum SFXLISTS { Keyboards, Glitches }
     
-    public enum AMBIENCES { Computer, Room, Inn, Pond, Village, DeadVillage, Wind, Drone }
+    public enum AMBIENCES { Computer, Room, Inn, Pond, Village, DeadVillage, Wind, Drone, Work }
 
 
     public enum UNIQUESOURCES { Text }
 
 
-    public enum MasterMixerVars { masterVolume, inWorldVolume, computerVolume }
+    public enum MasterMixerVars { mastervolume, inWorldVolume, computerVolume, roomVolume }
     public Dictionary<MasterMixerVars, float> masterMixerDefaultValues = new Dictionary<MasterMixerVars, float>()
     {
-        { MasterMixerVars.masterVolume, 0 },
+        { MasterMixerVars.mastervolume, 0 },
         { MasterMixerVars.inWorldVolume, 0 },
         { MasterMixerVars.computerVolume, 0 },
+        { MasterMixerVars.roomVolume, 0 }
     };
 
     //FOR SERIALIZATION
@@ -50,9 +51,6 @@ public class Sound : MonoBehaviour {
     public Dictionary<SFXIDS, SFXInfo> sfx = new Dictionary<SFXIDS, SFXInfo>();
     public Dictionary<SFXLISTS, SFXListInfo> sfxLists = new Dictionary<SFXLISTS, SFXListInfo>();
     public Dictionary<AMBIENCES, AmbienceInfo> ambiences = new Dictionary<AMBIENCES, AmbienceInfo>();
-
-    public Dictionary<SFXInfo, AudioSource> sfxPlayed = new Dictionary<SFXInfo, AudioSource>(); //i dunno. this needs to be remved from again, dunno how to do that.
-
 
     public List<AudioSource> glitchSounds = new List<AudioSource>(3);
 
@@ -98,13 +96,15 @@ public class Sound : MonoBehaviour {
             ambiences.Add(s.ID, s);
         }
 
-
         for (int i = 0; i < audiosourcePoolAmount; i++)
         {
             AddNewAudiosourceToPool();
         }
 
-        foreach(KeyValuePair<MasterMixerVars,float> kvp in masterMixerDefaultValues)
+
+        List<KeyValuePair<MasterMixerVars, float>> kvps = new List<KeyValuePair<MasterMixerVars, float>>();
+        kvps = masterMixerDefaultValues.ToList();
+        foreach(KeyValuePair<MasterMixerVars,float> kvp in kvps)
         {
             float val = 0;
             masterMixer.GetFloat(kvp.Key.ToString(), out val);
@@ -225,12 +225,6 @@ public class Sound : MonoBehaviour {
 
     }
 
-    public void Stop(SFXIDS id)
-    {
-        
-    }
-
-
 
 
     public void PlayRandomFromList(SFXLISTS list)
@@ -250,7 +244,19 @@ public class Sound : MonoBehaviour {
 
         SetAudioSourceToInfoSettings(audiosources[poolidx], s);
         audiosources[poolidx].Play();
+    }
 
+
+    public void Stop(SFXIDS id) //These stops go through the entire list which might be a little cumbersome really.
+    {
+        SFXInfo inf = sfx[id];
+        for (int i = 0; i < audiosources.Count; i++)
+        {
+            if (audiosources[i].clip == inf.audio)
+            {
+                audiosources[i].Stop();
+            }
+        }
     }
 
     public void StopAmbient(AMBIENCES sound)
@@ -264,7 +270,6 @@ public class Sound : MonoBehaviour {
             }
         }
     }
-
 
 
     public void MuteMixer(MasterMixerVars mixer)
