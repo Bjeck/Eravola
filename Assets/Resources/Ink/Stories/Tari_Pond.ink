@@ -2,7 +2,7 @@
 §§>Ceara lets out a long sigh.< #D=1
 §§"Damn it was hot in there"
 §§"Yeah" >I say.< "Too hot."
-We trudge our way through the thick crowds and breathe fresh air again.
+We trudge our way through the thick crowds and breathe fresh air again. #ST=AMB_Inn
 * [Next]
 §§"So... how the pond, huh?" >she asks.< #GC=1
 I don’t have to think twice before answering that. #D=1
@@ -42,7 +42,7 @@ The pond is a bit towards Caudden, which is why we’re generally not allowed to
  
 === Race ===
 %%Ambient%%
-The tree is at the other side of the pond. We start sprinting to the left of the shallow water, and I faintly notice movement under the surface. #S=0.01
+The tree is at the other side of the pond. We start sprinting to the left of the shallow water, and I faintly notice movement under the surface. #S=0.01 #SP=AMB_Pond
  - * [Next]
 My feet feel light and springy on the summer grass, the smell of the waving flowers seething into my nostrils. We’re sidestepping toe to toe, whistling across the pond-side almost soundlessly, as we hear the wind clatter at our ears. #S=0.008
  - * [Next]

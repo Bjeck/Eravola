@@ -1,5 +1,5 @@
 %%Ambient%%
-There's already a crowd gathering in the inn.  
+There's already a crowd gathering in the inn.  # SP=AMB_Inn #ST=AMB_Village
 Nearly half the village is here, talking loudly about wild rumours, misinforming, and just generally enjoying themselves.
 §§"Come to see the show?" >he asks.< #D=2.5
 * [Next]

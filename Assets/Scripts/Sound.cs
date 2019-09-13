@@ -284,6 +284,33 @@ public class Sound : MonoBehaviour {
     }
 
 
+    public void HandleSoundPlayFromScript(string s)
+    {
+        string[] parts = s.Split('_');
+        if(parts[0] == "AMB")
+        {
+            PlayAmbient((AMBIENCES)System.Enum.Parse(typeof(AMBIENCES), parts[1]));
+        }
+        else
+        {
+            Play((SFXIDS)System.Enum.Parse(typeof(SFXIDS), parts[1]));
+        }
+    }
+
+    public void HandleSoundStopFromScript(string s)
+    {
+        string[] parts = s.Split('_');
+        if (parts[0] == "AMB")
+        {
+            StopAmbient((AMBIENCES)System.Enum.Parse(typeof(AMBIENCES), parts[1]));
+        }
+        else
+        {
+            Stop((SFXIDS)System.Enum.Parse(typeof(SFXIDS), parts[1]));
+        }
+    }
+
+
 
     public void PlayGlitched(SFXIDS sound)  //the idea being I can play any sound glitched -- but dunno how it'll work yet.
     {
@@ -335,6 +362,23 @@ public class Sound : MonoBehaviour {
         //SoundManager.instance.master.SetFloat("volume", -80);
         
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void PlayGlitch(int kind)
     {

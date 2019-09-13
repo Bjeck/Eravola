@@ -146,7 +146,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.16711426, y: 0.0010375977}
+  m_AnchoredPosition: {x: 0.16723633, y: 0.0009765625}
   m_SizeDelta: {x: 87.62598, y: 0.19995117}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &14567476
@@ -6721,7 +6721,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 6.8656006, y: -634.64}
+  m_AnchoredPosition: {x: 6.8654785, y: -634.64}
   m_SizeDelta: {x: 13.400024, y: 27.5}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &569007172
@@ -9279,7 +9279,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.4000244, y: -128.39996}
+  m_AnchoredPosition: {x: 0.40014648, y: -128.3999}
   m_SizeDelta: {x: -174.5, y: -485.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1065627856
@@ -10300,7 +10300,7 @@ MonoBehaviour:
     mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
   - ID: 2
     audio: {fileID: 8300000, guid: 708a8d078b7d492478e89a8c8079844c, type: 3}
-    volume: 0.11
+    volume: 0.2
     loop: 1
     mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
   - ID: 1
@@ -10318,6 +10318,21 @@ MonoBehaviour:
     volume: 0.4
     loop: 1
     mixer: {fileID: 243324397955054400, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
+  - ID: 3
+    audio: {fileID: 8300000, guid: 6ea434528f9f56c40bbd4337bc7d5285, type: 3}
+    volume: 0.2
+    loop: 0
+    mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
+  - ID: 6
+    audio: {fileID: 8300000, guid: c1e7903b00cde83479ba021bd6bb2dbb, type: 3}
+    volume: 0.2
+    loop: 0
+    mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
+  - ID: 5
+    audio: {fileID: 8300000, guid: 008bd3e5715a9da43b5620df94b645ca, type: 3}
+    volume: 0.2
+    loop: 0
+    mixer: {fileID: 243216975160146814, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
   masterMixer: {fileID: 24100000, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
   masterMixerGroup: {fileID: 24300002, guid: fb1eee6915fb4e54cb10fb3728cd96a3, type: 2}
   glitchMixer: {fileID: 24300002, guid: ac55036bbfb374f47beca4ac7c503c5d, type: 2}
@@ -12483,7 +12498,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.18713379, y: 0.006713867}
+  m_AnchoredPosition: {x: -0.18725586, y: 0.006713867}
   m_SizeDelta: {x: 87.62598, y: 0.19995117}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1545884309
@@ -12557,7 +12572,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00793457, y: -150.85}
+  m_AnchoredPosition: {x: -0.008056641, y: -150.84998}
   m_SizeDelta: {x: -0.34985, y: 19.3}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1614351996

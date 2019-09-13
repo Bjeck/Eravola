@@ -5,7 +5,7 @@ However, she smiled a little too long. As she reaches above me, her grip falters
 She's in a bad spot, though, so her foot finds no solid branch to stay on, and without holding anything, her balance is tipped over. #S=0.007
 
 - * [Next]
-She falls down from the pine, glancing down with a shriek. #S=0.007 #GC=1,1
+She falls down from the pine, glancing down with a shriek. #S=0.007 #GC=1,1 #ST=AMB_Pond
 
 - * [Next]
 I started climbing down to her after a short while. She wasn’t far away, and it hadn’t been a long fall, but she keeps lying there.     

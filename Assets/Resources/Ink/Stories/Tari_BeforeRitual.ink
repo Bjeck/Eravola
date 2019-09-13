@@ -1,5 +1,5 @@
 %%Ambient%%
-I lead them outside, towards the pond, round the corner and down a pathway, almost half the village in tow when I look at the grass.
+I lead them outside, towards the pond, round the corner and down a pathway, almost half the village in tow when I look at the grass. #SP=AMB_Wind
 - * [Next]
 It is spreading up from the pond. Moving with the flowers. I hadn’t noticed it before, so it must have been moving fast. Really fast. I stare, horrified at the new color the tiny pathway has gotten, once leading down to the pond with tufts of yellow flowers along downtrodden grass.
 - * [Next]
@@ -111,7 +111,7 @@ Several voices rise up, start yelling at each other in a frantic language I can 
 
 === StayAtSite ===
 %%Dialogue%%
->I see Ceara wander off. She can do that by herself.   <
+>I see Ceara wander off. She can do that by herself.<
 "We need wood! Where does the fire need to be?" 
 "Outside. It needs to burn the air" >the Sage says.< "I’m going to get my equipment. Try to start a fire in the meantime." 
 Several people begin to gather wood back and forth. But most still stand and do nothing.

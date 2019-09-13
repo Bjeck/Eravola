@@ -42,7 +42,7 @@
  
 ===AmbientIntro===
  %%Ambient%%
-I live in a small hovel on the outskirts of Caudden City, far enough away that you can’t smell the shit but still close enough that the chimneys line the sky.
+I live in a small hovel on the outskirts of Caudden City, far enough away that you can’t smell the shit but still close enough that the chimneys line the sky. #SP=AMB_Village
 §§"What?" #D=1.5
 §§"Yes. He's coming today."
 §§"When?" 

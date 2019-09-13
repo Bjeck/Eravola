@@ -13,7 +13,7 @@ public class InkDialogues : MonoBehaviour
 {
     public enum DialogueMode { Dialogue, Ambient }
     public enum Place { Main, Secondary }
-    enum Id { Speed, Delay, GlitchTiming, GlitchCommand }
+    enum Id { Speed, Delay, GlitchTiming, GlitchCommand, SoundPlay, SoundStop }
 
 
     [SerializeField] TextAsset inkJSONAsset;
@@ -234,21 +234,30 @@ public class InkDialogues : MonoBehaviour
         {
             for (int i = 0; i < inkStory.currentTags.Count; i++)
             {
+                string[] split = inkStory.currentTags[i].Split('=');
                 if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.Speed]))
                 {
-                    text.rolldelay = float.Parse(inkStory.currentTags[i].Split('=')[1]); //should get the number after = !
+                    text.rolldelay = float.Parse(split[1]);
                 }
                 if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.Delay]))
                 {
-                    text.startdelay = float.Parse(inkStory.currentTags[i].Split('=')[1]); //should get the number after = !
+                    text.startdelay = float.Parse(split[1]);
                 }
                 if(inkStory.currentTags[i].Contains(variableIdentifiers[Id.GlitchTiming]))
                 {
-                    Glitch.instance.ChangeTiming(inkStory.currentTags[i].Split('=')[1]);
+                    Glitch.instance.ChangeTiming(split[1]);
                 }
                 if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.GlitchCommand]))
                 {
-                    Glitch.instance.GlitchScreenOnCommand(float.Parse(inkStory.currentTags[i].Split('=')[1]));
+                    Glitch.instance.GlitchScreenOnCommand(float.Parse(split[1]));
+                }
+                if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.SoundPlay]))
+                {
+                    Sound.instance.HandleSoundPlayFromScript(split[1]);
+                }
+                if (inkStory.currentTags[i].Contains(variableIdentifiers[Id.SoundStop]))
+                {
+                    Sound.instance.HandleSoundStopFromScript(split[1]);
                 }
             }
         }
@@ -268,11 +277,18 @@ public class InkDialogues : MonoBehaviour
             Id.Delay, "D="
         },
         {
-            Id.GlitchTiming, "GT"
+            Id.GlitchTiming, "GT="
         },
         {
-            Id.GlitchCommand, "GC"
+            Id.GlitchCommand, "GC="
+        },
+        {
+            Id.SoundPlay, "SP="
+        },
+        {
+            Id.SoundStop, "ST="
         }
+
     };
     
 
@@ -283,6 +299,7 @@ public class InkDialogues : MonoBehaviour
         thoughtsText.text = string.Empty;
         ambientThoughts.text = string.Empty;
         ambientText.text = string.Empty;
+        
 
         for (int i = 0; i < buttons.Length; i++)
         {

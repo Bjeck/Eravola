@@ -96,6 +96,8 @@ public class Dialogues : MonoBehaviour {
         print("forcing stop");
         roll.FinishRollForced(MainText);
         roll.FinishRollForced(ThoughtsText);
+        roll.FinishRollForced(ambientText);
+        roll.FinishRollForced(ambientThoughts);
 
        // NextNode();
 

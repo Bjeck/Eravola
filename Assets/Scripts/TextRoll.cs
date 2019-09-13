@@ -5,7 +5,8 @@ using System;
 using UnityEngine.UI;
 using TMPro;
 
-public class TextRoll : MonoBehaviour {
+public class TextRoll : MonoBehaviour
+{
 
     Dictionary<TextMeshProUGUI, RollInfo> rollings = new Dictionary<TextMeshProUGUI, RollInfo>();
 
@@ -28,7 +29,7 @@ public class TextRoll : MonoBehaviour {
         TextInfo txt = new TextInfo(text.text, text.rolldelay, text.startdelay);
         IEnumerator enumerator = null;
 
-        print("Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
+        print("Roll: Text: " + text.text + " Delay: " + text.startdelay + " Speed: " + text.rolldelay);
 
         if (!rollings.ContainsKey(rollInfo.ui))
         {
@@ -64,6 +65,7 @@ public class TextRoll : MonoBehaviour {
     private IEnumerator Roll(TextInfo text, RollInfo roll)
     {
         bool isColored = false;
+        Debug.Log("Start Roll " + text.text);
 
         roll.currentlyWritingTextInfo = text;
         roll.isRunning = true;
@@ -115,6 +117,7 @@ public class TextRoll : MonoBehaviour {
                 //default Escape Note: Color text.
                 roll.ui.text += "<color=#6f6f6fff>" + "</color>"; //wow that hardcoding :P
                 isColored = true;
+                Debug.Log("Set to isColored True");
             }
             else if (isColored)
             {
@@ -122,6 +125,7 @@ public class TextRoll : MonoBehaviour {
                 if (text.text[i] == '<')
                 {
                     isColored = false;
+                    Debug.Log("Set to isColored False");
                     roll.ui.text += "</color>";
                 }
                 else

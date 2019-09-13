@@ -101,7 +101,7 @@ There it is. I notice it. The clouds aren’t just moving weird. They aren’t j
 
 === RitChoice
 %%Dialogue%%
-"Yeah, I see it too" the Sage says while people are running away.
+"Yeah, I see it too" the Sage says while people are running away. #ST=AMB_Wind
 * [Should we run?]
 "Yes, we should. I have never seen a weatherhex this huge."
 * [What is it?]
