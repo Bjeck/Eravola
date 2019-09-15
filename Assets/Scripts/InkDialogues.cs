@@ -36,6 +36,8 @@ public class InkDialogues : MonoBehaviour
 
     public DialogueMode mode;
 
+    int buttonEnableCounter;
+
     public TextMeshProUGUI MainText
     {
         get
@@ -57,13 +59,10 @@ public class InkDialogues : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //for (int i = 0; i < buttons.Length; i++)
-        //{
-        //    int istore = i;
-        //    buttons[i].onClick.AddListener(() => SetPlayerChoice(istore));
-        //}
-
-        nextButton.onClick.AddListener(() => RefreshView());
+        nextButton.onClick.AddListener(() =>
+        {
+            RefreshView();
+        }); 
     }
 
     // Update is called once per frame
@@ -94,39 +93,21 @@ public class InkDialogues : MonoBehaviour
     {
         // Remove all the UI on screen
         ClearText();
+        buttonEnableCounter = 0;
+        addedtoMain = false;
+        addedToSecondary = false;
 
-        // Read all the content until we can't continue any more
         bool first = true;
         while (CurrentDialogue.canContinue)
         {
             string text = CurrentDialogue.Continue();
-            //if (first)
-            //{
-            //    first = false;
-            //    continue;
-            //}
-            // Continue gets the next line of the story
-            // This removes any white space from the text.
-            // Display the text on screen!
             CreateContentView(text, CurrentDialogue);
         }
-
-        // Display all the choices, if there are any!
-        //CreateChoiceView(CurrentDialogue);
-
         
 
-        if (CurrentDialogue.currentChoices.Count <= 0)
+        if (CurrentDialogue.currentChoices.Count <= 0) // END. HANDLE THIS IN STORY
         {
-
-            // END. HANDLE THIS IN STORY OR SOMEWHERE
-            //Button choice = CreateChoiceView("End of story.\nRestart?");
-            //choice.onClick.AddListener(delegate {
-            //    StartStory();
-            //});
             HandleSwitch(CurrentDialogue.currentText.Trim(new char[] { '@', '\n' }));
-            Debug.Log("FINSIHED!");
-
         }
     }
 
@@ -150,24 +131,28 @@ public class InkDialogues : MonoBehaviour
     // Creates a button showing the choice text
     void CreateContentView(string text, Ink.Runtime.Story inkStory)
     {
-        if (text.Contains("%%") || text.Contains("@@")) //@@ is for changing to new story, is handled by RefreshView
+        if (text.Contains("@@")) //@@ is for changing to new story, is handled by RefreshView
+        {
+            return;
+        }
+        else if (text.Contains("%%")) 
         {
             //mode switch!
             ParseAndSetModeFromNode(text);
         }
         else
         {
-            System.Action callback = null;
-            callback = CreateChoiceView;
-            //}
+            System.Action callback = CreateChoiceView;
 
             if (text.StartsWith("§§"))
             {
-                roll.StartRoll(ConvertCommentToTextInfo(text.Substring(2, text.Length - 2), inkStory, Place.Secondary), ThoughtsText);
+                roll.StartRoll(ConvertCommentToTextInfo(text.Substring(2, text.Length - 2), inkStory, Place.Secondary), ThoughtsText, callback);
+                AddToCounter(Place.Secondary);
             }
             else
             {
                 roll.StartRoll(ConvertCommentToTextInfo(text, inkStory, Place.Main), MainText, callback);
+                AddToCounter(Place.Main);
             }
         }
     }
@@ -198,11 +183,37 @@ public class InkDialogues : MonoBehaviour
     }
 
 
+    bool addedtoMain = false;
+    bool addedToSecondary = false;
 
+    void AddToCounter(Place place)
+    {
+        if (place == Place.Main && !addedtoMain)
+        {
+            buttonEnableCounter++;
+            addedtoMain = true;
+        }
+        if(place == Place.Secondary && !addedToSecondary)
+        {
+            buttonEnableCounter++;
+            addedToSecondary = true;
+        }
+    }
+
+    //I guess the way to write it is like, starting a roll on one of the things adds a waiter token (int or something)
+    //and the callback retracts -1 from it. 
+    //and checks if its 0 and if it is, then do Choice View
 
     // Creates a button showing the choice text
     void CreateChoiceView()
     {
+        buttonEnableCounter--;
+        if(buttonEnableCounter > 0)
+        {
+            return;
+        }
+
+
         for (int i = 0; i < buttons.Length; i++)
         {
             if (i < CurrentDialogue.currentChoices.Count)
@@ -210,8 +221,8 @@ public class InkDialogues : MonoBehaviour
                 buttons[i].gameObject.SetActive(true);
                 buttonTexts[i].text = CurrentDialogue.currentChoices[i].text.Trim();
                 int istore = i;
-                buttons[i].onClick.AddListener(delegate {
-                    print("opening dialogue " + istore);
+                buttons[i].onClick.AddListener(delegate 
+                {
                     OnClickChoiceButton(CurrentDialogue.currentChoices[istore]);
                 });
             }

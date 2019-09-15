@@ -10,21 +10,21 @@ public class TextRoll : MonoBehaviour
 
     Dictionary<TextMeshProUGUI, RollInfo> rollings = new Dictionary<TextMeshProUGUI, RollInfo>();
 
-    public void StartRoll(string text, TextMeshProUGUI UI, Action callback = null, bool start = true)
+    public IEnumerator StartRoll(string text, TextMeshProUGUI UI, Action callback = null, bool start = true)
     {
         //text = @text.Replace("¤", System.Environment.NewLine);
         TextInfo textInfo = new TextInfo(text, GlobalVariables.TextRollDelay, GlobalVariables.TextStartDelay);
-        StartRoll(textInfo, UI, callback, start);
+        return StartRoll(textInfo, UI, callback, start);
     }
 
 
-    public IEnumerator StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null, bool start = true)
+    public IEnumerator StartRoll(TextInfo text, TextMeshProUGUI UI, Action callback = null, bool start = true, bool overrideCurrent = false)
     {
-        return StartRoll(text, new RollInfo(UI, text, callback), callback, start);
+        return StartRoll(text, new RollInfo(UI, text, callback), callback, start, overrideCurrent);
     }
 
 
-    public IEnumerator StartRoll(TextInfo text, RollInfo rollInfo, Action callback = null, bool start = true)
+    public IEnumerator StartRoll(TextInfo text, RollInfo rollInfo, Action callback = null, bool start = true, bool overrideCurrent = false)
     {
         TextInfo txt = new TextInfo(text.text, text.rolldelay, text.startdelay);
         IEnumerator enumerator = null;
@@ -40,10 +40,18 @@ public class TextRoll : MonoBehaviour
             rollings[rollInfo.ui].textQueue.Enqueue(text);
         }
 
-        if (!rollings[rollInfo.ui].isRunning)
+        if (rollings[rollInfo.ui].isRunning)
+        {
+            if (overrideCurrent) //if it is running and it should override stop
+            {
+                rollings[rollInfo.ui].shouldStop = true;
+            }
+        }
+        else
         {
             rollings[rollInfo.ui].shouldStop = false;
             enumerator = Roll(rollings[rollInfo.ui].textQueue.Dequeue(), rollings[rollInfo.ui]);
+            rollings[rollInfo.ui].currentEnumerator = enumerator;
             if (start)
             {
                 StartCoroutine(enumerator);
@@ -65,7 +73,6 @@ public class TextRoll : MonoBehaviour
     private IEnumerator Roll(TextInfo text, RollInfo roll)
     {
         bool isColored = false;
-        Debug.Log("Start Roll " + text.text);
 
         roll.currentlyWritingTextInfo = text;
         roll.isRunning = true;
@@ -151,7 +158,8 @@ public class TextRoll : MonoBehaviour
 
         if (rollings[roll.ui].textQueue.Count > 0)
         {
-            StartCoroutine(Roll(rollings[roll.ui].textQueue.Dequeue(), roll));
+            rollings[roll.ui].currentEnumerator = Roll(rollings[roll.ui].textQueue.Dequeue(), roll);
+            StartCoroutine(rollings[roll.ui].currentEnumerator);
         }
         else
         {
@@ -196,8 +204,11 @@ public class TextRoll : MonoBehaviour
         }
     }
 
-
-
+    public void EmptyRoll(TextMeshProUGUI ui)
+    {
+        rollings[ui].textQueue.Clear();
+        StopCoroutine(rollings[ui].currentEnumerator);
+    }
 
 }
 
@@ -207,6 +218,7 @@ public class RollInfo
     public TextInfo currentlyWritingTextInfo;
     public Queue<TextInfo> textQueue = new Queue<TextInfo>();
     public Action callback;
+    public IEnumerator currentEnumerator;
     public bool isRunning = false;
     public bool shouldStop = false;
     
