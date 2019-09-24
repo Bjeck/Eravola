@@ -2,7 +2,8 @@
 As she begins moving I get a glance around us. It is all around the pond, in small, hollow patches of purple, as if the rain had left purple marks where it landed. I didn't even notice it as strange before.
 * [Next]
 - We walk back slowly. She stumbles every few steps, walking slowly and carefully, feeling her body as if it was dangerous to touch.      
-I ask her several more times if she is okay, but she keeps saying nothing. ¤I don't know what else to ask.
+I ask her several more times if she is okay, but she keeps saying nothing. 
+I don't know what else to ask.
 * [Next]
 - The clouds are moving crazily above us. They twirl and spin with an odd quality about them; they are too thin, or too fickle.
 * [Next]
